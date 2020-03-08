@@ -506,7 +506,7 @@
 
 	<div class="my_modal" data-modal="trigger-2" id="modal_for_confirmation">
 		<article class="my_content-wrapper">
-			<button class="my_close" onclick="closeConfirmationModal()"></button>
+			<button class="my_close" onclick="closeConfirmationModalAndResetGloablVariables()"></button>
 			<header class="my_modal-header">
 				<h2>Student  Assignment  Confirmation<img style="height: 7vh;width: 7vh; margin-left: 1.9vh; margin-top: -1.1vh;position: absolute;"src="{{url_for('static', filename='images/icons/confirmation_icon.png')}}"></img></h2>
 			</header>
@@ -521,7 +521,7 @@
 			</form>
 			<footer class="my_modal-footer">
 				<button class="trigger my_action" data-modal-trigger="trigger-2" onclick="confirmButtonFunction()" id="confirmButtonOnModal1">Confirm</button>
-				<button class="my_action" onclick="closeConfirmationModal()">Cancel</button>
+				<button class="my_action" onclick="closeConfirmationModalAndResetGloablVariables()">Cancel</button>
 			</footer>
 		</article>
 	</div>
@@ -561,38 +561,24 @@
 
 
 	<script>
+  // Global variables
 	let switchStatus = false;
 	let mentorNumberColor = "green";
 	let mostRecentAssignedStudentName = "";
 	let mostRecentAssignedStudentEmail = "";
 	
-	document.addEventListener('DOMContentLoaded', function() {
-	var elems = document.querySelectorAll('.assignDateCalendar');
-	var today = new Date();var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-	var options = {"format" : "mm/dd/yyyy","defaultDate":today,"setDefaultDate":true}
-	var instances = M.Datepicker.init(elems, options);
-	});
-
+	
+  /* If page is come from other page by clicking the back button, refresh this page */
 	if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
 		location.reload()
 	}
 
-	$(document).ready(function(){
-	$('.datepicker').datepicker();
-	});
-	
-	document.addEventListener('DOMContentLoaded', function() {
-	var elems = document.querySelectorAll('.endDateCalendar');
-	var options = {"format" : "mm/dd/yyyy"}
-	var instances = M.Datepicker.init(elems, options);
-	});
+  /* Redirect to mentoring_join page, with 2 parameters, student name and student email */
+	function redirect1(){
+		window.location.href = "/mentoring_joined?username="+mostRecentAssignedStudentName+"&email="+mostRecentAssignedStudentEmail;
+	}
 
-
-	$(document).ready(function(){
-	$('.datepicker').datepicker();
-	});
-	
-	
+	/* All the inputs onfocus functions */
 	function studentInputOnFocusFunction(){
 		//document.getElementById("itemsInput").value=''; 
 		document.getElementById("studentErrorLabel").style.display = 'none';
@@ -616,17 +602,20 @@
 	function studentRebelMailInputOnFocusFunction(){
 		document.getElementById("studentRebelMailErrorLabel").style.display = 'none';
 	}
+  /* All the inputs onfocus functions */
 
-	function redirect1(){
-		window.location.href = "/mentoring_joined?username="+mostRecentAssignedStudentName+"&email="+mostRecentAssignedStudentEmail;
-	}
-	
-	function closeConfirmationModal(){
+
+
+	/* Modals operations */
+  
+  /* This function is used for button onclick for 2 close buttons in confirmation modal */
+	function closeConfirmationModalAndResetGloablVariables(){
 		document.getElementById('modal_for_confirmation').classList.remove('my_open');
 		mostRecentAssignedStudentName='';
 		mostRecentAssignedStudentName='';
 	}
 	
+  /* This function is used by below by the confirmButtonFunction() */
 	function openSuccessfulAssignmentModalAndCloseConfirmationModal(){
 		document.getElementById('modal_for_confirmation').classList.remove('my_open');
 		let button = document.getElementById("confirmButtonOnModal1");
@@ -637,7 +626,7 @@
 		modal.classList.toggle('my_open');
 	}
 	
-	
+	/* Function to called when the confirm button in the confirm modal is clicked */
 	function confirmButtonFunction(){
 	
 		if(switchStatus == false){
@@ -657,8 +646,13 @@
 		
 		}
 	}
+  /* Modals operations */
 	
 	
+  /* Assign button function */
+  
+  /* Initial all variables which are the elements of the webpage*/
+  /* First part of initialization are the elements from main_menu page*/
 	function assignButtonFunction(){	
 		studentNameInput = document.getElementById("itemsInput");
 		mentorNameInput = document.getElementById("itemsInput2-flexdatalist");
@@ -676,6 +670,7 @@
 		assignmentErrorLabel = document.getElementById("assignmentErrorLabel");
 		emailNotifyCheckBox = document.getElementById("checkBoxForEmail");
 		
+    /* Second part of initialization are the elements from two modals */
 		button = document.getElementById("assign_button_id");
 		const trigger = button.getAttribute('data-modal-trigger');
 		const modal = document.getElementById("modal_for_confirmation");
@@ -687,24 +682,27 @@
 		student_name_span_sucessful_assigned = document.getElementById("student_name_span_sucessful_assigned");
 		mentor_name_span_sucessful_assigned = document.getElementById("mentor_name_span_sucessful_assigned");
 
+    /* Setting default values for some elements */
 		assignmentErrorLabel.style.display = "none";
 		emailNotifyCheckBox.checked = true;
-		boolSubmitSuccess = true;
+		let boolSubmitSuccess = true;
 	
 
-	
+    /* Client side check - for if the mentor has too many students , if so error label is displayed*/
 		if(mentorNumberColor == "red"){
 			document.getElementById("mentorCountErrorLabel").textContent = "Current mentor has too many students, please assign another mentor for this student."
 			document.getElementById("mentorCountErrorLabel").style.display = "block";
 			boolSubmitSuccess = false;
 		}
 		
+    /* getting values from two date inputs, set it to "null" if input empty */
 		let endDate = "";
 		let assignDate = "";		
 		
 		if(endDateCalendar.value.length > 0){
 			assignedDate = new Date(assignDateCalendar.value);
 			endDate = new Date(endDateCalendar.value);
+      //Clinet side check - for if the end date is earlier than the assign date, if so error label is displayed
 			if(assignedDate > endDate){
 				dateErrorLabel.style.display = "block";
 				boolSubmitSuccess = false;
@@ -723,7 +721,7 @@
 		}	
 		
 		
-		
+		//Client side check - for if mentor name input is empty or not, if so error label is displayed
 		if(mentorNameInput.value.length == 0)
 		{
 			mentorErrorLabel.style.display = "block";
@@ -732,6 +730,7 @@
 		
 		
 		/*  -------------------- Assigning exsited student conditions checking -----------------------*/
+    // Client side check - to see if the student name input is empty of not, if so error label is displayed
 		if(switchStatus == false){
 			if(studentNameInput.value.length == 0)
 			{
@@ -739,13 +738,15 @@
 				boolSubmitSuccess = false;
 			}
 			
-			
+			// If any one part of checking gone worng, stop the submit function.
 			if(boolSubmitSuccess == false)
 				return;
 			
+      // Receiving values from labels and assigning them variables
 			let studentName = studentNameInput.value;
 			let mentorName = mentorNameInput.value;
 			
+      // Use ajax to send POST request to flask, and do some additional server side checkings
 			console.log("student " + studentName + " is assinge to mentor " + mentorName + " (conditions checking).");
 			req = $.ajax({
 				url: '/assign_mentor_existed_student_check',
@@ -753,12 +754,14 @@
 				data: {studentName:studentName,mentorName:mentorName,assignDate:assignDate,endDate:endDate}
 			});
 			
+      // When request done, see if all the server side checks are valid, if not, error label is displayed
 			req.done(function(data){
 				if(data.RESULT != "SUCCESS"){
 					assignmentErrorLabel.textContent = data.RESULT
 					assignmentErrorLabel.style.display = "block"
 					return;
 				}
+        // If success, display the confirmation modal, and setting all the texts.
 				else{
 					student_name_span.textContent = studentName;
 					mentor_name_span.textContent = mentorName;
@@ -768,6 +771,8 @@
 					contentWrapper.addEventListener('click', e => e.stopPropagation());
 
 					modal.classList.toggle('my_open');
+          
+          // Setting global variables so that they can be used as parameter when redirecting
 					mostRecentAssignedStudentName = studentName;
 					mostRecentAssignedStudentEmail = "";
 				}
@@ -780,6 +785,7 @@
 		/*  -------------------- Assigning new student conditions checking -----------------------*/
 		else{
 			
+      /* More client side checks, if not pass error label is displayed */
 			if(studentLastNameInput.value.length == 0)
 			{
 				studentLastNameErrorLabel.style.display = "block";
@@ -808,7 +814,9 @@
 			
 			if(boolSubmitSuccess == false)
 				return;
-			
+			/* Client side erorr checks done */
+      
+      /* Seding POST request to flask for additional server side check using ajax. */
 			let studentLastName = studentLastNameInput.value;
 			let studentFirstName = studentFirstNameInput.value;
 			let studentRebelMail = studentRebelMailInput.value;
@@ -837,6 +845,8 @@
 					contentWrapper.addEventListener('click', e => e.stopPropagation());
 
 					modal.classList.toggle('my_open');
+          
+          // Setting global variables for redirecting parameters
 					mostRecentAssignedStudentName = studentLastName + ", " + studentFirstName;
 					mostRecentAssignedStudentEmail = studentRebelMail;
 				}
@@ -849,7 +859,7 @@
 	}
 	
 	
-	
+	// The default display of all elements in the page
 	function defaultState(){
 		document.getElementById("itemsInput").value="";
 		document.getElementById("studentLastNameInput").value="";
@@ -869,7 +879,7 @@
 		
 	}
 
-
+  // Change color for the student count text, as well as the global variable mentorNumberColor.
 	function mentorStudentTextColor(color){
 		mentorNumberColor = color;
 		let button = document.getElementById('assign_button_id');
@@ -894,26 +904,28 @@
 		}
 	}
 
-
+  // Function that disable the drop down list for student input
 	function switchToNewStudent(){
 		$("#itemsInput").attr("list", "none");	
 	}
 
+  // When the student input is selected, the function is triggered.
 	$("#itemsInput").on('input', function () {
 		var val = this.value;
 		
+    // Reset the mentor input if student input is empty.
 		if(this.value.length == 0)
 		{
 			document.getElementById("itemsInput2-flexdatalist").value=''
 			return;
 		}
 		
+    // When the one of the student input avaliable is selected, the function is triggered.
+    // It send a POST request to flask via ajax, so flask can find the correspond professor for this student and return a json
 		if($('#items option').filter(function(){
 			return this.value.toUpperCase() === val.toUpperCase();        
 		}).length) {
-		
 
-		
 			req = $.ajax({
 				url: '/update',
 				type:'POST',
@@ -921,13 +933,14 @@
 			});
 			
 			req.done(function(data){
-				$("#debug").text("Selected Name: " + data.selected_name);
+        //Setting all the element displays
 				$('#studentCountPerMentor1').text("This mentor has ");
 				$('#studentCountPerMentor2').text(data.student_count);
 				$('#studentCountPerMentor3').text(" students.");
 				$("#itemsInput2-flexdatalist").val(data.professor_name);
 				mentorStudentTextColor(data.number_color);
 				
+        // Change the background color of the mentor input for 1 second
 				var bg = $("#itemsInput2-flexdatalist").css('background'); // store original background
 				$("#itemsInput2-flexdatalist").css('background', 'rgba(187, 236, 240, 0.2)'); //change second element background
 				setTimeout(function() {
@@ -935,8 +948,13 @@
 				}, 1000); // waiting one second			
 			});	
 			
+      // Un-focus the student input
 			$("#itemsInput").blur();
-			mentorInputOnFocusFunction()
+      
+      // Reset mentor input error labels 
+			mentorInputOnFocusFunction();
+      
+      // Making sure the user is not clicking too fast (click before the server return message), disbale the assign button for 0.3 second.
 			$("#assign_button_id").prop( "disabled", true );
 			setTimeout(function() {
 				$("#assign_button_id").prop( "disabled", false ); // change it back after ...
@@ -944,7 +962,7 @@
 		}
 	});
 	
-	
+  // When the mentor input is selected, the function is triggered.------------
 	$('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {
 		var val = set.text;       
 		if(val.length == 0)
@@ -986,10 +1004,14 @@
 		}, 300); // waiting one second	
 		
 	});
+  
+  // End mentor input selected function-----------------------------------------
 	
-	
+	// Function that handle the switch for New Stduent.
+  // First, it reset everything to default display
+  // Then according to the value(true or false) of the switch, it sets the display of the page
   $(".switch").find("input[type=checkbox]").on("change",function() {
-        var status = $(this).prop('checked');
+    var status = $(this).prop('checked');
 		switchStatus = status;
 		defaultState()
 		if(status){
@@ -1017,21 +1039,49 @@
 			document.getElementById("page-wrapper").style.marginTop = "7%";
 		}
 		
+  });
+
+
+    // Function that initialize the mentor input datalist
+    let jsonData = document.getElementById('getData').textContent;
+    $('.flexdatalist').flexdatalist({
+       minLength: 0,
+       valueProperty: '*',
+       selectionRequired: true,
+       visibleProperties: ["professorName","count","status"],
+       searchIn: 'name',
+       data: JSON.parse(jsonData)
+    });
+    document.getElementById("itemsInput2-flexdatalist").spellcheck = false
+    document.getElementById("itemsInput2-flexdatalist").onclick = mentorInputOnFocusFunction
+    
+      /* Function that initialize calendar for assign date */
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.assignDateCalendar');
+      var today = new Date();
+      var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      var options = {"format" : "mm/dd/yyyy","defaultDate":today,"setDefaultDate":true}
+      var instances = M.Datepicker.init(elems, options);
+    });
+    
+    $(document).ready(function(){
+      $('.datepicker').datepicker();
+    });  
+
+
+    /* Function that initialize calendar for end date */
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.endDateCalendar');
+      var options = {"format" : "mm/dd/yyyy"}
+      var instances = M.Datepicker.init(elems, options);
     });
 
 
-   let jsonData = document.getElementById('getData').textContent;
-	$('.flexdatalist').flexdatalist({
-		 minLength: 0,
-		 valueProperty: '*',
-		 selectionRequired: true,
-		 visibleProperties: ["professorName","count","status"],
-		 searchIn: 'name',
-		 data: JSON.parse(jsonData)
-	});
-	document.getElementById("itemsInput2-flexdatalist").spellcheck = false
-	document.getElementById("itemsInput2-flexdatalist").onclick = mentorInputOnFocusFunction
-	
+    $(document).ready(function(){
+      $('.datepicker').datepicker();
+    });
+  
+  // Funciton that initialize the floating button 
 	document.addEventListener('DOMContentLoaded', function() {
 		var elems = document.querySelectorAll('.fixed-action-btn');
 		var instances = M.FloatingActionButton.init(elems, {

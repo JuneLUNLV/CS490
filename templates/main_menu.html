@@ -1,0 +1,1045 @@
+<!doctype html>
+<html class="myhtml">
+    <head>
+        <title>UNLV Faculty Mentoring Information Look Up</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+		<style>
+			*, *:before, *:after {
+			  -moz-box-sizing: border-box;
+			  -webkit-box-sizing: border-box;
+			  box-siz
+			  ing: border-box;
+			}
+
+			button {
+			  cursor: pointer;
+			}
+
+			.myhtml {
+			  font-family: 'Ubuntu', sans-serif;
+			  font-size: 100%;
+			  background: #333;
+			  -webkit-font-smoothing: antialiased;
+			  height:100%;
+			}
+
+			#page-wrapper {
+			  width: 40%;
+			  background: #FFFFFF;
+			  padding: 1em;
+			  margin: 1em auto;
+			  border-top: 8px solid #69c773;
+			  box-shadow: 0 10px 10px rgba(0,0,0,0.8);
+			  margin-top:7%;
+			  border-radius:5px;
+			  padding-left:30px;
+			  
+			}
+
+			.myh1 {
+			  margin-top: 0;
+			  font-size:2vw;
+			}
+
+			.myLabel {
+			  display: block;
+			  margin-top: 2em;
+			  margin-bottom: 0.5em;
+			  color: #999999;
+			  font-size:15px;
+			}
+
+			.myInput {
+			  width: 100%;
+			  padding: 0.5em 0.5em;
+			  font-size: 1.2em;
+			  border-radius: 3px; 
+			  border: 1px solid #D9D9D9;
+			  font-size:25px !important;
+			}
+
+			#assign_button:active {
+			  opacity: 1;
+			  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
+			}
+			
+			.assign_button{
+			  color: white;
+			  padding: 16px 32px;
+			  text-align: center;
+			  text-decoration: none;
+			  display: inline-block;
+			  font-size: 30px;
+			  margin: 4px 2px;
+			  transition-duration: 0.4s;
+			  cursor: pointer;
+			  background-color: white; 
+			  color: black; 
+			  border: 2px solid #4CAF50;
+			  display: inline-block;
+			  border-radius: 7px;
+			  width: 95%;
+			}
+			
+			.assign_button:hover , #assign_button:focus{
+			  background-color: #4CAF50;
+			  color: white;			
+			}
+
+			#assign_button2:active {
+			  opacity: 1;
+			  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
+			}
+			
+			.assign_button2{
+			  background-color: #4CAF50; /* Green */
+			  color: white;
+			  padding: 16px 32px;
+			  text-align: center;
+			  text-decoration: none;
+			  display: inline-block;
+			  font-size: 30px;
+			  margin: 4px 2px;
+			  transition-duration: 0.4s;
+			  cursor: pointer;
+			  background-color: white; 
+			  color: black; 
+			  border: 2px solid #4CAF50;
+			  display: inline-block;
+			  border-radius: 7px;
+			  width: 95%;
+			}
+			
+			.assign_button2:hover , #assign_button:focus{
+			  background-color: #F1204A;
+			  color: white;	
+		      border: 2px solid #F1204A;
+			  cursor: not-allowed;
+			}
+			
+			.errorLabel{
+				margin-top:0px;
+				color:red;
+				display:none;
+			}
+			
+			#empty{
+				height:15px;
+			}
+			
+			.item-status{
+				position:absolute;
+				left:45%;
+			}
+			
+			.item-count{
+				position:absolute;
+				left:25%;
+			}		
+
+			.my_modal {
+			  position: fixed;
+			  top: 0;
+			  left: 0;
+			  display: flex;
+			  align-items: center;
+			  justify-content: center;
+			  height: 0vh;
+			  background-color: transparent;
+			  overflow: hidden;
+			  transition: background-color 0.25s ease;
+			  z-index: 9999;
+			}
+
+			.my_modal.my_open {
+			  position: fixed;
+			  width: 100%;
+			  height: 100vh;
+			  background-color: rgba(0, 0, 0, 0.7);
+			  transition: background-color 0.25s;
+			  box-shadow:none;
+			  max-height:100%;
+			}
+
+			.my_modal.my_open > .my_content-wrapper {
+			  transform: scale(1);
+			}
+
+			.my_modal .my_content-wrapper {
+			  position: relative;
+			  display: flex;
+			  flex-direction: column;
+			  justify-content: flex-start;
+			  width: 50%;
+			  margin: 0;
+			  padding: 3rem;
+			  padding-top: 1.7rem;
+			  background-color: white;
+			  border-radius: 0.3125rem;
+			  box-shadow: 0 0 2.5rem rgba(0, 0, 0, 0.5);
+			  transform: scale(0);
+			  transition: transform 0.25s;
+			  transition-delay: 0.15s;
+			}
+
+			.my_modal .my_content-wrapper .my_close {
+			  position: absolute;
+			  top: 0.5rem;
+			  right: 0.5rem;
+			  display: flex;
+			  align-items: center;
+			  justify-content: center;
+			  width: 2.5rem;
+			  height: 2.5rem;
+			  border: none;
+			  background-color: transparent;
+			  font-size: 1.5rem;
+			  transition: 0.25s linear;
+			}
+
+			.my_modal .my_content-wrapper .my_close:before, .my_modal .my_content-wrapper .my_close:after {
+			  position: absolute;
+			  content: '';
+			  width: 1.25rem;
+			  height: 0.125rem;
+			  background-color: black;
+			}
+
+			.my_modal .my_content-wrapper .my_close:before {
+			  transform: rotate(-45deg);
+			}
+
+			.my_modal .my_content-wrapper .my_close:after {
+			  transform: rotate(45deg);
+			}
+
+			.my_modal .my_content-wrapper .my_close:hover {
+			  transform: rotate(360deg);
+			}
+
+			.my_modal .my_content-wrapper .my_close:hover:before, .my_modal .my_content-wrapper .my_close:hover:after {
+			  background-color: tomato;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-header {
+			  position: relative;
+			  display: flex;
+			  flex-direction: row;
+			  align-items: center;
+			  justify-content: space-between;
+			  width: 100%;
+			  margin: 0;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-header h2 {
+			  font-size: 2.3rem;
+			  letter-spacing: 0.5px;
+			}
+
+			.my_modal .my_content-wrapper .my_content {
+			  position: relative;
+			  display: flex;
+			  font-size: 1vw;
+			}
+
+			.my_modal .my_content-wrapper .my_content p {
+			  line-height: 1.75;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer {
+				position: relative;
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				width: 100%;
+				margin: 0;
+				background-color: #1ae0a00f;
+				padding: 10px;
+				border-radius: 15px;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .my_action {
+			  position: relative;
+			  margin-left: 0.625rem;
+			  padding: 0.625rem 1.25rem;
+			  border: none;
+			  background-color: #fd6262;
+			  border-radius: 0.25rem;
+			  color: white;
+			  font-size: 1rem;
+			  font-weight: 300;
+			  overflow: hidden;
+			  z-index: 1;
+			  font-family: sans-serif;
+			  
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .my_action:before {
+			  position: absolute;
+			  content: '';
+			  top: 0;
+			  left: 0;
+			  width: 0%;
+			  height: 100%;
+			  background-color: rgba(255, 255, 255, 0.2);
+			  transition: width 0.25s;
+			  z-index: 0;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .my_action:first-child {
+			  background-color: #2ecc71;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .action:last-child {
+			  background-color: #e74c3c;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .my_action:hover:before {
+			  width: 100%;
+			}	
+
+			input[type=checkbox] + label {
+			  display: block;
+			  margin: 0.2em;
+			  cursor: pointer;
+			  padding: 0.2em;
+			}
+
+			input[type=checkbox] {
+			  display: none;
+			}
+
+			input[type=checkbox] + label:before {
+				content: "\2714";
+				border: 0.1em solid #000;
+				border-radius: 0.2em;
+				display: inline-block;
+				height: fit-content;
+				margin-right: 0.2vw;
+				width: fit-content;
+				vertical-align: bottom;
+				color: transparent; 
+				transition: .2s;
+				transform: scale(1);
+				padding-left: 3px;
+				padding-right: 3px;
+				padding-top: 0px;
+				padding-bottom: 0px;
+			}
+
+			input[type=checkbox] + label:active:before {
+			  transform: scale(0);
+			}
+
+			input[type=checkbox]:checked + label:before {
+			  background-color: MediumSeaGreen;
+			  border-color: MediumSeaGreen;
+			  color: #fff;
+			}
+
+			input[type=checkbox]:disabled + label:before {
+			  transform: scale(1);
+			  border-color: #aaa;
+			}
+
+			input[type=checkbox]:checked:disabled + label:before {
+			  transform: scale(1);
+			  background-color: #bfb;
+			  border-color: #bfb;
+			}		
+
+			#checkBoxForm{
+				text-align: right;
+				width: fit-content;
+				align-self: flex-end;
+				padding-bottom: 1%;
+			}
+			
+			#floatButtonDiv{
+				position: fixed;
+				right: 5vw;
+				bottom: 5vh;
+				padding-top: 15px;
+				margin-bottom: 0;
+				z-index: 997;
+			
+			}
+			
+			#floatButtonA{
+			    width: 3rem;
+				height: 3rem;
+				line-height: 32.4px;
+				transition: all .3s ease-in-out;
+			
+			}
+			
+			#floatButtonI{
+				line-height: 3.1rem;
+				font-size: 2.3rem;
+			}
+			
+			#floatButtonDiv:hover #floatButtonA {
+				transform:scale(1.5);
+			}			
+
+			.tooltiptext {
+				visibility: hidden;
+				background-color: black;
+				color: #fff;
+				text-align: center;
+				padding: 1px 0;
+				border-radius: 6px;
+				position: absolute;
+				z-index: 1;
+				font-size: 0.1rem;
+				width: 7vw;
+				left: -2.3vw;
+				top: -2.7vh;
+			}
+			
+			#floatButtonDiv:hover .tooltiptext {
+			  visibility: visible;
+			  transition-delay: 0.3s;
+			}			
+		</style>
+    </head>
+
+
+
+	<body>	
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel= "stylesheet" type= "text/css" href= "{{url_for('static',filename='jquery.flexdatalist.min.css') }}">
+	<script src="{{url_for('static', filename='jquery.flexdatalist.min.js')}}"></script>
+
+	
+	<div id="page-wrapper">
+	<div id="switchAndHeader" style="position:relative">
+		<div class="switch" style="position:absolute;margin-left: 80%;">
+			<label style="font-size:1rem;color:black;cursor: default;">New Student</label>
+		</div>
+
+		<div class="switch" style="position:absolute;margin-left:81.6%;margin-top:4%">
+			<label style="font-size:10px;">
+			<input type="checkbox">
+			<span class="lever"></span>
+		</label>
+		
+		</div>
+			<h1 class="myh1">Student and Mentor Form</h1>
+		</div>
+
+		<label for="default" class="myLabel" id="studentLabel">Choose a Student</label>
+		<input class="myInput" list="items" type="text" id="itemsInput" placeholder="Student Name" spellcheck="false" onfocus="studentInputOnFocusFunction()"/>
+		<datalist id="items">
+		  {% for student in student_table %}
+			<option class="dataListOptions" value="{{student}}">
+		  {% endfor %}
+		</datalist>
+		<label for="default" class="myLabel errorLabel" id="studentErrorLabel">Student name can not be empty.</label>
+		
+		
+		<label style="display:none;" for="default" class="myLabel" id="studentLastNameLabel">Student Last Name</label>
+		<input style="display:none;" class="myInput"  type="text" id="studentLastNameInput" placeholder="Last Name" spellcheck="false"  autocomplete="on" onfocus="studentLastNameInputOnFocusFunction()"/>
+		<label for="default" class="myLabel errorLabel" id="studentLastNameErrorLabel">Student last name can not be empty.</label>
+		
+		<label style="display:none;" for="default" class="myLabel" id="studentFirstNameLabel">Student First Name</label>
+		<input style="display:none;" class="myInput"  type="text" id="studentFirstNameInput" placeholder="First Name" spellcheck="false"  autocomplete="on" onfocus="studentFirstNameInputOnFocusFunction()" />
+		<label for="default" class="myLabel errorLabel" id="studentFirstNameErrorLabel">Student first name can not be empty.</label>
+		
+		
+		
+		<label style="display:none;" for="default" class="myLabel" id="studentRebelMailLabel">Student Rebel Mail</label>
+		<input style="display:none;" class="myInput"  type="text" id="studentRebelMailInput" placeholder="student@unlv.nevada.edu" spellcheck="false"  onfocus="studentRebelMailInputOnFocusFunction()" />		
+		<label for="default" class="myLabel errorLabel" id="studentRebelMailErrorLabel">Student rebel mail can not be empty.</label>
+		
+		<div id="calenderDiv" style="display:inline-flex;width:100%;">
+			<div>
+				<label for="default" class="myLabel" id="studentRebelMailLabel">Assign Date</label>
+				<input type="text" autocomplete="off"  class="datepicker assignDateCalendar" id="assignDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>	
+			</div>
+			<div style="width:20%"></div>
+			
+			<div>
+				<label for="default" class="myLabel" id="studentRebelMailLabel">End Date</label>
+				<input type="text" autocomplete="off" class="datepicker endDateCalendar" id="endDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>	
+			</div>		
+		</div>
+		<label for="default" class="myLabel errorLabel" id="dateErrorLabel">Assigned date can not be later than end date.</label>
+		<h1 style="display:none" id="getData">{{ professorJson}}</h1>
+		
+		
+		
+		<label for="default" class="myLabel">Choose a Mentor</label>
+		<input type='text'
+       class='myInput flexdatalist'
+       data-search-in='professorName'
+       data-selection-required='true'
+       data-value-property='*'
+       data-min-length='0'
+       id='itemsInput2'
+       name='country_allresults'
+	   placeholder="Mentor Name"    
+	   />
+		<label for="default" class="myLabel errorLabel" id="mentorErrorLabel">Mentor name can not be empty.</label>
+		<h4 style="margin-top:15px; font-weight:600; font-size:18px;" id="studentCountPerMentor"><span id="studentCountPerMentor1"></span><span id="studentCountPerMentor2"></span><span id="studentCountPerMentor3"></span></h4>
+		
+
+		
+		
+		<div id="empty"></div>
+		
+		<div style="text-align: center">
+			<input class="trigger assign_button" data-modal-trigger="trigger-2" style="outline: none;" onclick="assignButtonFunction()" id="assign_button_id" type = "submit" value = "Assign Mentor" />
+		</div>
+		
+		<label for="default" class="myLabel errorLabel" id="mentorCountErrorLabel">Current mentor has to many students, please assign another mentor for this student.</label>
+		<label for="default" class="myLabel errorLabel" id="assignmentErrorLabel"></label>
+	</div>
+		
+	</body>
+
+	<!--------------------modal for confirmation----------------------------------->
+
+	<div class="my_modal" data-modal="trigger-2" id="modal_for_confirmation">
+		<article class="my_content-wrapper">
+			<button class="my_close" onclick="closeConfirmationModal()"></button>
+			<header class="my_modal-header">
+				<h2>Student  Assignment  Confirmation<img style="height: 7vh;width: 7vh; margin-left: 1.9vh; margin-top: -1.1vh;position: absolute;"src="{{url_for('static', filename='images/icons/confirmation_icon.png')}}"></img></h2>
+			</header>
+			<div class="my_content">
+				<p>Student <span id="student_name_span" style="font-weight:bold;">StudentName</span> is going to be assigned to professor <span id="mentor_name_span" style="font-weight:bold;">MentorName</span>.<br>Please confirm this action.</p>				
+			</div>
+			<form id="checkBoxForm">
+			  <input type="checkbox" id="checkBoxForEmail"  name="checkBoxForEmail-4" checked="true">
+			  <label for="checkBoxForEmail" style="-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none; font-size: 1.5vh;">
+				Notify professor <span id="mentor_name_span2">Bein</span> via E-mail.
+			  </label>
+			</form>
+			<footer class="my_modal-footer">
+				<button class="trigger my_action" data-modal-trigger="trigger-2" onclick="confirmButtonFunction()" id="confirmButtonOnModal1">Confirm</button>
+				<button class="my_action" onclick="closeConfirmationModal()">Cancel</button>
+			</footer>
+		</article>
+	</div>
+	
+
+	<!--------------------modal for confirmation end----------------------------------->
+
+
+	<!--------------------modal for successful asignment ----------------------------------->
+	<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_assignment">
+		<article class="my_content-wrapper">
+			<header class="my_modal-header">
+				<h2>Assignment Successful<img style="height: 4vh; width: 6vh; margin-left: 3vh;"src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
+			</header>	
+			<div class="my_content">
+				<p>Student <span id="student_name_span_sucessful_assigned" style="font-weight:bold;">StudentName</span> is successfully assigned to mentor <span id="mentor_name_span_sucessful_assigned" style="font-weight:bold;">MentorName</span>.</p>				
+			</div>
+			<footer class="my_modal-footer">
+				<button class="my_action" onclick='location.reload()'>Assign More Student</button>
+				<button style="background-color:#57BEF5;" class="my_action" onclick="redirect1()">Check Table</button>
+			</footer>			
+	
+		</article>
+	</div>
+	<!--------------------modal for successful asignment end----------------------------------->
+	
+	
+	
+	<!-------------------- floating button for redirecting to table page ----------------------------------->
+	
+		<div class="fixed-action-btn" id="floatButtonDiv">
+			<a class="btn-floating btn-small blue" id="floatButtonA" onclick="redirect1()"><i id="floatButtonI" class="large material-icons">web</i></a>
+			<span class="tooltiptext">Move To Table Page</span>
+		</div>
+
+	<!-------------------- end floating button for redirecting to table page ----------------------------------->
+
+
+	<script>
+	let switchStatus = false;
+	let mentorNumberColor = "green";
+	let mostRecentAssignedStudentName = "";
+	let mostRecentAssignedStudentEmail = "";
+	
+	document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.assignDateCalendar');
+	var today = new Date();var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	var options = {"format" : "mm/dd/yyyy","defaultDate":today,"setDefaultDate":true}
+	var instances = M.Datepicker.init(elems, options);
+	});
+
+	if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+		location.reload()
+	}
+
+	$(document).ready(function(){
+	$('.datepicker').datepicker();
+	});
+	
+	document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.endDateCalendar');
+	var options = {"format" : "mm/dd/yyyy"}
+	var instances = M.Datepicker.init(elems, options);
+	});
+
+
+	$(document).ready(function(){
+	$('.datepicker').datepicker();
+	});
+	
+	
+	function studentInputOnFocusFunction(){
+		//document.getElementById("itemsInput").value=''; 
+		document.getElementById("studentErrorLabel").style.display = 'none';
+	}
+	
+	function mentorInputOnFocusFunction(){
+		//document.getElementById("itemsInput2-flexdatalist").value=''; 
+		document.getElementById("mentorErrorLabel").style.display = 'none';
+		document.getElementById("mentorCountErrorLabel").style.display = "none";
+	}	
+
+	function studentLastNameInputOnFocusFunction(){
+		document.getElementById("studentLastNameErrorLabel").style.display = 'none';
+	}
+	
+	function studentFirstNameInputOnFocusFunction(){
+		document.getElementById("studentFirstNameErrorLabel").style.display = 'none';
+	}
+
+
+	function studentRebelMailInputOnFocusFunction(){
+		document.getElementById("studentRebelMailErrorLabel").style.display = 'none';
+	}
+
+	function redirect1(){
+		window.location.href = "/mentoring_joined?username="+mostRecentAssignedStudentName+"&email="+mostRecentAssignedStudentEmail;
+	}
+	
+	function closeConfirmationModal(){
+		document.getElementById('modal_for_confirmation').classList.remove('my_open');
+		mostRecentAssignedStudentName='';
+		mostRecentAssignedStudentName='';
+	}
+	
+	function openSuccessfulAssignmentModalAndCloseConfirmationModal(){
+		document.getElementById('modal_for_confirmation').classList.remove('my_open');
+		let button = document.getElementById("confirmButtonOnModal1");
+		const trigger = button.getAttribute('data-modal-trigger');
+		const modal = document.getElementById("modal_for_successful_assignment");
+		const contentWrapper = modal.querySelector('.my_content-wrapper');
+		contentWrapper.addEventListener('click', e => e.stopPropagation());
+		modal.classList.toggle('my_open');
+	}
+	
+	
+	function confirmButtonFunction(){
+	
+		if(switchStatus == false){
+				req = $.ajax({
+				url: '/assign_mentor_existed_student',
+				type:'POST'
+			});
+			openSuccessfulAssignmentModalAndCloseConfirmationModal()
+		}
+		
+		else{
+				req = $.ajax({
+				url: '/assign_mentor_new_stduent',
+				type:'POST'
+			});
+			openSuccessfulAssignmentModalAndCloseConfirmationModal()	
+		
+		}
+	}
+	
+	
+	function assignButtonFunction(){	
+		studentNameInput = document.getElementById("itemsInput");
+		mentorNameInput = document.getElementById("itemsInput2-flexdatalist");
+		studentErrorLabel = document.getElementById("studentErrorLabel");
+		mentorErrorLabel = document.getElementById("mentorErrorLabel");
+		studentLastNameErrorLabel = document.getElementById("studentLastNameErrorLabel");
+		studentFirstNameErrorLabel = document.getElementById("studentFirstNameErrorLabel");
+		studentRebelMailErrorLabel = document.getElementById("studentRebelMailErrorLabel");
+		studentLastNameInput = document.getElementById("studentLastNameInput");
+		studentFirstNameInput = document.getElementById("studentFirstNameInput");
+		studentRebelMailInput = document.getElementById("studentRebelMailInput");
+		assignDateCalendar = document.getElementById("assignDateCalendarId");
+		endDateCalendar = document.getElementById("endDateCalendarId");
+		dateErrorLabel = document.getElementById("dateErrorLabel");
+		assignmentErrorLabel = document.getElementById("assignmentErrorLabel");
+		emailNotifyCheckBox = document.getElementById("checkBoxForEmail");
+		
+		button = document.getElementById("assign_button_id");
+		const trigger = button.getAttribute('data-modal-trigger');
+		const modal = document.getElementById("modal_for_confirmation");
+		const contentWrapper = modal.querySelector('.my_content-wrapper');
+		const close = modal.querySelector('.my_close');
+		student_name_span = document.getElementById("student_name_span");
+		mentor_name_span = document.getElementById("mentor_name_span");
+		mentor_name_span2 = document.getElementById("mentor_name_span2");
+		student_name_span_sucessful_assigned = document.getElementById("student_name_span_sucessful_assigned");
+		mentor_name_span_sucessful_assigned = document.getElementById("mentor_name_span_sucessful_assigned");
+
+		assignmentErrorLabel.style.display = "none";
+		emailNotifyCheckBox.checked = true;
+		boolSubmitSuccess = true;
+	
+
+	
+		if(mentorNumberColor == "red"){
+			document.getElementById("mentorCountErrorLabel").textContent = "Current mentor has too many students, please assign another mentor for this student."
+			document.getElementById("mentorCountErrorLabel").style.display = "block";
+			boolSubmitSuccess = false;
+		}
+		
+		let endDate = "";
+		let assignDate = "";		
+		
+		if(endDateCalendar.value.length > 0){
+			assignedDate = new Date(assignDateCalendar.value);
+			endDate = new Date(endDateCalendar.value);
+			if(assignedDate > endDate){
+				dateErrorLabel.style.display = "block";
+				boolSubmitSuccess = false;
+			}
+			endDate = endDateCalendar.value;				
+		}
+		else{
+			endDate = "null";
+		}
+		
+		if(assignDateCalendar.value.length > 0){
+			assignDate = assignDateCalendar.value
+		}
+		else{
+			assignDate = "null";
+		}	
+		
+		
+		
+		if(mentorNameInput.value.length == 0)
+		{
+			mentorErrorLabel.style.display = "block";
+			boolSubmitSuccess = false;
+		}	
+		
+		
+		/*  -------------------- Assigning exsited student conditions checking -----------------------*/
+		if(switchStatus == false){
+			if(studentNameInput.value.length == 0)
+			{
+				studentErrorLabel.style.display = "block";
+				boolSubmitSuccess = false;
+			}
+			
+			
+			if(boolSubmitSuccess == false)
+				return;
+			
+			let studentName = studentNameInput.value;
+			let mentorName = mentorNameInput.value;
+			
+			console.log("student " + studentName + " is assinge to mentor " + mentorName + " (conditions checking).");
+			req = $.ajax({
+				url: '/assign_mentor_existed_student_check',
+				type:'POST',
+				data: {studentName:studentName,mentorName:mentorName,assignDate:assignDate,endDate:endDate}
+			});
+			
+			req.done(function(data){
+				if(data.RESULT != "SUCCESS"){
+					assignmentErrorLabel.textContent = data.RESULT
+					assignmentErrorLabel.style.display = "block"
+					return;
+				}
+				else{
+					student_name_span.textContent = studentName;
+					mentor_name_span.textContent = mentorName;
+					mentor_name_span2.textContent = mentorName;
+					student_name_span_sucessful_assigned.textContent = studentName;
+					mentor_name_span_sucessful_assigned.textContent = mentorName;
+					contentWrapper.addEventListener('click', e => e.stopPropagation());
+
+					modal.classList.toggle('my_open');
+					mostRecentAssignedStudentName = studentName;
+					mostRecentAssignedStudentEmail = "";
+				}
+			});	
+			
+		}
+		/*  -------------------- End assigning exsited student conditions checking -----------------------*/
+		
+		
+		/*  -------------------- Assigning new student conditions checking -----------------------*/
+		else{
+			
+			if(studentLastNameInput.value.length == 0)
+			{
+				studentLastNameErrorLabel.style.display = "block";
+				boolSubmitSuccess = false;
+			}
+			
+			if(studentFirstNameInput.value.length == 0)
+			{
+				studentFirstNameErrorLabel.style.display = "block";
+				boolSubmitSuccess = false;
+			}
+			
+			if(studentRebelMailInput.value.length == 0)
+			{
+				studentRebelMailErrorLabel.textContent = "Student rebel mail can not be empty.";
+				studentRebelMailErrorLabel.style.display = "block";
+				return;
+			}		
+
+			if(!studentRebelMailInput.value.includes("@unlv.nevada.edu"))
+			{
+				studentRebelMailErrorLabel.textContent = "Student rebel mail does not contains @unlv.nevada.edu.";
+				studentRebelMailErrorLabel.style.display = "block";	
+				boolSubmitSuccess = false;
+			}
+			
+			if(boolSubmitSuccess == false)
+				return;
+			
+			let studentLastName = studentLastNameInput.value;
+			let studentFirstName = studentFirstNameInput.value;
+			let studentRebelMail = studentRebelMailInput.value;
+			let mentorName = mentorNameInput.value;
+
+			console.log(endDate,assignDate,studentLastName,studentFirstName,studentRebelMail,mentorName);
+			
+			req = $.ajax({
+				url: '/assign_mentor_new_stduent_check',
+				type:'POST',
+				data: {studentFirstName:studentFirstName,studentLastName:studentLastName,mentorName:mentorName,assignDate:assignDate,endDate:endDate,studentRebelMail:studentRebelMail}
+			});	
+
+			req.done(function(data){
+				if(data.RESULT != "SUCCESS"){
+					assignmentErrorLabel.textContent = data.RESULT
+					assignmentErrorLabel.style.display = "block"
+					return;
+				}
+				else{
+					student_name_span.textContent = studentLastName + ", " + studentFirstName;
+					mentor_name_span.textContent = mentorName;
+					mentor_name_span2.textContent = mentorName;
+					student_name_span_sucessful_assigned.textContent = studentLastName + ", " + studentFirstName
+					mentor_name_span_sucessful_assigned.textContent = mentorName;
+					contentWrapper.addEventListener('click', e => e.stopPropagation());
+
+					modal.classList.toggle('my_open');
+					mostRecentAssignedStudentName = studentLastName + ", " + studentFirstName;
+					mostRecentAssignedStudentEmail = studentRebelMail;
+				}
+			});				
+		}
+		
+		/*  -------------------- End assigning new student conditions checking -----------------------*/
+		
+	
+	}
+	
+	
+	
+	function defaultState(){
+		document.getElementById("itemsInput").value="";
+		document.getElementById("studentLastNameInput").value="";
+		document.getElementById("studentFirstNameInput").value="";
+		document.getElementById("studentRebelMailInput").value="";
+		document.getElementById("itemsInput2-flexdatalist").value="";
+		document.getElementById("endDateCalendarId").value = "";
+		document.getElementById("studentCountPerMentor1").textContent ="";
+		document.getElementById("studentCountPerMentor2").textContent ="";
+		document.getElementById("studentCountPerMentor3").textContent ="";
+		document.getElementById('assign_button_id').classList.remove('assign_button','assign_button2');
+		document.getElementById('assign_button_id').classList.add('assign_button');
+		errorLabels = document.getElementsByClassName("errorLabel");
+		for (let label of errorLabels) {
+			label.style.display="none";
+		}
+		
+	}
+
+
+	function mentorStudentTextColor(color){
+		mentorNumberColor = color;
+		let button = document.getElementById('assign_button_id');
+		if(color == "green"){
+			$('#studentCountPerMentor2').css('color',"#31E151")
+			button.classList.remove('assign_button','assign_button2');
+			button.classList.add('assign_button');
+			document.getElementById("mentorCountErrorLabel").style.display = "none"
+			}
+		else if(color== "yellow")
+		{
+			$('#studentCountPerMentor2').css('color',"#ffd996")
+			button.classList.remove('assign_button','assign_button2');
+			button.classList.add('assign_button');	
+			document.getElementById("mentorCountErrorLabel").style.display = "none"			
+		}
+		else{
+			$('#studentCountPerMentor2').css('color',"#DB0B0B")
+			//$('#assign_button').prop('disabled', true);
+			button.classList.remove('assign_button','assign_button2');
+			button.classList.add('assign_button2');		
+		}
+	}
+
+
+	function switchToNewStudent(){
+		$("#itemsInput").attr("list", "none");	
+	}
+
+	$("#itemsInput").on('input', function () {
+		var val = this.value;
+		
+		if(this.value.length == 0)
+		{
+			document.getElementById("itemsInput2-flexdatalist").value=''
+			return;
+		}
+		
+		if($('#items option').filter(function(){
+			return this.value.toUpperCase() === val.toUpperCase();        
+		}).length) {
+		
+
+		
+			req = $.ajax({
+				url: '/update',
+				type:'POST',
+				data: {name:this.value}
+			});
+			
+			req.done(function(data){
+				$("#debug").text("Selected Name: " + data.selected_name);
+				$('#studentCountPerMentor1').text("This mentor has ");
+				$('#studentCountPerMentor2').text(data.student_count);
+				$('#studentCountPerMentor3').text(" students.");
+				$("#itemsInput2-flexdatalist").val(data.professor_name);
+				mentorStudentTextColor(data.number_color);
+				
+				var bg = $("#itemsInput2-flexdatalist").css('background'); // store original background
+				$("#itemsInput2-flexdatalist").css('background', 'rgba(187, 236, 240, 0.2)'); //change second element background
+				setTimeout(function() {
+					$("#itemsInput2-flexdatalist").css('background', bg); // change it back after ...
+				}, 1000); // waiting one second			
+			});	
+			
+			$("#itemsInput").blur();
+			mentorInputOnFocusFunction()
+			$("#assign_button_id").prop( "disabled", true );
+			setTimeout(function() {
+				$("#assign_button_id").prop( "disabled", false ); // change it back after ...
+			}, 300); // waiting one second	
+		}
+	});
+	
+	
+	$('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {
+		var val = set.text;       
+		if(val.length == 0)
+		{
+			document.getElementById("studentCountPerMentor1").textContent ="";
+			document.getElementById("studentCountPerMentor2").textContent ="";
+			document.getElementById("studentCountPerMentor3").textContent ="";
+			mentorStudentTextColor("green");
+			return;
+		}
+		
+	
+		req = $.ajax({
+			url: '/update_from_professor_datalist',
+			type:'POST',
+			data: {name:val}
+		});
+		
+		
+		req.done(function(data){
+			$('#studentCountPerMentor1').text("This mentor has ");
+			$('#studentCountPerMentor2').text(data.student_count);
+			$('#studentCountPerMentor3').text(" students.");
+			mentorStudentTextColor(data.number_color);
+			
+			$("#itemsInput2-flexdatalist").css('background', 'rgba(187, 236, 240, 0.2)'); //change second element background
+			setTimeout(function() {
+				$("#itemsInput2-flexdatalist").css('background', '#FfFFFF'); // change it back after ...
+			}, 700); // waiting one second			
+				
+		});	
+		
+		
+		
+		$("#itemsInput2-flexdatalist").blur();
+		$("#assign_button_id").prop( "disabled", true );
+		setTimeout(function() {
+			$("#assign_button_id").prop( "disabled", false ); // change it back after ...
+		}, 300); // waiting one second	
+		
+	});
+	
+	
+  $(".switch").find("input[type=checkbox]").on("change",function() {
+        var status = $(this).prop('checked');
+		switchStatus = status;
+		defaultState()
+		if(status){
+			document.getElementById("itemsInput").style.display = "none";
+			document.getElementById("studentLabel").style.display = "none";
+			document.getElementById("studentLastNameLabel").style.display = "block";
+			document.getElementById("studentLastNameInput").style.display = "block";
+			document.getElementById("studentFirstNameLabel").style.display = "block";
+			document.getElementById("studentFirstNameInput").style.display = "block";
+			document.getElementById("studentRebelMailLabel").style.display = "block";
+			document.getElementById("studentRebelMailInput").style.display = "block";
+			document.getElementById("calenderDiv").style.display = "inline-flex";
+			document.getElementById("page-wrapper").style.marginTop = "5%";
+		}
+		
+		else{
+			document.getElementById("itemsInput").style.display = "block";
+			document.getElementById("studentLabel").style.display = "block";
+			document.getElementById("studentLastNameLabel").style.display = "none";
+			document.getElementById("studentLastNameInput").style.display = "none";
+			document.getElementById("studentFirstNameLabel").style.display = "none";
+			document.getElementById("studentFirstNameInput").style.display = "none";
+			document.getElementById("studentRebelMailLabel").style.display = "none";
+			document.getElementById("studentRebelMailInput").style.display = "none";
+			document.getElementById("page-wrapper").style.marginTop = "7%";
+		}
+		
+    });
+
+
+   let jsonData = document.getElementById('getData').textContent;
+	$('.flexdatalist').flexdatalist({
+		 minLength: 0,
+		 valueProperty: '*',
+		 selectionRequired: true,
+		 visibleProperties: ["professorName","count","status"],
+		 searchIn: 'name',
+		 data: JSON.parse(jsonData)
+	});
+	document.getElementById("itemsInput2-flexdatalist").spellcheck = false
+	document.getElementById("itemsInput2-flexdatalist").onclick = mentorInputOnFocusFunction
+	
+	document.addEventListener('DOMContentLoaded', function() {
+		var elems = document.querySelectorAll('.fixed-action-btn');
+		var instances = M.FloatingActionButton.init(elems, {
+		});
+	});
+
+	
+	</script>
+	
+</html>
+

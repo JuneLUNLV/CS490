@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+    <head>
+        <title>UNLV Faculty Mentoring Information Look Up</title>
+		
+		<style>
+			table {
+			  font-family: arial, sans-serif;
+			  border-collapse: collapse;
+			  width: 100%;
+			  
+			}
+
+			td, th {
+				border: 2px solid #8bc3c7;
+				text-align: center;
+				border-radius: 2px;
+				color: #000000;
+				padding: 0px;
+				font-size: 1vw;
+			}
+
+			th {
+				font-size: 2vw;
+				color: #3bb2e2;
+				font-weight: 1000;
+			}
+
+			tr:hover {
+				background-color: #AFFFE1;
+			}
+
+		</style>
+    </head>
+
+
+
+	<body>
+  <h2>total number of student: {{numberForEachTable[0]}}</h2> 
+  <h2>total number of mentor: {{numberForEachTable[1]}}</h2> 
+  <h2>total numebr of rows in mentoring table: {{numberForEachTable[2]}}</h2>
+  <h2>average number of student per mentor: {{numberForEachTable[3]}}</h2>
+  <h2>Percentage: {{(numberForEachTable[5] * 100)|round|int}}%</h2>
+  <h2>maximum number of student allowed to assign per mentor: {{numberForEachTable[4]}}</h2>
+  <h2>
+  {%   for key, value in professorDictionary.items() %}
+    {{key}}:  {{value}} 
+  {%endfor%}
+  </h2>
+	<h1 style="text-align: center;"> joined table</h1>
+	<table>
+	{% for table in mentoring_tables %}
+	{{ table|safe }}
+	{% endfor %}
+	</table>
+	
+	<h1 style="text-align: center;"> mentoring table</h1>
+	<table>
+	{% for table in mentor_table %}
+	{{ table|safe }}
+	{% endfor %}
+	</table>	
+	
+	
+	<h1 style="text-align: center;"> student table</h1>
+	<table>
+	{% for table in student_table %}
+	{{ table|safe }}
+	{% endfor %}
+	</table>	
+	
+	<h1 style="text-align: center;"> professor table</h1>
+	<table>
+	{% for table in professor_table %}
+	{{ table|safe }}
+	{% endfor %}
+	</table>		
+	
+	</body>
+</html>
+

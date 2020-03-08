@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+    <head>
+        <title>UNLV Faculty Mentoring Information Look Up</title>
+		
+		<style>
+			table {
+			  font-family: arial, sans-serif;
+			  border-collapse: collapse;
+			  width: 100%;
+			  
+			}
+
+			td, th {
+				border: 2px solid #8bc3c7;
+				text-align: center;
+				border-radius: 2px;
+				color: #000000;
+				padding: 0px;
+				font-size: 1vw;
+			}
+
+			th {
+				font-size: 2vw;
+				color: #3bb2e2;
+				font-weight: 1000;
+			}
+
+			tr:hover {
+				background-color: #AFFFE1;
+			}
+
+		</style>
+    </head>
+
+
+
+	<body>	
+	
+		<form style="text-align: center" action = "http://localhost:5000/showall" method = "POST">
+			<input id="submit_button" type = "submit" value = "Show All / Debug" />
+		</form>
+		
+		<form style="text-align: center" action = "http://localhost:5000/main_menu" method = "POST">
+			<input id="submit_button2" type = "submit" value = "Main Menu" />
+		</form>
+	
+	</body>
+</html>
+

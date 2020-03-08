@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+
+    <head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>UNLV Faculty Mentoring Information Look Up</title>
+		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/util.css')}}">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/main.css')}}">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+		
+		<style>
+			#floatButtonDiv{
+				position: fixed;
+				right: 3vw;
+				bottom: 5vh;
+				padding-top: 15px;
+				margin-bottom: 0;
+				z-index: 997;
+			
+			}
+			
+			#floatButtonA{
+			    width: 3rem;
+				height: 3rem;
+				line-height: 32.4px;
+				transition: all .3s ease-in-out;
+			
+			}
+			
+			#floatButtonI{
+				line-height: 3.1rem;
+				font-size: 2.3rem;
+			}
+			
+			#floatButtonDiv:hover #floatButtonA {
+				transform:scale(1.5);
+			}			
+
+			.tooltiptext {
+				visibility: hidden;
+				background-color: black;
+				color: #fff;
+				text-align: center;
+				padding: 1px 0;
+				border-radius: 6px;
+				position: absolute;
+				z-index: 1;
+				font-size: 0.1rem;
+				width: 7vw;
+				left: -2.3vw;
+				top: -2.7vh;
+			}
+			
+			#floatButtonDiv:hover .tooltiptext {
+			  visibility: visible;
+			  transition-delay: 0.3s;
+			}			
+		</style>
+		
+    </head>
+
+
+
+	<body>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<h1 style="text-align:center;margin-top:30px;">Mentoring Joined Table</h1>
+		<h1 id="getData" style="display:none">{{studentName}}</h1>
+		<h1 id="getData2" style="display:none">{{email}}</h1>		
+		<div class="limiter" >
+				<div class="wrap-table100">
+					<div class="table100">
+					{% for table in mentoring_joined_tables %}
+						{{ table|safe }}
+					{% endfor %}
+					</div>
+				</div>
+		</div>
+		
+		<!-------------------- floating button for redirecting to table page ----------------------------------->
+	
+		<div class="fixed-action-btn" id="floatButtonDiv">
+			<a class="btn-floating btn-small green" id="floatButtonA" onclick='window.location.href = "/"'><i id="floatButtonI" class="large material-icons">home</i></a>
+			<span class="tooltiptext">Back To Home Page</span>
+		</div>
+
+		<!-------------------- end floating button for redirecting to table page ----------------------------------->
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				var elems = document.querySelectorAll('.fixed-action-btn');
+				var instances = M.FloatingActionButton.init(elems, {
+				});
+			});
+
+		</script>
+		
+	</body>
+	
+	<script>
+		studentName = document.getElementById("getData").textContent;
+		studentMail = document.getElementById("getData2").textContent; 
+		
+		let tdArray = $('td');
+		let elemParent = "";
+		if(studentName.length > 0){
+			for(let i = 0; i < tdArray.length; i++)
+			{
+				if(tdArray[i].textContent.includes(studentName)){			
+					if(studentMail.length > 0){
+						if(tdArray[i].parentElement.childNodes[5].textContent.includes(studentMail)){
+							elemParent = tdArray[i].parentElement;
+							let style = elemParent.style;
+							elemParent.scrollIntoView({ block: 'center' });	
+							elemParent.style.backgroundColor = "#F55777"
+							elemParent.style.color = "#ffffff"
+							
+							
+							setTimeout(function() {
+								elemParent.style = style // change it back after ...
+							}, 8000); // waiting one second
+							break;
+						}
+					}
+					
+					
+					else{
+						let elemParent = tdArray[i].parentElement;
+						let style = elemParent.style;
+						elemParent.scrollIntoView({ block: 'center' });	
+						elemParent.style.backgroundColor = "#F55777"
+						elemParent.style.color = "#ffffff"
+							
+						setTimeout(function() {
+							elemParent.style = style // change it back after ...
+						}, 8000); // waiting one second
+						break;						
+					}
+				}
+			}
+		}
+	</script>
+
+	
+</html>
+

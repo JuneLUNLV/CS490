@@ -8,6 +8,7 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
 import json
 from dateutil.parser import parse
+import os
 
 #Caldwell,Ivan Alexander id 26 repeated
 #Robenalt, Evan id 605 repeated
@@ -523,7 +524,10 @@ createOfflineDataTable(cursor)
 
 connection.execute("PRAGMA foreign_keys = ON;")
 
-df = readCsvIntoDataframe("faculty_mentor_master_list.csv")
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+csv_file = os.path.join(THIS_FOLDER, 'faculty_mentor_master_list.csv')
+
+df = readCsvIntoDataframe(csv_file)
 df = removeAndFixDataFrame(df)
 
 insertToStudentTableFromCSVFile(df,cursor)
@@ -533,13 +537,19 @@ insertDataToOffline_dataTable(connection,"DOUBLE_margin_for_max_student_count","
 
 connection.commit()
 connection.close()
+
+
+app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True			# If template change, there is no need to reload the APP
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0			# No caching, only for debugging purposes
+connection = sqlite3.connect("falcuty_mentor.db")
+connection.execute("PRAGMA foreign_keys = ON;")
+cursor = connection.cursor()
+globalMentoring = Mentoring()
 #------------------------------------------------------
 
 
 #------------ flask side -----------------------
-app = Flask(__name__)
-app.config['TEMPLATES_AUTO_RELOAD'] = True			# If template change, there is no need to reload the APP
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0			# No caching, only for debugging purposes
 
 @app.route('/')
 def index():
@@ -736,13 +746,3 @@ def apply_settings():
     margin = float(request.form['margin'])
     updateDataFromOffline_dataTable(connection,'DOUBLE_margin_for_max_student_count',margin)
     return jsonify({'RESULT':'SUCCESS'}) 
-    
-    
-# Running the app here
-if __name__ == '__main__':
-	connection = sqlite3.connect("falcuty_mentor.db")
-	connection.execute("PRAGMA foreign_keys = ON;")
-	cursor = connection.cursor()
-	globalMentoring = Mentoring()
-	run_simple('localhost', 5000, app,
-				use_debugger=True, use_evalex=True)

@@ -443,6 +443,32 @@
 				font-weight: 600;
 				text-align: center;
 			}
+      
+      #settingIconButton{
+        font-size: 200%;
+        position: absolute;
+        cursor: pointer;
+        right: 0px;
+        top: 20%;
+      }
+      
+      #settingIconButton:before{
+         transform: rotate(-45deg);
+      }      
+      
+      
+      #settingIconButton:after{
+        transform: rotate(45deg);
+      }        
+      
+      
+      #settingIconButton:hover{
+        transform: rotate(360deg);
+        transition-duration: 2s;
+      }
+
+      
+      
 			
 		</style>
     </head>
@@ -469,7 +495,7 @@
 		<div class="switch" style="position:absolute;margin-left: 80%;">
 			<label style="font-size:1rem;color:black;cursor: default;">New Student</label>
 		</div>
-		<i id="settingIconButton" style="font-size: 200%;position: absolute;cursor: pointer;right: 0px;top: 20%;" data-modal-trigger="trigger-2" class="large material-icons trigger" onclick="settingButtonFunction()">settings</i>
+		<i id="settingIconButton" data-modal-trigger="trigger-2" class="large material-icons trigger" onclick="settingButtonFunction()">settings</i>
 
 		<div class="switch" style="position:absolute;margin-left:81.6%;margin-top:4%">
 			<label style="font-size:10px;">
@@ -557,7 +583,9 @@
 		<article class="my_content-wrapper">
 			<button class="my_close" onclick="closeConfirmationModalAndResetGloablVariables()"></button>
 			<header class="my_modal-header">
-				<h2>Student  Assignment  Confirmation<img style="height: 7vh;width: 7vh; margin-left: 1.9vh; margin-top: -1.1vh;position: absolute;"src="{{url_for('static', filename='images/icons/confirmation_icon.png')}}"></img></h2>
+				<h2>Student  Assignment  Confirmation
+        <!---<img style="height: 7vh;width: 7vh; margin-left: 1.9vh; margin-top: -1.1vh;position: absolute;"src="{{url_for('static', filename='images/icons/confirmation_icon.png')}}"></img>--->
+        </h2>
 			</header>
 			<div class="my_content">
 				<p>Student <span id="student_name_span" style="font-weight:bold;">StudentName</span> is going to be assigned to professor <span id="mentor_name_span" style="font-weight:bold;">MentorName</span>.<br>Please confirm this action.</p>				

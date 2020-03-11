@@ -578,7 +578,6 @@
 			</div>		
 		</div>
 		<label for="default" class="myLabel errorLabel" id="dateErrorLabel">Assigned date can not be later than end date.</label>
-		<h1 style="display:none" id="getData">{{ professorJson}}</h1>
 		
 		
 		
@@ -691,7 +690,7 @@
 	
 	<script>
 		//Function for range slider
-		let margin = parseFloat(document.getElementById('getMargin').textContent);
+    let margin = parseFloat({{numberForEachTable[5]}});
 		let marginInPercentage = margin * 100;
 		document.getElementById('rangeSliderInputId').value = marginInPercentage;
 		document.getElementById('rangeValueLabel').style.marginLeft = marginInPercentage-2.8+ '%';
@@ -1234,7 +1233,7 @@
 
 
     // Function that initialize the mentor input datalist
-    let jsonData = document.getElementById('getData').textContent;
+    let jsonData = decodeHtml('{{professorJson}}');
     $('.flexdatalist').flexdatalist({
        minLength: 0,
        valueProperty: '*',
@@ -1283,6 +1282,12 @@
     $(".dropdown-trigger").dropdown({
       belowOrigin: true
     });
+    
+    function decodeHtml(str) {
+      return str.replace(/&#(\d+);/g, function(match, dec) {
+        return String.fromCharCode(dec);
+      });
+  }
 
 	
 	

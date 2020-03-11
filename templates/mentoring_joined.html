@@ -95,8 +95,6 @@
     </div>
   </nav>   
 		<h1 style="text-align:center;margin-top:30px;">Mentoring Joined Table</h1>
-		<h1 id="getData" style="display:none">{{studentName}}</h1>
-		<h1 id="getData2" style="display:none">{{email}}</h1>		
 		<div class="limiter" >
 				<div class="wrap-table100">
 					<div class="table100">
@@ -128,8 +126,8 @@
 	</body>
 	
 	<script>
-		studentName = document.getElementById("getData").textContent;
-		studentMail = document.getElementById("getData2").textContent; 
+		studentName = '{{studentName}}';
+		studentMail = '{{email}}';
 		
 		let tdArray = $('td');
 		let elemParent = "";

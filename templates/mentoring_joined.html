@@ -7,9 +7,21 @@
 		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/util.css')}}">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/main.css')}}">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+    
 		
 		<style>
-			#floatButtonDiv{
+      table thead tr{
+        background: #55b164;
+      }
+      
+      .dropdown-content {
+        top: 100% !important;
+      }      
+      
+      #floatButtonDiv{
 				position: fixed;
 				right: 3vw;
 				bottom: 5vh;
@@ -54,7 +66,9 @@
 			#floatButtonDiv:hover .tooltiptext {
 			  visibility: visible;
 			  transition-delay: 0.3s;
-			}			
+			}			     
+      
+      
 		</style>
 		
     </head>
@@ -62,9 +76,24 @@
 
 
 	<body>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <ul id="dropdown1" class="dropdown-content">
+    <li class="divider"></li>
+    <li><a href="#!">Log Out</a></li>
+  </ul>
+
+  <nav>
+    <div class="nav-wrapper" style="background-color: #2b97d6;">
+      <a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative" class="brand-logo left">HOME</a>
+      <ul id="nav-mobile" class="left hide-on-med-and-down">
+        <li><a onclick='window.location.href = "/main_menu"'>Individual Assign</a></li>
+        <li><a>Mass Assign</a></li>
+        <li><a style="background-color: rgba(0,0,0,0.19);" onclick="redirect1()">Table</a></li>
+        <li><a>Back Up Database</a></li>
+         <li><a style = "position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">John<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
+    </div>
+  </nav>   
 		<h1 style="text-align:center;margin-top:30px;">Mentoring Joined Table</h1>
 		<h1 id="getData" style="display:none">{{studentName}}</h1>
 		<h1 id="getData2" style="display:none">{{email}}</h1>		
@@ -78,14 +107,14 @@
 				</div>
 		</div>
 		
-		<!-------------------- floating button for redirecting to table page ----------------------------------->
+ 		<!-------------------- floating button for redirecting to table page ----------------------------------->
 	
 		<div class="fixed-action-btn" id="floatButtonDiv">
-			<a class="btn-floating btn-small green" id="floatButtonA" onclick='window.location.href = "/"'><i id="floatButtonI" class="large material-icons">home</i></a>
-			<span class="tooltiptext">Back To Home Page</span>
+			<a class="btn-floating btn-small blue" id="floatButtonA" onclick='backToTop()'><i id="floatButtonI" class="large material-icons">vertical_align_top</i></a>
 		</div>
 
-		<!-------------------- end floating button for redirecting to table page ----------------------------------->
+		<!-------------------- end floating button for redirecting to table page ----------------------------------->   
+    
 
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
@@ -140,6 +169,15 @@
 				}
 			}
 		}
+    
+    function backToTop(){
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+    
+  //nav bar drop down
+    $(".dropdown-trigger").dropdown();    
+    
 	</script>
 
 	

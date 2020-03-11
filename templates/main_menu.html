@@ -25,7 +25,7 @@
 			}
 
 			#page-wrapper {
-			  width: 60%;
+			  width: 50%;
 			  background: #FFFFFF;
 			  padding: 1em;
 			  margin: 1em auto;
@@ -34,6 +34,7 @@
 			  margin-top:7%;
 			  border-radius:5px;
 			  padding-left:30px;
+        position:relative;
 			  
 			}
 
@@ -174,7 +175,8 @@
 			  width: 50%;
 			  margin: 0;
 			  padding: 3rem;
-			  padding-top: 1.7rem;
+			  padding-bottom: 70px;
+        padding-top: 30px;
 			  background-color: white;
 			  border-radius: 0.3125rem;
 			  box-shadow: 0 0 2.5rem rgba(0, 0, 0, 0.5);
@@ -448,7 +450,7 @@
         font-size: 200%;
         position: absolute;
         cursor: pointer;
-        right: 0px;
+        right: 20px;
         top: 20%;
       }
       
@@ -466,7 +468,19 @@
         transform: rotate(360deg);
         transition-duration: 2s;
       }
-
+      
+    .dropdown-content {
+      top: 100% !important;
+    }
+    
+    #topRightCornerFunctionGroup{
+      position: absolute;
+      right: 0px;
+    }
+    
+    .calenderLabelDiv{
+      width:35%;
+    }
       
       
 			
@@ -490,22 +504,43 @@
 		}
 	</script>
 
-	<div id="page-wrapper">
-	<div id="switchAndHeader" style="position:relative">
-		<div class="switch" style="position:absolute;margin-left: 80%;">
-			<label style="font-size:1rem;color:black;cursor: default;">New Student</label>
-		</div>
-		<i id="settingIconButton" data-modal-trigger="trigger-2" class="large material-icons trigger" onclick="settingButtonFunction()">settings</i>
+  <ul id="dropdown1" class="dropdown-content">
+    <li class="divider"></li>
+    <li><a href="#!">Log Out</a></li>
+  </ul>
 
-		<div class="switch" style="position:absolute;margin-left:81.6%;margin-top:2.6%">
-			<label style="font-size:10px;">
-			<input type="checkbox">
-			<span class="lever"></span>
-		</label>
-		
-		</div>
-			<h1 class="myh1">Student and Mentor Form</h1>
-		</div>
+
+  <nav>
+    <div class="nav-wrapper" style="background-color: #2b97d6;">
+      <a href="#" style="margin-left: 20px;margin-right: 40px;position:relative" class="brand-logo left">HOME</a>
+      <ul id="nav-mobile" class="left hide-on-med-and-down">
+        <li><a style="background-color: rgba(0,0,0,0.19);">Individual Assign</a></li>
+        <li><a>Mass Assign</a></li>
+        <li><a onclick="redirect1()">Table</a></li>
+        <li><a>Back Up Database</a></li>
+         <li><a style = "position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">John<i class="material-icons right">arrow_drop_down</i></a></li>
+        
+      </ul>
+    </div>
+  </nav>
+        
+	<div id="page-wrapper">
+    <div id = "topRightCornerFunctionGroup">
+      <i id="settingIconButton" data-modal-trigger="trigger-2" class="large material-icons trigger" onclick="settingButtonFunction()">settings</i>
+
+      <div id="switchGroup" style="margin-right: 93px;">
+        <label style="font-size:1rem;color:black;cursor: default;">New Student</label>
+        <div class="switch" style="margin-left: 10px;">
+        <label style="font-size:10px;">
+          <input type="checkbox">
+          <span class="lever"></span>
+        </label>
+        </div>
+      </div>
+     </div> 
+  
+  
+    <h1 class="myh1">Student and Mentor Form</h1>
 
 		<label for="default" class="myLabel" id="studentLabel">Choose a Student</label>
 		<input class="myInput" list="items" type="text" id="itemsInput" placeholder="Student Name" spellcheck="false" onfocus="studentInputOnFocusFunction()"/>
@@ -532,13 +567,13 @@
 		<label for="default" class="myLabel errorLabel" id="studentRebelMailErrorLabel">Student rebel mail can not be empty.</label>
 		
 		<div id="calenderDiv" style="display:inline-flex;width:100%;">
-			<div>
+			<div class='calenderLabelDiv'>
 				<label for="default" class="myLabel" id="studentRebelMailLabel">Assign Date</label>
 				<input type="text" autocomplete="off"  class="datepicker assignDateCalendar" id="assignDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>	
 			</div>
 			<div style="width:20%"></div>
 			
-			<div>
+			<div class='calenderLabelDiv'>
 				<label for="default" class="myLabel" id="studentRebelMailLabel">End Date</label>
 				<input type="text" autocomplete="off" class="datepicker endDateCalendar" id="endDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>	
 			</div>		
@@ -583,19 +618,20 @@
 		<article class="my_content-wrapper">
 			<button class="my_close" onclick="closeConfirmationModalAndResetGloablVariables()"></button>
 			<header class="my_modal-header">
-				<h2>Student  Assignment  Confirmation
+				<h2 style="font-size:1.5vw;">Student  Assignment  Confirmation
         <!---<img style="height: 7vh;width: 7vh; margin-left: 1.9vh; margin-top: -1.1vh;position: absolute;"src="{{url_for('static', filename='images/icons/confirmation_icon.png')}}"></img>--->
         </h2>
 			</header>
 			<div class="my_content">
 				<p>Student <span id="student_name_span" style="font-weight:bold;">StudentName</span> is going to be assigned to professor <span id="mentor_name_span" style="font-weight:bold;">MentorName</span>.<br>Please confirm this action.</p>				
 			</div>
-			<form id="checkBoxForm">
-			  <input type="checkbox" id="checkBoxForEmail"  name="checkBoxForEmail-4" checked="true">
-			  <label for="checkBoxForEmail" style="-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none; font-size: 1.5vh;">
-				Notify professor <span id="mentor_name_span2">Bein</span> via E-mail.
-			  </label>
+			<form id="checkBoxForm">            
+			  <input type="checkbox" id="checkBoxForEmail"  name="checkBoxForEmail-4" checked="true">        
+			  <label for="checkBoxForEmail" style="-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none; font-size: 0.9vw;">
+				Notify the professor and the student <span id="mentor_name_span2"></span> via E-mail.
+			  </label> 
 			</form>
+        
 			<footer class="my_modal-footer">
 				<button class="trigger my_action" data-modal-trigger="trigger-2" onclick="confirmButtonFunction()" id="confirmButtonOnModal1">Confirm</button>
 				<button class="my_action" onclick="closeConfirmationModalAndResetGloablVariables()">Cancel</button>
@@ -611,7 +647,7 @@
 	<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_assignment">
 		<article class="my_content-wrapper">
 			<header class="my_modal-header">
-				<h2>Assignment Successful<img style="height: 4vh; width: 6vh; margin-left: 3vh;"src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
+				<h2 style="font-size:1.5vw;">Assignment Successful<img style="height: 2.5vw; width: 3vw; margin-left: 1.5vw;position:absolute;bottom: 14px;"src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
 			</header>	
 			<div class="my_content">
 				<p>Student <span id="student_name_span_sucessful_assigned" style="font-weight:bold;">StudentName</span> is successfully assigned to mentor <span id="mentor_name_span_sucessful_assigned" style="font-weight:bold;">MentorName</span>.</p>				
@@ -696,16 +732,6 @@
 	</script>
 	
 	
-	
-	<!-------------------- floating button for redirecting to table page ----------------------------------->
-	
-		<div class="fixed-action-btn" id="floatButtonDiv">
-			<a class="btn-floating btn-small blue" id="floatButtonA" onclick="redirect1()"><i id="floatButtonI" class="large material-icons">web</i></a>
-			<span class="tooltiptext">Move To Table Page</span>
-		</div>
-
-	<!-------------------- end floating button for redirecting to table page ----------------------------------->
-
 
 	<script>
   // Global variables
@@ -825,7 +851,7 @@
 		const close = modal.querySelector('.my_close');
 		student_name_span = document.getElementById("student_name_span");
 		mentor_name_span = document.getElementById("mentor_name_span");
-		mentor_name_span2 = document.getElementById("mentor_name_span2");
+//		mentor_name_span2 = document.getElementById("mentor_name_span2");
 		student_name_span_sucessful_assigned = document.getElementById("student_name_span_sucessful_assigned");
 		mentor_name_span_sucessful_assigned = document.getElementById("mentor_name_span_sucessful_assigned");
 
@@ -912,7 +938,7 @@
 				else{
 					student_name_span.textContent = studentName;
 					mentor_name_span.textContent = mentorName;
-					mentor_name_span2.textContent = mentorName;
+		//			mentor_name_span2.textContent = mentorName;
 					student_name_span_sucessful_assigned.textContent = studentName;
 					mentor_name_span_sucessful_assigned.textContent = mentorName;
 					contentWrapper.addEventListener('click', e => e.stopPropagation());
@@ -986,7 +1012,7 @@
 				else{
 					student_name_span.textContent = studentLastName + ", " + studentFirstName;
 					mentor_name_span.textContent = mentorName;
-					mentor_name_span2.textContent = mentorName;
+		//			mentor_name_span2.textContent = mentorName;
 					student_name_span_sucessful_assigned.textContent = studentLastName + ", " + studentFirstName
 					mentor_name_span_sucessful_assigned.textContent = mentorName;
 					contentWrapper.addEventListener('click', e => e.stopPropagation());
@@ -1252,6 +1278,11 @@
 		var instances = M.FloatingActionButton.init(elems, {
 		});
 	});
+
+  //nav bar drop down
+    $(".dropdown-trigger").dropdown({
+      belowOrigin: true
+    });
 
 
 

@@ -519,7 +519,6 @@
         <li><a onclick="redirect1()">Table</a></li>
         <li><a>Back Up Database</a></li>
          <li><a style = "position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">John<i class="material-icons right">arrow_drop_down</i></a></li>
-        
       </ul>
     </div>
   </nav>
@@ -592,7 +591,8 @@
        data-min-length='0'
        id='itemsInput2'
        name='country_allresults'
-	   placeholder="Mentor Name"    
+       placeholder="Mentor Name"    
+       autocomplete="off"
 	   />
 		<label for="default" class="myLabel errorLabel" id="mentorErrorLabel">Mentor name can not be empty.</label>
 		<h4 style="margin-top:15px; font-weight:600; font-size:18px;" id="studentCountPerMentor"><span id="studentCountPerMentor1"></span><span id="studentCountPerMentor2"></span><span id="studentCountPerMentor3"></span></h4>
@@ -1283,8 +1283,6 @@
     $(".dropdown-trigger").dropdown({
       belowOrigin: true
     });
-
-
 
 	
 	

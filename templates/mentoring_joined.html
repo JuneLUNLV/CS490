@@ -3,12 +3,10 @@
 
     <head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>UNLV Faculty Mentoring Information Look Up</title>
+    <title>UNLV Faculty Mentoring Information Look Up</title>
 		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/util.css')}}">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/main.css')}}">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
     
 		
@@ -66,7 +64,73 @@
 			#floatButtonDiv:hover .tooltiptext {
 			  visibility: visible;
 			  transition-delay: 0.3s;
-			}			     
+			}		
+
+
+      .my_action{
+			  position: relative;
+			  margin-left: 0.625rem;
+			  padding: 0.625rem 1.25rem;
+			  border: none;
+			  background-color: #fd6262;
+			  border-radius: 0.25rem;
+			  color: white;
+			  font-size: 1rem;
+			  font-weight: 300;
+			  overflow: hidden;
+			  z-index: 1;
+			  font-family: sans-serif;  
+        background-color: #2ecc71;        
+      }
+      
+      .my_action:before{
+      	position: absolute;
+			  content: '';
+			  top: 0;
+			  left: 0;
+			  width: 0%;
+			  height: 100%;
+			  background-color: rgba(255, 255, 255, 0.2);
+			  transition: width 0.25s;
+			  z-index: 0;
+      }
+      
+      .my_action:hover:before{
+        width: 100%;
+      }
+      
+      #filterDiv{
+        display: inline-flex;
+        width: 80%;
+        margin-top: 1%;
+        margin-left: 10%;   
+      }
+      
+      .my_flexdatalist{       
+        border-radius: 0px;
+        background-color: rgba(0, 0, 0, 0);
+        display: block;
+        width: 50%;
+        height: 30%;
+        padding: 10px 15px;
+        font-size: 15px;
+        line-height: 1.42857143;
+        color: #2c3e50;
+        background-color: #ffffff;
+        background-image: none;
+        border: 1px solid #000000;   !important   
+        border-radius: 4px;
+        margin-right: 18px;
+      }
+        
+      .item-count{
+          position:absolute;
+          left:10%;	
+      }
+      
+      .my_action:focus{
+        background-color: #2ecc71;
+      }
       
       
 		</style>
@@ -76,7 +140,10 @@
 
 
 	<body>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<link rel= "stylesheet" type= "text/css" href= "{{url_for('static',filename='jquery.flexdatalist.min.css') }}">
+	<script src="{{url_for('static', filename='jquery.flexdatalist.min.js')}}"></script>  
   <ul id="dropdown1" class="dropdown-content">
     <li class="divider"></li>
     <li><a href="#!">Log Out</a></li>
@@ -94,7 +161,22 @@
       </ul>
     </div>
   </nav>   
-		<h1 style="text-align:center;margin-top:30px;">Mentoring Joined Table</h1>
+  
+ <div id="filterDiv">
+  <input type='text'
+         placeholder='Filter table by mentor(s)'
+         class='flexdatalist'
+         data-search-in='professorName'
+         data-visible-properties='["professorName","count"]'
+         data-selection-required='true'
+         data-value-property='id'
+         data-text-property='{professorName}, {count}'
+         data-min-length='0'
+         multiple='multiple'
+         name='country_id_multiple'>
+  <button class="my_action">Filter Table</button>
+</div>
+       
 		<div class="limiter" >
 				<div class="wrap-table100">
 					<div class="table100">
@@ -175,6 +257,29 @@
     
   //nav bar drop down
     $(".dropdown-trigger").dropdown();    
+    
+    function decodeHtml(str) {
+      return str.replace(/&#(\d+);/g, function(match, dec) {
+        return String.fromCharCode(dec);
+      });
+    }
+  
+    let jsonData = decodeHtml('{{professorJson}}');
+    $('.flexdatalist').flexdatalist({
+       minLength: 1,
+       valueProperty: '*',
+       selectionRequired: true,
+       visibleProperties: ["professorName","count"],
+       searchIn: 'professorName',
+       data: JSON.parse(jsonData)
+    });
+    $('ul.flexdatalist-multiple.flex0').css("borderWidth","1.3px")
+    $('ul.flexdatalist-multiple.flex0').css("borderRadius","5px")
+    $('ul.flexdatalist-multiple.flex0').css("borderStyle","solid")
+    $('ul.flexdatalist-multiple.flex0').css("borderColor","black")
+    $('ul.flexdatalist-multiple.flex0').css("width","95%")
+    $('ul.flexdatalist-multiple.flex0').css("margin-right","7px")
+    $('ul.flexdatalist-multiple.flex0').css("padding-top","5px")
     
 	</script>
 

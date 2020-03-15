@@ -20,84 +20,80 @@
       }      
       
       #floatButtonDiv{
-				position: fixed;
-				right: 3vw;
-				bottom: 5vh;
-				padding-top: 15px;
-				margin-bottom: 0;
-				z-index: 997;
-			
-			}
-			
-			#floatButtonA{
-			    width: 3rem;
-				height: 3rem;
-				line-height: 32.4px;
-				transition: all .3s ease-in-out;
-			
-			}
-			
-			#floatButtonI{
-				line-height: 3.1rem;
-				font-size: 2.3rem;
-			}
-			
-			#floatButtonDiv:hover #floatButtonA {
-				transform:scale(1.5);
-			}			
+		position: fixed;
+		right: 2vw;
+		bottom: 5vh;
+		padding-top: 15px;
+		margin-bottom: 0;
+		z-index: 997;
+		user-select: none;
+	}     
 
-			.tooltiptext {
-				visibility: hidden;
-				background-color: black;
-				color: #fff;
-				text-align: center;
-				padding: 1px 0;
-				border-radius: 6px;
-				position: absolute;
-				z-index: 1;
-				font-size: 70%;
-				width: 10vw;
-				left: -3.3vw;
-				top: -3vh;
-			}
-			
-			#floatButtonDiv:hover .tooltiptext {
-			  visibility: visible;
-			  transition-delay: 0.3s;
-			}		
+	#floatButtonDiv2{
+		position: fixed;
+		right: 6vw;
+		bottom: 5vh;
+		padding-top: 15px;
+		margin-bottom: 0;
+		z-index: 997;
+		user-select: none;
+	
+	}
+	
+	#floatButtonA{
+		width: 3rem;
+		height: 3rem;
+		line-height: 32.4px;
+		transition: all .3s ease-in-out;
+	
+	}			
+	
+	#floatButtonB{
+		width: 3rem;
+		height: 3rem;
+		line-height: 32.4px;
+		transition: all .3s ease-in-out;
+	
+	}
+	
+	#floatButtonI{
+		line-height: 3.1rem;
+		font-size: 2.3rem;
+	}	
+	
+	#floatButtonII{
+		line-height: 3.1rem;
+		font-size: 2.3rem;
+	}
+	
+	
+	#floatButtonDiv:hover #floatButtonA {
+		transform:scale(1.5);
+	}		
+	
+	#floatButtonDiv2:hover #floatButtonB {
+		transform:scale(1.5);
+	}			
 
-
-      .my_action{
-			  position: relative;
-			  margin-left: 0.625rem;
-			  padding: 0.625rem 1.25rem;
-			  border: none;
-			  background-color: #fd6262;
-			  border-radius: 0.25rem;
-			  color: white;
-			  font-size: 1rem;
-			  font-weight: 300;
-			  overflow: hidden;
-			  z-index: 1;
-			  font-family: sans-serif;  
-        background-color: #2ecc71;        
-      }
-      
-      .my_action:before{
-      	position: absolute;
-			  content: '';
-			  top: 0;
-			  left: 0;
-			  width: 0%;
-			  height: 100%;
-			  background-color: rgba(255, 255, 255, 0.2);
-			  transition: width 0.25s;
-			  z-index: 0;
-      }
-      
-      .my_action:hover:before{
-        width: 100%;
-      }
+	.tooltiptext {
+		visibility: hidden;
+		background-color: black;
+		color: #fff;
+		text-align: center;
+		padding: 1px 0;
+		border-radius: 6px;
+		position: absolute;
+		z-index: 1;
+		font-size: 70%;
+		width: 10vw;
+		left: -3.3vw;
+		top: -3vh;
+	}
+	
+	#floatButtonDiv:hover .tooltiptext {
+	  visibility: visible;
+	  transition-delay: 0.3s;
+	}		
       
       #filterDiv{
         display: inline-flex;
@@ -127,10 +123,309 @@
           position:absolute;
           left:10%;	
       }
+	  
+	.myLabel {
+	  display: none;
+	  margin-top: 2em;
+	  margin-bottom: 0.5em;
+	  color: #000000;
+	  font-size:20px;
+	  text-align:center;
+	}
+	
+	.errorLabel{
+		margin-top:0px;
+		color:red;
+		display:none;
+		font-size:15px;
+		text-align:left;
+	}
+	  
+	  .my_modal {
+			  position: fixed;
+			  top: 0;
+			  left: 0;
+			  display: flex;
+			  align-items: center;
+			  justify-content: center;
+			  height: 0vh;
+			  background-color: transparent;
+			  overflow: hidden;
+			  transition: background-color 0.25s ease;
+			  z-index: 9999;
+			}
+
+			.my_modal.my_open {
+			  position: fixed;
+			  width: 100%;
+			  height: 100vh;
+			  background-color: rgba(0, 0, 0, 0.7);
+			  transition: background-color 0.25s;
+			  box-shadow:none;
+			  max-height:100%;
+			}
+
+			.my_modal.my_open > .my_content-wrapper {
+			  transform: scale(1);
+			}
+
+			.my_modal .my_content-wrapper {
+			  position: relative;
+			  display: flex;
+			  flex-direction: column;
+			  justify-content: flex-start;
+			  width: 50%;
+			  margin: 0;
+			  padding: 3rem;
+			  padding-bottom: 70px;
+			  padding-top: 30px;
+			  background-color: white;
+			  border-radius: 0.3125rem;
+			  box-shadow: 0 0 2.5rem rgba(0, 0, 0, 0.5);
+			  transform: scale(0);
+			  transition: transform 0.25s;
+			  transition-delay: 0.15s;
+			}
+
+			.my_modal .my_content-wrapper .my_close {
+			  position: absolute;
+			  top: 0.5rem;
+			  right: 0.5rem;
+			  display: flex;
+			  align-items: center;
+			  justify-content: center;
+			  width: 2.5rem;
+			  height: 2.5rem;
+			  border: none;
+			  background-color: transparent;
+			  font-size: 1.5rem;
+			  transition: 0.25s linear;
+			}
+
+			.my_modal .my_content-wrapper .my_close:before, .my_modal .my_content-wrapper .my_close:after {
+			  position: absolute;
+			  content: '';
+			  width: 1.25rem;
+			  height: 0.125rem;
+			  background-color: black;
+			}
+
+			.my_modal .my_content-wrapper .my_close:before {
+			  transform: rotate(-45deg);
+			}
+
+			.my_modal .my_content-wrapper .my_close:after {
+			  transform: rotate(45deg);
+			}
+
+			.my_modal .my_content-wrapper .my_close:hover {
+			  transform: rotate(360deg);
+			}
+
+			.my_modal .my_content-wrapper .my_close:hover:before, .my_modal .my_content-wrapper .my_close:hover:after {
+			  background-color: tomato;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-header {
+			  position: relative;
+			  display: flex;
+			  flex-direction: row;
+			  align-items: center;
+			  justify-content: space-between;
+			  width: 100%;
+			  margin: 0;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-header h2 {
+			  font-size: 2.3rem;
+			  letter-spacing: 0.5px;
+			}
+
+			.my_modal .my_content-wrapper .my_content {
+			  position: relative;
+			  display: block;
+			  font-size: 1vw;
+			  margin-bottom: 5%;
+			  margin-top:4%;
+			  
+			}
+
+			.my_modal .my_content-wrapper .my_content p {
+			  line-height: 1.75;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer {
+				position: relative;
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				width: 100%;
+				margin: 0;
+				background-color: #1ae0a00f;
+				padding: 10px;
+				border-radius: 15px;
+				z-index:-1;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .my_action {
+			  position: relative;
+			  margin-left: 0.625rem;
+			  padding: 0.625rem 1.25rem;
+			  border: none;
+			  background-color: #fd6262;
+			  border-radius: 0.25rem;
+			  color: white;
+			  font-size: 1rem;
+			  font-weight: 300;
+			  overflow: hidden;
+			  z-index: 1;
+			  font-family: sans-serif;
+			  
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .my_action:before {
+			  position: absolute;
+			  content: '';
+			  top: 0;
+			  left: 0;
+			  width: 0%;
+			  height: 100%;
+			  background-color: rgba(255, 255, 255, 0.2);
+			  transition: width 0.25s;
+			  z-index: 0;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .my_action:first-child {
+			  background-color: #2ecc71;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .action:last-child {
+			  background-color: #e74c3c;
+			}
+
+			.my_modal .my_content-wrapper .my_modal-footer .my_action:hover:before {
+			  width: 100%;
+			}	
       
-      .my_action:focus{
-        background-color: #2ecc71;
-      }
+			.select-box {
+			  position: relative;
+			  display: block;
+			  width: 100%;
+			  margin: 0 auto;
+			  font-family: 'Open Sans', 'Helvetica Neue', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+			  font-size: 18px;
+			  color: #60666d;
+			}
+			@media (min-width: 768px) {
+			  .select-box {
+				width: 70%;
+			  }
+			}
+			@media (min-width: 992px) {
+			  .select-box {
+				width: 50%;
+			  }
+			}
+			@media (min-width: 1200px) {
+			  .select-box {
+				width: 30%;
+			  }
+			}
+			.select-box__current {
+			  position: relative;
+			  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+			  cursor: pointer;
+			  outline: none;
+			}
+			.select-box__current:focus + .select-box__list {
+			  opacity: 1;
+			  -webkit-animation-name: none;
+					  animation-name: none;
+			}
+			.select-box__current:focus + .select-box__list .select-box__option {
+			  cursor: pointer;
+			}
+			.select-box__current:focus .select-box__icon {
+			  -webkit-transform: translateY(-50%) rotate(180deg);
+					  transform: translateY(-50%) rotate(180deg);
+			}
+			.select-box__icon {
+			  position: absolute;
+			  top: 50%;
+			  right: 15px;
+			  -webkit-transform: translateY(-50%);
+					  transform: translateY(-50%);
+			  width: 20px;
+			  opacity: 0.3;
+			  -webkit-transition: 0.2s ease;
+			  transition: 0.2s ease;
+			}
+			.select-box__value {
+			  display: -webkit-box;
+			  display: flex;
+			}
+			.select-box__input {
+			  display: none;
+			}
+			.select-box__input:checked + .select-box__input-text {
+			  display: block;
+			}
+			.select-box__input-text {
+			  display: none;
+			  width: 100%;
+			  margin: 0;
+			  padding: 15px;
+			  background-color: #cedcda33;
+			}
+			.select-box__list {
+			  position: absolute;
+			  width: 100%;
+			  padding: 0;
+			  list-style: none;
+			  opacity: 0;
+			  -webkit-animation-name: HideList;
+					  animation-name: HideList;
+			  -webkit-animation-duration: 0.5s;
+					  animation-duration: 0.5s;
+			  -webkit-animation-delay: 0.5s;
+					  animation-delay: 0.5s;
+			  -webkit-animation-fill-mode: forwards;
+					  animation-fill-mode: forwards;
+			  -webkit-animation-timing-function: step-start;
+					  animation-timing-function: step-start;
+			  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+			}
+			.select-box__option {
+			  display: block;
+			  padding: 15px;
+			  background-color: #fff;
+			}
+			.select-box__option:hover, .select-box__option:focus {
+			  color: #546c84;
+			  background-color: #fbfbfb;
+			}
+
+			@-webkit-keyframes HideList {
+			  from {
+				-webkit-transform: scaleY(1);
+						transform: scaleY(1);
+			  }
+			  to {
+				-webkit-transform: scaleY(0);
+						transform: scaleY(0);
+			  }
+			}
+
+			@keyframes HideList {
+			  from {
+				-webkit-transform: scaleY(1);
+						transform: scaleY(1);
+			  }
+			  to {
+				-webkit-transform: scaleY(0);
+						transform: scaleY(0);
+			  }
+			}
       
       
 		</style>
@@ -142,8 +437,15 @@
 	<body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-	<link rel= "stylesheet" type= "text/css" href= "{{url_for('static',filename='jquery.flexdatalist.min.css') }}">
-	<script src="{{url_for('static', filename='jquery.flexdatalist.min.js')}}"></script>  
+  <script src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <link rel= "stylesheet" type= "text/css" href= "{{url_for('static',filename='jquery.flexdatalist.min.css') }}">
+  <script type="text/javascript" src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+  
+  
+  
+  <script src="{{url_for('static', filename='jquery.flexdatalist.min.js')}}"></script>  
+  <script src="{{url_for('static', filename='table2CSV.js')}}"></script>  
   <ul id="dropdown1" class="dropdown-content">
     <li class="divider"></li>
     <li><a href="#!">Log Out</a></li>
@@ -162,6 +464,7 @@
     </div>
   </nav>   
   
+
  <div id="filterDiv">
   <input type='text'
          placeholder='Filter table by mentor(s)'
@@ -174,10 +477,9 @@
          data-min-length='0'
          multiple='multiple'
          name='country_id_multiple'>
-  <button class="my_action">Filter Table</button>
 </div>
        
-		<div class="limiter" >
+		<div class="limiter" id="limiterId" >
 				<div class="wrap-table100">
 					<div class="table100">
 					{% for table in mentoring_joined_tables %}
@@ -194,22 +496,77 @@
 		</div>
 
 		<!-------------------- end floating button for redirecting to table page ----------------------------------->   
+		
     
+		<!-------------------- floating button for redirecting to export page ----------------------------------->
+	
+		<div class="fixed-action-btn" id="floatButtonDiv2">
+			<a class="btn-floating btn-small orange" id="floatButtonB"  onclick='ExportTableAs()'><i id="floatButtonII" class="large material-icons">screen_share</i></a>
+		</div>		
+		
+		<!-------------------- end floating button for redirecting to export modal ----------------------------------->   
+		
+		
+		<!-------------------------------------- epxort modal --------------------------------------------------------------------->
+		
+		
+		<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_assignment">
+			<article class="my_content-wrapper">
+				<header class="my_modal-header">
+					<h2 style="font-size:1.5vw;">Export Table</h2>
+				</header>	
+				<div class="my_content">
+					Choose the file type you want to export this table as
+					<div class="select-box" style="margin-left:0px;margin-right:0px;margin-top:20px;color: black;font-weight: 500;margin-bottom: 20px;">
+						<div class="select-box__current" tabindex="1">
+							<div class="select-box__value">
+								<input class="select-box__input" type="radio" id="0" value="1" name="Ben" checked="checked" />
+								<p class="select-box__input-text">CSV</p>
+							</div>
+							<div class="select-box__value">
+								<input class="select-box__input" type="radio" id="1" value="2" name="Ben" checked="checked" />
+								<p class="select-box__input-text">JPG</p>
+							</div>
+							<div class="select-box__value">
+								<input class="select-box__input" type="radio" id="2" value="3" name="Ben" checked="checked" />
+								<p class="select-box__input-text">Selct File Type</p>
+							</div>
+							<img class="select-box__icon" src="http://cdn.onlinewebfonts.com/svg/img_295694.svg" alt="Arrow Icon" aria-hidden="true" />
+						</div>
+						<ul class="select-box__list">
+							<li>
+								<label class="select-box__option" for="0" aria-hidden="aria-hidden">CSV</label>
+							</li>
+							<li>
+								<label class="select-box__option" for="1" aria-hidden="aria-hidden">JPG</label>
+							</li>
 
-		<script>
-			document.addEventListener('DOMContentLoaded', function() {
-				var elems = document.querySelectorAll('.fixed-action-btn');
-				var instances = M.FloatingActionButton.init(elems, {
-				});
-			});
+						</ul>
+					</div>
+					<label for="default" class="myLabel errorLabel" id="exportErrorLabel"></label>
+				</div>
+				<a id="download" style="display:none;text-align:center;" href="">Click Me to Download</a>
+				<footer class="my_modal-footer">
+					<button class="my_action" onclick="confirmExport()">Confirm</button>
+					<button style="background-color:#e74c3c;" class="my_action" onclick="document.getElementById('modal_for_successful_assignment').classList.toggle('my_open');document.getElementById('download').style.display = 'none'">Canel</button>
+				</footer>			
+		
+			</article>
+		</div>
 
-		</script>
+		<!-------------------------------------- end epxort modal --------------------------------------------------------------------->
 		
 	</body>
 	
 	<script>
+	
+	
+	
 		studentName = '{{studentName}}';
 		studentMail = '{{email}}';
+		let valueArrayEmpty = true;
+		let fileName = ''
+
 		
 		let tdArray = $('td');
 		let elemParent = "";
@@ -267,20 +624,155 @@
     let jsonData = decodeHtml('{{professorJson}}');
     $('.flexdatalist').flexdatalist({
        minLength: 1,
-       valueProperty: '*',
+       valueProperty: 'professorName',
        selectionRequired: true,
        visibleProperties: ["professorName","count"],
        searchIn: 'professorName',
        data: JSON.parse(jsonData)
     });
-    $('ul.flexdatalist-multiple.flex0').css("borderWidth","1.3px")
-    $('ul.flexdatalist-multiple.flex0').css("borderRadius","5px")
+    $('ul.flexdatalist-multiple.flex0').css("borderWidth","1px")
+    $('ul.flexdatalist-multiple.flex0').css("borderRadius","8px")
     $('ul.flexdatalist-multiple.flex0').css("borderStyle","solid")
     $('ul.flexdatalist-multiple.flex0').css("borderColor","black")
-    $('ul.flexdatalist-multiple.flex0').css("width","95%")
+    $('ul.flexdatalist-multiple.flex0').css("width","100%")
     $('ul.flexdatalist-multiple.flex0').css("margin-right","7px")
     $('ul.flexdatalist-multiple.flex0').css("padding-top","5px")
-    
+    $('ul.flexdatalist-multiple.flex0').css("padding-left","7px")
+    $('ul.flexdatalist-multiple.flex0').css("outline","none")
+
+	let originalDataArray = $('input.flexdatalist').data().flexdatalist.data.slice(0);
+	let trs = $('tr')
+	
+  	$('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {	
+		let valueArray = $('input.flexdatalist').val().split(',')
+		valueArrayEmpty = true;
+		$('input.flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);
+		if(valueArray.length == 1){
+			if(valueArray[0].length == 0){
+				for (var i = 1; i < trs.length; i++)
+					trs[i].style.display = "table-row";
+				return;
+			}
+			else
+				valueArrayEmpty = false;
+		}
+		else{
+			valueArrayEmpty = false;
+		}
+		if(valueArrayEmpty == false){
+		
+			/* changing datalist opotions based on input values */
+			$('input.flexdatalist').data().flexdatalist.data;
+			for (var i = 0; i < $('input.flexdatalist').data().flexdatalist.data.length; i++){
+				for(var j = 0; j < valueArray.length; j++){
+					if($('input.flexdatalist').data().flexdatalist.data[i].professorName.includes(valueArray[j]))
+						$('input.flexdatalist').data().flexdatalist.data.splice(i,1);
+				}
+			}		
+			/* end changing datalist opotions based on input values */
+			
+			let dirtyBitArray = []
+			dirtyBitArray.length = trs.length
+			dirtyBitArray.fill(0,0,dirtyBitArray.length-1)
+			for (var i = 1; i < trs.length; i++){
+				for(var j = 0; j < valueArray.length;j++){
+					if(dirtyBitArray[i] == 1)
+						break;
+					if(trs[i].firstElementChild.textContent.includes(valueArray[j])){
+						trs[i].style.display = "table-row"
+						dirtyBitArray[i] = 1;
+					}
+					else{
+						trs[i].style.display = "none"
+					}
+				}
+			}
+		}
+
+
+		
+	});	
+	
+	function ExportTableAs(){
+		const modal = document.getElementById("modal_for_successful_assignment");
+		const contentWrapper = modal.querySelector('.my_content-wrapper');
+		contentWrapper.addEventListener('click', e => e.stopPropagation());
+		modal.classList.toggle('my_open');
+	}
+	
+	function confirmExport(){
+		checkArr = $('.select-box__input')
+		exportErrorLabel = document.getElementById('exportErrorLabel');
+		if(checkArr[2].checked == true){
+			exportErrorLabel.textContent = "Please select a file type to export the table";
+			exportErrorLabel.style.display = "block";
+			setTimeout(function() {
+				exportErrorLabel.style.display = "none";	
+			}, 3000); 
+		}
+		else if(checkArr[1].checked == true){
+			document.getElementById('modal_for_successful_assignment').style.cursor = "wait";
+			html2canvas(document.querySelector("#limiterId")).then(canvas => {
+				a = document.getElementById('download');
+				var link = canvas.toDataURL();
+				var temp_url = window.URL.createObjectURL(dataURLtoBlob(link));
+				a.href = temp_url;
+				a.style.display = "block"
+
+				if(valueArrayEmpty){
+					fileName = 'UNLV_CS_mentor_table_no_filter.jpg'
+				}
+				else{
+					fileName = "UNLV_CS_mentor_table_filterd_by_" + $('input.flexdatalist').val()+".jpg"
+				}
+				a.download = fileName;
+				a.textContent = "Click Me to Download" + " " + fileName + "!"
+				$('#modal_for_successful_assignment').css("cursor","default")
+
+				
+			});
+		}
+		else{
+			document.getElementById('modal_for_successful_assignment').style.cursor = "wait";
+			$('table').each(function () {
+				var $table = $(this);
+				a = document.getElementById('download');
+				var csv = $table.table2CSV({
+					delivery: 'value'
+				});
+				a.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(csv);
+				a.style.display = "block"
+				if(valueArrayEmpty){
+					fileName = 'UNLV_CS_mentor_table_no_filter.csv'
+				}
+				else{
+					fileName = "UNLV_CS_mentor_table_filterd_by_" + $('input.flexdatalist').val()+".csv"
+				}
+				a.download = fileName;
+				a.textContent = "Click Me to Download" + " " + fileName + "!"
+				$('#modal_for_successful_assignment').css("cursor","default")
+			});
+		}
+	}
+	
+	function dataURLtoBlob(dataurl) {
+		var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+			bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+		while(n--){
+			u8arr[n] = bstr.charCodeAt(n);
+		}
+		return new Blob([u8arr], {type:mime});
+	}
+	
+	
+	document.addEventListener('DOMContentLoaded', function() {
+		var elems = document.querySelectorAll('.fixed-action-btn');
+		var instances = M.FloatingActionButton.init(elems, {
+		});
+	});	
+
+	
+	
 	</script>
 
 	

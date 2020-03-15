@@ -101,6 +101,10 @@
         left: 5px;
         top: 5px;
       }
+      
+      .dropdown-content {
+        top: 100% !important;
+      }     
           
 		</style>
 		
@@ -120,7 +124,7 @@
       <a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative" class="brand-logo left">HOME</a>
       <ul id="nav-mobile" class="left hide-on-med-and-down">
         <li><a onclick='window.location.href = "/main_menu"'>Individual Assign</a></li>
-        <li><a>Mass Assign</a></li>
+        <li><a onclick='window.location.href = "/multiple_assign_page";'>Mass Assign</a></li>
         <li><a onclick='window.location.href = "/mentoring_joined?username=&email="'>Table</a></li>
         <li><a style="background-color: rgba(0,0,0,0.19);">Backup Database</a></li>
          <li><a style = "position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">John<i class="material-icons right">arrow_drop_down</i></a></li>
@@ -181,6 +185,11 @@
     else
         document.getElementById('sql_command').style.display = 'none';
     }
+    
+    //nav bar drop down
+    $(".dropdown-trigger").dropdown({
+      belowOrigin: true
+    });
 	</script>
 
 	

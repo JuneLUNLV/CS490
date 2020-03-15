@@ -19,9 +19,9 @@
         top: 100% !important;
       }      
       
-      #floatButtonDiv{
+  #floatButtonDiv{
 		position: fixed;
-		right: 2vw;
+		right: 20px;
 		bottom: 5vh;
 		padding-top: 15px;
 		margin-bottom: 0;
@@ -31,7 +31,7 @@
 
 	#floatButtonDiv2{
 		position: fixed;
-		right: 6vw;
+		right: 100px;
 		bottom: 5vh;
 		padding-top: 15px;
 		margin-bottom: 0;
@@ -491,21 +491,20 @@
 		
  		<!-------------------- floating button for redirecting to table page ----------------------------------->
 	
-		<div class="fixed-action-btn" id="floatButtonDiv">
-			<a class="btn-floating btn-small blue" id="floatButtonA" onclick='backToTop()'><i id="floatButtonI" class="large material-icons">vertical_align_top</i></a>
-		</div>
+      <div class="fixed-action-btn" id="floatButtonDiv">
+        <a class="btn-floating btn-small blue" id="floatButtonA" onclick='backToTop()'><i id="floatButtonI" class="large material-icons">vertical_align_top</i></a>
+      </div>
 
 		<!-------------------- end floating button for redirecting to table page ----------------------------------->   
 		
     
 		<!-------------------- floating button for redirecting to export page ----------------------------------->
 	
-		<div class="fixed-action-btn" id="floatButtonDiv2">
-			<a class="btn-floating btn-small orange" id="floatButtonB"  onclick='ExportTableAs()'><i id="floatButtonII" class="large material-icons">screen_share</i></a>
-		</div>		
+      <div class="fixed-action-btn" id="floatButtonDiv2">
+        <a class="btn-floating btn-small orange" id="floatButtonB"  onclick='ExportTableAs()'><i id="floatButtonII" class="large material-icons">screen_share</i></a>
+      </div>		
 		
 		<!-------------------- end floating button for redirecting to export modal ----------------------------------->   
-		
 		
 		<!-------------------------------------- epxort modal --------------------------------------------------------------------->
 		
@@ -545,7 +544,7 @@
 					</div>
 					<label for="default" class="myLabel errorLabel" id="exportErrorLabel"></label>
 				</div>
-				<a id="download" style="display:none;text-align:center;" href="">Click Me to Download</a>
+				<a id="download" style="display:none;text-align:center;margin-bottom: 15px;text-decoration: underline;" href="">Click Me to Download</a>
 				<footer class="my_modal-footer">
 					<button class="my_action" onclick="confirmExport()">Confirm</button>
 					<button style="background-color:#e74c3c;" class="my_action" onclick="document.getElementById('modal_for_successful_assignment').classList.toggle('my_open');document.getElementById('download').style.display = 'none'">Canel</button>

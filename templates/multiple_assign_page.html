@@ -79,8 +79,9 @@
 		border: none;
 		background-color: transparent;
 		font-size: 1.5rem;
-		transition: 0.35s linear;
+		transition: 0.25s linear;
 		cursor: pointer;
+		user-select: none;
 	}
 
 	.my_restore {
@@ -90,13 +91,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 2.5rem;
+		width: 1.5rem;
 		height: 2.5rem;
 		border: none;
 		background-color: transparent;
 		font-size: 1.5rem;
-		transition: 0.35s linear;
+		transition: 0.25s linear;
 		cursor: pointer;
+		user-select: none;
 	}
 
 	.my_restore:hover {
@@ -143,6 +145,63 @@
 	.empty-list-group-item {
 		visibility: hidden;
 	}
+	
+	.numberInput{
+		width:5% !important;
+		font-size: 25px !important;
+		margin-left:10px !important;
+		text-align: center !important;
+		    border-bottom: 1px solid #000000 !important;
+		
+	}
+	.assign_button{
+    /* padding: 16px 32px; */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 150%;
+    /* margin: 4px 2px; */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    border: 2px solid #4CAF50;
+    display: inline-block;
+    border-radius: 7px;
+    width: 15%;
+    margin-left: 5%;
+	}
+	
+	.assign_button:hover{
+	  background-color: #4CAF50;
+	  color: white;			
+	}	
+	
+	.button_not_allowed{
+		/* padding: 16px 32px; */
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 150%;
+		/* margin: 4px 2px; */
+		transition-duration: 0.4s;
+		cursor: pointer;
+		background-color: white;
+		color: black;
+		border: 2px solid #4CAF50;
+		display: inline-block;
+		border-radius: 7px;
+		width: 15%;
+		margin-left: 5%;
+	}
+	
+	
+	.button_not_allowed:hover{
+	  background-color: #F1204A;
+	  color: white;	
+	  border: 2px solid #F1204A;
+	  cursor: not-allowed;
+	}
 	</style>
 </head>
 
@@ -176,10 +235,11 @@
 		<div class="contentWrapper">
 			<p class="myp">From professor</p>
 			<input type='text' placeholder='Name' class='flexdatalist first-flexdatalist' data-search-in='professorName' data-visible-properties='["professorName"]' data-selection-required='true' data-value-property='id' data-text-property='{professorName}' data-min-length='0' name='mentor_name_input_1'>
-			<p class="myp">Assign <span class = 'studentCount'>0</span> to professor</p>
+			<p class="myp">assign</p><input onchange="numberInputValueChange(this.value)" class="numberInput"><p class="myp">students to professor</p>
 			<input type='text' placeholder='Name' class='flexdatalist second-flexdatalist' data-search-in='professorName' data-visible-properties='["professorName"]' data-selection-required='true' data-value-property='id' data-text-property='{professorName}' data-min-length='0' name='mentor_name_input_2'>
+			<input class="assign_button" style="outline: none;" onclick="assignButtonFunction()" id="assign_button_id" type = "submit" value = "Assign Students" />
 		</div>
-		<p class="myp" id="showOrHideListGroupId" onclick="showOrHideListGroupFunction()">show all <span class="studentCount">0</span> students</p>
+		<p style="width:fit-content" class="myp" id="showOrHideListGroupId" onclick="showOrHideListGroupFunction()">show all <span class="studentCount">0</span> students</p>
 		<div class="list-group" style="opacity: 0;display: none;width: 95%; flex-direction: row;border: 2px solid #6c87d3b3;padding-top: 15px;border-radius: 0.3125rem;padding-left: 50px;margin-top: 0px;margin-bottom: 30px;margin-left: 1.5%;transition: opacity 2s ease-out 1s;">
 		</div>
 </body>
@@ -191,6 +251,10 @@
     let activeStudent = 0;
     let originalMarginTop = marginTop = parseInt($('#page-wrapper').css('marginTop'));
     let itemPerRow = 4;
+	let previousNumberInput = 0;
+	let maximumStudents = 0;
+	let assignButtonStatus = false;
+	disbaleAssignButton();
     $('.flexdatalist.first-flexdatalist').flexdatalist({
       minLength: 1,
       valueProperty: 'professorName',
@@ -208,6 +272,7 @@
       data: JSON.parse(jsonData)
     });
     let originalDataArray = $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data.slice(0);
+	$('.second-flexdatalist').attr('id',"flex1")
     //nav bar drop down
     $(".dropdown-trigger").dropdown({
       belowOrigin: true
@@ -219,12 +284,13 @@
       });
     }
     $('input.flexdatalist-alias').css("border-color", "black")
-    $('input.flexdatalist-alias').css("width", "fit-content")
+    $('input.flexdatalist-alias').css("width", "10%")
     $('input.flexdatalist-alias').css("margin-right", "7px")
     $('input.flexdatalist-alias').css("border-right", "0px")
     $('input.flexdatalist-alias').css("outline", "none")
     $('input.flexdatalist-alias').css("margin-left", "20px")
     $('input.flexdatalist-alias').css("font-size", "25px")
+	
     $('input.flexdatalist-alias')[0].classList.toggle('flexdatalist_border');
     /*    function inputOnclick(){
           input = $('input.flexdatalist-alias.flex0')[0]
@@ -239,23 +305,33 @@
         var e = jQuery.Event("keyup");
         e.which = 40; // it is down
         $(this).trigger(e);
+		determineIfButtonIsAble()
       }
     }
     $('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {
       $('input.flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);
-      if(this.name == "mentor_name_input_1") {
+      $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);
+      if(this.name == "mentor_name_input_1"){
         var val = set.text;
         studentCountElementArray = document.getElementsByClassName("studentCount")
         if(val.length == 0) {
           for(var j = 0; j < studentCountElementArray.length; j++) studentCountElementArray[j].textContent = "0";
+		  maximumStudents = 0;
+		  document.getElementsByClassName("numberInput")[0].value = "0";
+		  previousNumberInput = 0;
           activeStudent = 0;
           clearListGroup();
+		  hideListGroup();
           return;
         }
         for(var i = 0; i < professorJsonDict.length; i++) {
           if(val == professorJsonDict[i].professorName) {
             for(var j = 0; j < studentCountElementArray.length; j++) studentCountElementArray[j].textContent = professorJsonDict[i].count;
+			maximumStudents = professorJsonDict[i].count;
+			document.getElementsByClassName("numberInput")[0].value = professorJsonDict[i].count;
+			previousNumberInput = professorJsonDict[i].count;;
             activeStudent = professorJsonDict[i].count;
+			break;
           }
         }
         var professorId;
@@ -279,9 +355,20 @@
         for(var i = 0; i < $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data.length; i++) {
           if($('input.flexdatalist.second-flexdatalist').data().flexdatalist.data[i].professorName.includes(val)) $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data.splice(i, 1);
         }
-        hideListGroup();
+		if(val == $('input.flexdatalist.second-flexdatalist').val())
+			$('input.flexdatalist.second-flexdatalist').val("")
         repositionPageWrapper();
       }
+	  else if(this.name == "mentor_name_input_2")
+	  {
+		val = set.text;
+        for(var i = 0; i < $('input.flexdatalist.first-flexdatalist').data().flexdatalist.data.length; i++) {
+          if($('input.flexdatalist.first-flexdatalist').data().flexdatalist.data[i].professorName.includes(val)) $('input.flexdatalist.first-flexdatalist').data().flexdatalist.data.splice(i, 1);
+        }
+		if(val == $('input.flexdatalist.first-flexdatalist').val())
+			$('input.flexdatalist.first-flexdatalist').val("")
+	  }
+      determineIfButtonIsAble()
     });
 
     function showOrHideListGroupFunction() {
@@ -311,7 +398,7 @@
     }
 
     function showListGroup() {
-      if(activeStudent == 0) return;
+      if(maximumStudents == 0) return;
       $('.list-group').css('opacity', '1');
       $('.list-group').css('display', 'grid');
     }
@@ -350,12 +437,13 @@
           listGroupItem.style.backgroundColor = '#919191c2';
           listGroupItem.style.color = 'white';
           closeButton.style.visibility = "hidden"
-          activeStudent = activeStudent - 1;
-          document.getElementsByClassName("studentCount")[0].textContent = activeStudent;
           listGroupItem.setAttribute('data-active', 'false');
+		  activeStudent = getActiveStudent()
+          document.getElementsByClassName("numberInput")[0].value = activeStudent;
+		  previousNumberInput = activeStudent;
           setTimeout(function() {
             restoreButton.style.visibility = "visible"
-          }, 400);
+          }, 300);
         }
         let restoreButton = document.createElement('i');
         restoreButton.setAttribute('class', 'small');
@@ -368,12 +456,13 @@
           listGroupItem.style.backgroundColor = 'white';
           listGroupItem.style.color = 'black';
           restoreButton.style.visibility = "hidden"
-          activeStudent = activeStudent + 1;
-          document.getElementsByClassName("studentCount")[0].textContent = activeStudent;
           listGroupItem.setAttribute('data-active', 'true');
+		  activeStudent = getActiveStudent()
+		  document.getElementsByClassName("numberInput")[0].value = activeStudent;
+		  previousNumberInput = activeStudent;
           setTimeout(function() {
             closeButton.style.visibility = "visible";
-          }, 400);
+          }, 300);
         }
         listGroupItem.appendChild(closeButton);
         listGroupItem.appendChild(restoreButton);
@@ -382,10 +471,95 @@
       $('.list-group')[0].appendChild(listItemGroupDiv);
       return listItemGroupDiv;
     }
-    /* $('#page-wrapper').bind("DOMSubtreeModified",function(){
-        repositionPageWrapper();
-      });
-    */
+	
+	function getActiveStudent(){
+		let listGroupItems = $('.list-group-item')
+		let count = 0;
+		for(var i = 0; i < listGroupItems.length; i++)
+		{
+			let $this = $(listGroupItems[i]);
+			if($this.attr('data-active') == "true" && $this.hasClass('empty-list-group-item') == false){
+				count += 1
+			}
+		}		
+		return count;
+	}
+	
+	function numberInputValueChange(value){
+		if(isNumeric(value) == false)
+			document.getElementsByClassName("numberInput")[0].value = previousNumberInput;
+		else{
+			let numberOfItemsNeeded = parseInt(value);
+			let listGroupItems = $('.list-group-item');
+			if(numberOfItemsNeeded > maximumStudents){
+				numberOfItemsNeeded = maximumStudents;
+				document.getElementsByClassName("numberInput")[0].value = maximumStudents;
+			}
+			let j = 0;
+			for(var i = 0; i < listGroupItems.length; i++){
+				if(j < numberOfItemsNeeded){
+					if(listGroupItems[i].getAttribute('data-active') == "false"){
+						func = listGroupItems[i].children[1].onclick;
+						func();
+					}
+				}
+				else
+				{
+					if(listGroupItems[i].getAttribute('data-active') == "true"){
+						func = listGroupItems[i].children[0].onclick;
+						func();					
+					}
+				}
+				j += 1;
+			}
+			determineIfButtonIsAble()
+		
+		}
+	}
+	
+	function isNumeric(value) {
+		return /^-{0,1}\d+$/.test(value);
+	}
+	
+	function assignActiveStudentArray(){
+		let returnArr = []
+		let listGroupItems = $('.list-group-item')
+		for(var i = 0; i < listGroupItems.length;i++){
+			let $this = $(listGroupItems[i]);
+			if($this.attr('data-active') == "true" && $this.hasClass('empty-list-group-item') == false){
+				returnArr.push(parseInt($this.attr('data-relationship-id')))
+			}
+		}
+		return returnArr;
+	}
+	
+	function disbaleAssignButton(){
+		assignButtonStatus = false;
+		$('.assign_button')[0].classList.add('button_not_allowed')
+	}
+	
+	function enableAssignButton(){
+		assignButtonStatus = true;
+		$('.assign_button')[0].classList.remove('button_not_allowed')	
+	}
+	
+	function determineIfButtonIsAble(){
+	  if($('#flex0').val().length > 0 && $('#flex1').val().length > 0 && $('.numberInput').val() != 0)
+		enableAssignButton();
+	  else
+		disbaleAssignButton();
+	}
+	
+	function assignButtonFunction(){
+		if(assignButtonStatus == false)
+			return;
+		else
+		{
+			console.log("array is: " + assignActiveStudentArray());
+			console.log("teacher name is: " + $('input.flexdatalist.second-flexdatalist').val());
+		}
+	}
+
   </script>
 
 </html>

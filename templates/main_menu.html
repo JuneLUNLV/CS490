@@ -542,12 +542,28 @@
     <h1 class="myh1">Student and Mentor Form</h1>
 
 		<label for="default" class="myLabel" id="studentLabel">Choose a Student</label>
+		
+		<!-----
 		<input class="myInput" list="items" type="text" id="itemsInput" placeholder="Student Name" spellcheck="false" onfocus="studentInputOnFocusFunction()"/>
 		<datalist id="items">
 		  {% for student in student_table %}
 			<option class="dataListOptions" value="{{student}}">
 		  {% endfor %}
 		</datalist>
+		----->
+		<input type='text'
+       class='myInput flexdatalist student'
+       data-search-in='professorName'
+       data-selection-required='true'
+       data-value-property='*'
+       data-min-length='0'
+       id='itemsInput'
+       name='student_name_input'
+       placeholder="Student Name"    
+       autocomplete="off"
+	   />		
+		
+		
 		<label for="default" class="myLabel errorLabel" id="studentErrorLabel">Student name can not be empty.</label>
 		
 		
@@ -583,7 +599,7 @@
 		
 		<label for="default" class="myLabel">Choose a Mentor</label>
 		<input type='text'
-       class='myInput flexdatalist'
+       class='myInput flexdatalist mentor'
        data-search-in='professorName'
        data-selection-required='true'
        data-value-property='*'
@@ -1135,7 +1151,7 @@
 	});
 	
   // When the mentor input is selected, the function is triggered.------------
-	$('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {
+	$('input.flexdatalist.mentor').on('change:flexdatalist', function(event, set, options) {
 		var val = set.text;       
 		if(val.length == 0)
 		{
@@ -1179,9 +1195,11 @@
   
   // End mentor input selected function-----------------------------------------
 
-  	$('input.flexdatalist').on('show:flexdatalist.results', function(event, set, options) {	
+  	$('input.flexdatalist.mentor').on('show:flexdatalist.results', function(event, set, options) {	
 		setTimeout(function() {
-			ul = $(".flexdatalist-results")[0]
+			if($("#itemsInput2-flexdatalist-results").length == 0)
+				return;
+			ul = $("#itemsInput2-flexdatalist-results")[0]
 			for (var i = 0; i < ul.childNodes.length; i++){
 				li = ul.childNodes[i]
 				if(li.childNodes[2].textContent == "FULL "){
@@ -1196,6 +1214,13 @@
 		}
 		}, 10); 
 	});
+
+  	$('input.flexdatalist.student').on('show:flexdatalist.results', function(event, set, options) {	
+		setTimeout(function() {
+			alert("student input clicked");
+		}, 10); 
+	});
+
 	
 	// Function that handle the switch for New Stduent.
   // First, it reset everything to default display
@@ -1230,11 +1255,24 @@
 		}
 		
   });
+	// Function that initialize the student input datalist
+    let jsonData = decodeHtml('{{professorJson}}');
+    $('.flexdatalist.mentor').flexdatalist({
+       minLength: 0,
+       valueProperty: '*',
+       selectionRequired: true,
+       visibleProperties: ["professorName","count","status"],
+       searchIn: 'professorName',
+       data: JSON.parse(jsonData)
+    });
+    document.getElementById("itemsInput2-flexdatalist").spellcheck = false
+    document.getElementById("itemsInput2-flexdatalist").onclick = mentorInputOnFocusFunction
+
 
 
     // Function that initialize the mentor input datalist
     let jsonData = decodeHtml('{{professorJson}}');
-    $('.flexdatalist').flexdatalist({
+    $('.flexdatalist.mentor').flexdatalist({
        minLength: 0,
        valueProperty: '*',
        selectionRequired: true,
@@ -1288,7 +1326,7 @@
         return String.fromCharCode(dec);
       });
   }
-
+  
 	
 	
 	</script>

@@ -202,6 +202,219 @@
 	  border: 2px solid #F1204A;
 	  cursor: not-allowed;
 	}
+	
+	.my_modal {
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  height: 0vh;
+	  background-color: transparent;
+	  overflow: hidden;
+	  transition: background-color 0.25s ease;
+	  z-index: 9999;
+	}
+
+	.my_modal.my_open {
+	  position: fixed;
+	  width: 100%;
+	  height: 100vh;
+	  background-color: rgba(0, 0, 0, 0.7);
+	  transition: background-color 0.25s;
+	  box-shadow:none;
+	  max-height:100%;
+	}
+
+	.my_modal.my_open > .my_content-wrapper {
+	  transform: scale(1);
+	}
+
+	.my_modal .my_content-wrapper {
+	  position: relative;
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: flex-start;
+	  width: 50%;
+	  margin: 0;
+	  padding: 3rem;
+	  padding-bottom: 70px;
+      padding-top: 70px;
+	  background-color: white;
+	  border-radius: 0.3125rem;
+	  box-shadow: 0 0 2.5rem rgba(0, 0, 0, 0.5);
+	  transform: scale(0);
+	  transition: transform 0.25s;
+	  transition-delay: 0.15s;
+	}
+
+	.my_modal .my_content-wrapper .my_close {
+	  position: absolute;
+	  top: 0.5rem;
+	  right: 0.5rem;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  width: 2.5rem;
+	  height: 2.5rem;
+	  border: none;
+	  background-color: transparent;
+	  font-size: 1.5rem;
+	  transition: 0.25s linear;
+	}
+
+	.my_modal .my_content-wrapper .my_close:before, .my_modal .my_content-wrapper .my_close:after {
+	  position: absolute;
+	  content: '';
+	  width: 1.25rem;
+	  height: 0.125rem;
+	  background-color: black;
+	}
+
+	.my_modal .my_content-wrapper .my_close:before {
+	  transform: rotate(-45deg);
+	}
+
+	.my_modal .my_content-wrapper .my_close:after {
+	  transform: rotate(45deg);
+	}
+
+	.my_modal .my_content-wrapper .my_close:hover {
+	  transform: rotate(360deg);
+	}
+
+	.my_modal .my_content-wrapper .my_close:hover:before, .my_modal .my_content-wrapper .my_close:hover:after {
+	  background-color: tomato;
+	}
+
+	.my_modal .my_content-wrapper .my_modal-header {
+	  position: relative;
+	  display: flex;
+	  flex-direction: row;
+	  align-items: center;
+	  justify-content: space-between;
+	  width: 100%;
+	  margin: 0;
+	}
+
+	.my_modal .my_content-wrapper .my_modal-header h2 {
+	  font-size: 2.3rem;
+	  letter-spacing: 0.5px;
+	}
+
+	.my_modal .my_content-wrapper .my_content {
+	  position: relative;
+	  display: flex;
+	  font-size: 1vw;
+	  padding-top: 30px;
+	}
+
+	.my_modal .my_content-wrapper .my_content p {
+	  line-height: 1.75;
+	}
+
+	.my_modal .my_content-wrapper .my_modal-footer {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		width: 100%;
+		margin: 0;
+		background-color: #1ae0a00f;
+		padding: 10px;
+		border-radius: 15px;
+	}
+
+	.my_modal .my_content-wrapper .my_modal-footer .my_action {
+	  position: relative;
+	  margin-left: 0.625rem;
+	  padding: 0.625rem 1.25rem;
+	  border: none;
+	  background-color: #fd6262;
+	  border-radius: 0.25rem;
+	  color: white;
+	  font-size: 1rem;
+	  font-weight: 300;
+	  overflow: hidden;
+	  z-index: 1;
+	  font-family: sans-serif;
+	  
+	}
+
+	.my_modal .my_content-wrapper .my_modal-footer .my_action:before {
+	  position: absolute;
+	  content: '';
+	  top: 0;
+	  left: 0;
+	  width: 0%;
+	  height: 100%;
+	  background-color: rgba(255, 255, 255, 0.2);
+	  transition: width 0.25s;
+	  z-index: 0;
+	}
+
+	.my_modal .my_content-wrapper .my_modal-footer .my_action:first-child {
+	  background-color: #2ecc71;
+	}
+
+	.my_modal .my_content-wrapper .my_modal-footer .action:last-child {
+	  background-color: #e74c3c;
+	}
+
+	.my_modal .my_content-wrapper .my_modal-footer .my_action:hover:before {
+	  width: 100%;
+	}		
+	
+	.modal_ul{
+		position: relative;
+		//height: 400px;
+		width: 85%;
+		overflow: scroll;
+		margin: 0;
+		padding: 0;
+		border: 2px solid #ccc;
+		font-size: 16px;
+		font-family: Arial, sans-serif;
+		margin-bottom: 20px;  
+		-webkit-overflow-scrolling: touch;
+		overflow-x: hidden;
+		border: 1px black solid;	
+	}
+	
+	.modal_li{
+	  padding: 10px 20px;
+	  
+	  border-bottom: 1px solid #ccc;
+	  
+	  &:last-child {
+		border-bottom: none;
+	  }
+	}
+	
+	.modal_ul::-webkit-scrollbar-track
+	{
+		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+		background-color: #F5F5F5;
+	}	
+	
+	.modal_ul::-webkit-scrollbar
+	{
+		width: 10px;
+		background-color: #F5F5F5;
+	}
+
+	.modal_ul::-webkit-scrollbar-thumb
+	{
+	background-color: #0ae;
+	
+	background-image: -webkit-gradient(linear, 0 0, 0 100%,
+	                   color-stop(.5, rgba(255, 255, 255, .2)),
+					   color-stop(.5, transparent), to(transparent));
+	}	
+	
+	
+	
 	</style>
 </head>
 
@@ -241,7 +454,28 @@
 		</div>
 		<p style="width:fit-content" class="myp" id="showOrHideListGroupId" onclick="showOrHideListGroupFunction()">show all <span class="studentCount">0</span> students</p>
 		<div class="list-group" style="opacity: 0;display: none;width: 95%; flex-direction: row;border: 2px solid #6c87d3b3;padding-top: 15px;border-radius: 0.3125rem;padding-left: 50px;margin-top: 0px;margin-bottom: 30px;margin-left: 1.5%;transition: opacity 2s ease-out 1s;">
-		</div>
+	</div>
+	
+	<!---------------------- Assignment sucessful modal ---------------------->
+	<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_multi_assignment">
+		<article class="my_content-wrapper">
+			<header class="my_modal-header">
+				<h2 style="font-size:1.5vw;">Multiple Assignments Successful<img style="height: 2.5vw; width: 3vw; margin-left: 1.5vw;position:absolute;bottom: 14px;"src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
+			</header>	
+			<div class="my_content">
+				<p>All of the following <span id="student_count_modal" style="font-weight:bold;">0</span> students have been successfully assigned to mentor <span id="mentor_name_span_sucessful_assigned" style="font-weight:bold;">MentorName</span>.</p>	
+			</div>
+			<ul class="modal_ul">
+			</ul>
+			<footer class="my_modal-footer">
+				<button class="my_action" onclick='location.reload()'>Assign More Student</button>
+				<button style="background-color:#57BEF5;" class="my_action" onclick='window.location.href = "/mentoring_joined?username=&email="'>Check Table</button>
+			</footer>			
+	
+		</article>
+	</div>
+	<!---------------------- End Assignment sucessful modal ---------------------->
+	
 </body>
   <script>
     let jsonData = decodeHtml('{{professorJson}}');
@@ -555,9 +789,54 @@
 			return;
 		else
 		{
-			console.log("array is: " + assignActiveStudentArray());
-			console.log("teacher name is: " + $('input.flexdatalist.second-flexdatalist').val());
+			var relationshipIdArray = assignActiveStudentArray();
+			var teacherName = $('input.flexdatalist.second-flexdatalist').val();
+			//console.log("array is: " + relationshipIdArray);
+			//console.log("teacher name is: " + teacherName);
+			req = $.ajax({
+				url: '/multiple_assign_request',
+				type:'POST',
+				data: {teacherName:teacherName,relationshipIdArray:relationshipIdArray}
+			});
+			
+			req.done(function(data){
+				if(data.RESULT == "SUCCESS"){
+					$('#modal_for_successful_multi_assignment')[0].classList.toggle("my_open");
+					document.getElementById('student_count_modal').textContent = relationshipIdArray.length;
+					document.getElementById('mentor_name_span_sucessful_assigned').textContent = teacherName;
+					activeStudentNameArray = assignActiveStudentNameArray()
+					for(var i = 0; i < activeStudentNameArray.length; i++){
+						addItemToModalUl(activeStudentNameArray[i])
+					}
+					adjustModalUlHeight();
+				}
+			});
 		}
+	}
+	function adjustModalUlHeight(){
+		if($('.modal_ul').height() > 400)
+			$('.modal_ul').height(400)
+		else
+			$('.modal_ul').height('auto')
+	}
+	
+	function addItemToModalUl(studentName){
+		var newLi = document.createElement('li');
+		newLi.setAttribute('class','modal_li');
+		newLi.textContent = studentName;
+		$('.modal_ul')[0].appendChild(newLi);
+	}
+	
+	function assignActiveStudentNameArray(){
+		let returnArr = []
+		let listGroupItems = $('.list-group-item')
+		for(var i = 0; i < listGroupItems.length;i++){
+			let $this = $(listGroupItems[i]);
+			if($this.attr('data-active') == "true" && $this.hasClass('empty-list-group-item') == false){
+				returnArr.push($this.text())
+			}
+		}
+		return returnArr;
 	}
 
   </script>

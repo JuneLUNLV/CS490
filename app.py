@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 from flask import Flask
 from flask import Markup
-from flask import Flask, request, render_template,send_file, Response, redirect, url_for, jsonify
+from flask import Flask, request, render_template,send_file, Response, redirect, url_for, jsonify, send_file
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
 import json
@@ -18,8 +18,6 @@ import os
 # student(mysqlite_table):		['ID'(PRIMARY KEY,AUTOINCREMENT), 'lastname'(lowercase), 'firstname(lowercase)', 'email'] UNIQUE(lastname,firstname,email)
 # professor(mysqlite_table):	['ID'(PRIMARY KEY, AUTOINCREMENT), 'lastname'(lowercase), 'firstname'(lowercase), 'email'] UNIQUE(lastname,firstname,email)
 # mentoring(mysqlite_table):	['ID'(PRIMARY, AUTOINCREMENT), 'professor_id'(FOREIGN), 'student_id'(FOREIGN), 'dateAssigned'(NULLABLE), 'endDate'(NULLABLE)] UNIQUE(professor_id,student_id)
-
-
 
 class Student:
 	def __init__(self, id=None, lastname="",firstname="" , email=""):
@@ -161,9 +159,8 @@ def insertDataToOffline_dataTable(connection,data_name,data_value):
     connection.commit()
     return "SUCCESS"
     
-def getDataFromOffline_dataTable(connection,data_name):
+def getDataFromOffline_dataTable(cursor,data_name):
     sql_command = 'SELECT data_value FROM offline_data WHERE data_name = "'  + str(data_name) + '";'
-    cursor = connection.cursor()
     cursor.execute(sql_command)
     rows = cursor.fetchall()
    
@@ -181,7 +178,7 @@ def updateDataFromOffline_dataTable(connection,data_name,data_value):
     
     
 # Find function student ID by name using SELECT, if nothing found, return string "null", else return int(id)
-def findStudentIDByName(lastname,firstname):
+def findStudentIDByName(cursor,lastname,firstname):
 	studentLastName = lastname.lower()
 	studentFirstName = firstname.lower()
 	sql_command = 'SELECT ID FROM student WHERE firstname ="'  + studentFirstName + '" AND lastname = "' + studentLastName + '";'
@@ -194,7 +191,7 @@ def findStudentIDByName(lastname,firstname):
 	for row in rows:
 		return(row[0])
     
-def findStudentIDByNameAndMail(lastname,firstname,mail):
+def findStudentIDByNameAndMail(cursor,lastname,firstname,mail):
 	studentLastName = lastname.lower()
 	studentFirstName = firstname.lower()
 	sql_command = 'SELECT ID FROM student WHERE firstname ="'  + studentFirstName + '" AND lastname = "' + studentLastName + '" AND email = "' + mail +'";'
@@ -209,7 +206,7 @@ def findStudentIDByNameAndMail(lastname,firstname,mail):
 
 
 # Find professor ID by name using SELECT,if nothing found, return string "null", else return int(id)
-def findProfessorIDByName(lastname,firstname):
+def findProfessorIDByName(cursor,lastname,firstname):
 	professorLastName = lastname.lower()
 	professorFirstName = firstname.lower()
 	sql_command = 'SELECT ID FROM professor WHERE firstname ="'  + professorFirstName + '" AND lastname = "' + professorLastName + '";'
@@ -248,7 +245,7 @@ def findProfessorNameById(cursor,id):
 		return(row[0],row[1])
 
 #  Find professor id by student id using SELECT, return string "null", else return int(id)
-def findProfessorByStudentId(id):
+def findProfessorByStudentId(cursor,id):
 	sql_command = 'SELECT professor_id FROM mentoring WHERE student_id = "' + str(id) + '";'
 	cursor.execute(sql_command)
 	rows = cursor.fetchall()
@@ -301,9 +298,9 @@ def deleteStudentById(cursor,id):
 	try:
 		cursor.execute(sql_command)
 	except:
-		return false
+		return False
 		
-	return true
+	return True
 	
 #   Delete a row in professor TABLE by student id, return true if success, else return false	
 def deleteProfessorById(cursor,id):
@@ -311,9 +308,9 @@ def deleteProfessorById(cursor,id):
 	try:
 		cursor.execute(sql_command)
 	except:
-		return false;
+		return False
 
-	return true
+	return True
 
 #   Read all 3 tables and join them together, and load into a Pandas dataframe
 #   Organize all the column name and sort the dataframe by professor name
@@ -336,7 +333,7 @@ def readDatabaseIntoDataframe(connection):
 	df.rename(columns={"email":"Student Rebel Email", "dateAssigned":"Date Assigned", "endDate": "End Date"}, inplace=True)
 	col = ["Professor","Student","Student Rebel Email","Date Assigned","End Date"]
 	df = df[col]
-	df.sort_values(by=['Professor'],inplace=True)
+	df.sort_values(by=['Professor','Student'],inplace=True)
 	return df
 
 #   Simply read a table into Pandas dataframe
@@ -347,10 +344,15 @@ def readTableIntoDataFrame(connection,tableName):
 
 
 # Using pandas to extract the csv file
-def readCsvIntoDataframe(filename="TEMP_DATASET.csv"):
-	colnames=['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date'] 
-	df = pd.read_csv(filename,names=colnames,header=None,encoding = "ISO-8859-1")
-	return df
+def readCsvIntoDataframe(filename="TEMP_DATASET.csv",originalCVSFile = True):
+    if originalCVSFile == True:
+        colnames=['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date'] 
+    else:
+        colnames=['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date', "End_Date"] 
+    df = pd.read_csv(filename,names=colnames,header=None,encoding = "ISO-8859-1")
+    if originalCVSFile == True:
+        df = removeAndFixDataFrame(df)
+    return df
 
 # Inserting student table from csv file
 def insertToStudentTableFromCSVFile(df,cursor):
@@ -406,13 +408,13 @@ def insertToMentoringTableFromCSVFile(df,cursor):
 		except:
 			dateAssigned = "null"
 		if(len(studentName.split(',')) > 1):
-			student_id = findStudentIDByName(studentName.split(',')[0].lstrip().rstrip().lower(),studentName.split(',')[1].lstrip().rstrip().lower())
+			student_id = findStudentIDByName(cursor,studentName.split(',')[0].lstrip().rstrip().lower(),studentName.split(',')[1].lstrip().rstrip().lower())
 		else:
-			student_id = findStudentIDByName(studentName,"")
+			student_id = findStudentIDByName(cursor,studentName,"")
 		if(len(professorName.split(',')) > 1):
-			professor_id = findProfessorIDByName(professorName.split(',')[0].lstrip().rstrip().lower(),professorName.split(',')[1].lstrip().rstrip().lower())
+			professor_id = findProfessorIDByName(cursor,professorName.split(',')[0].lstrip().rstrip().lower(),professorName.split(',')[1].lstrip().rstrip().lower())
 		else:
-			professor_id = findProfessorIDByName(professorName.strip(),"")
+			professor_id = findProfessorIDByName(cursor,professorName.strip(),"")
 		
 		sql_command = "INSERT INTO mentoring(professor_id, student_id, dateAssigned, endDate) VALUES "
 		sql_command += '("' + str(professor_id) + '", "' + str(student_id) +'", "'+ dateAssigned + '", "null");' 
@@ -438,7 +440,7 @@ def removeAndFixDataFrame(df):
 	return new_df
 
 #   Return the number of row in given table, if tablename is incorrect, return "null", else return int(count)
-def numberOfCountInTable(tableName):   
+def numberOfCountInTable(cursor,tableName):   
 	sql_command = 'SELECT COUNT(*) FROM '+ tableName +';'
 	cursor.execute(sql_command)
 	rows = cursor.fetchall()
@@ -451,10 +453,10 @@ def numberOfCountInTable(tableName):
 
 #   Return an array which contains: 
 #   [(0)number_of_rows_in_student_table,(1)number_of_rows_in_professor_table,(2)number_of_rows_in_mentoring_table,(3)average_student_per_mentor, (4)maximum_number_of_student_allowed_to_assign]
-def getAllNumbers(connection):
-	margin = float(getDataFromOffline_dataTable(connection,'DOUBLE_margin_for_max_student_count'))
-	returnArr = [numberOfCountInTable('student'),numberOfCountInTable('professor'),numberOfCountInTable('mentoring')]
-	averageStudentPerMentor = int(numberOfCountInTable('student')/numberOfCountInTable('professor'))
+def getAllNumbers(cursor):
+	margin = float(getDataFromOffline_dataTable(cursor,'DOUBLE_margin_for_max_student_count'))
+	returnArr = [numberOfCountInTable(cursor,'student'),numberOfCountInTable(cursor,'professor'),numberOfCountInTable(cursor,'mentoring')]
+	averageStudentPerMentor = int(numberOfCountInTable(cursor,'student')/numberOfCountInTable(cursor,'professor'))
 	maximumStudentPerMentor = int(averageStudentPerMentor * (1+margin))
 	
 	returnArr.append(averageStudentPerMentor)
@@ -464,7 +466,7 @@ def getAllNumbers(connection):
 
 #   Return the number of student for a professor by using the professor id
 #   If professor_id is invalid, return "null", else return int(count)
-def getNumberOfStudentForMentorID(professor_id):
+def getNumberOfStudentForMentorID(cursor,professor_id):
 	sql_command = 'SELECT COUNT(*) FROM mentoring where professor_id = '+ str(professor_id) + ';'
 	cursor.execute(sql_command)
 	rows = cursor.fetchall()
@@ -481,8 +483,8 @@ def getNumberOfStudentForMentorID(professor_id):
 #	}  
 def getProfessorAndStudentNumberInDicionary():
 	professorDictionary = {}
-	for i in range(1,numberOfCountInTable('professor')+1):
-		professorDictionary.update({findProfessorNameById(cursor,i)[0] : getNumberOfStudentForMentorID(i)})
+	for i in range(1,numberOfCountInTable(cursor,'professor')+1):
+		professorDictionary.update({findProfessorNameById(cursor,i)[0] : getNumberOfStudentForMentorID(cursor,i)})
 	return professorDictionary
 
 #   Assign a student to mentor by UPDATE using mentor_id and student_id
@@ -503,7 +505,7 @@ def insertNewStudent(curosor,studentLastName,studentFirstName,studentEmail):
         except sqlite3.IntegrityError:
             return "EXISTED"
         
-        student_id = findStudentIDByNameAndMail(studentLastName,studentFirstName,studentEmail)      
+        student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)      
         return student_id
     
 def assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
@@ -511,8 +513,70 @@ def assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,
     sql_command += '("' + str(studentId) + '", "' + str(professorId) +'", "' + str(assignDate) + '", "' + str(endDate) +  '");' 
     print(sql_command)
     connection.cursor().execute(sql_command)
-    connection.commit()    
+    connection.commit()  
     
+def getStudentsForProfessor(connection):
+    df= readDatabaseIntoDataframe(connection)
+    professorNames = list(getProfessorAndStudentNumberInDicionary().keys())
+    newString = ""
+    for i in range(len(professorNames)):    
+        professorName = professorNames[i].capitalize()
+        df1 = df[df['Professor'] == professorName].sort_values(by=['Student'])
+        df1.index = df1.index + 1 
+        df1.reset_index(drop=False,inplace=True)
+        studentArr = df1['Student'].array.to_numpy().tolist()
+        relationshipIdArr = df1['index'].array.to_numpy().tolist()
+        nameAndIdDictArr = []
+        for j in range(len(studentArr)):
+            mydict = {
+                "studentName":studentArr[j],
+                "relationshipId":relationshipIdArr[j]
+            }
+            nameAndIdDictArr.append(mydict)
+            
+        newString += (json.dumps({
+            "professorName":professorName,
+            "nameAndIdDictArr":nameAndIdDictArr,
+        })) + ","
+    newString = '[' + newString[:-1] + ']'
+    return newString    
+
+def massAssign(arr,professorName):
+    professorName = professorName.lower()
+    professorId = findProfessorIDByName(cursor,professorName,"")
+    for i in arr:
+        assignFromRelationshipId(connection,i,professorId)
+
+def assignFromRelationshipId(connection,mentoringId,professorId):
+    sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '" WHERE ID = "' + str(mentoringId)  + '";'
+    #print(sql_command)
+    try:
+        connection.cursor().execute(sql_command)
+    except Exception as e: 
+        print(e)
+    connection.commit()            
+    
+def findProfessorIdByMentoringId(cursor,relationship_id):
+    sql_command = 'SELECT professor_id FROM mentoring where ID = '+ str(relationship_id) + ';'
+    cursor.execute(sql_command)
+    rows = cursor.fetchall()
+
+    if len(rows) == 0:
+        return "null"
+
+    for row in rows:
+        return(row[0])  
+    
+def findRelationshipIdByStudentId(cursor,relationship_id):
+    sql_command = 'SELECT student_id FROM mentoring WHERE ID ="'  + str(relationship_id) + '";'
+    cursor.execute(sql_command)
+    rows = cursor.fetchall()
+
+    if len(rows) == 0:
+        return "null"
+
+    for row in rows:
+        return(row[0])
 
 #-------------Main Part For Database-------------------
 connection = sqlite3.connect("falcuty_mentor.db")
@@ -521,13 +585,12 @@ createStudentTable(cursor)
 createProfessorTable(cursor)
 createMentoringTable(cursor)
 createOfflineDataTable(cursor)
+
 connection.execute("PRAGMA foreign_keys = ON;")
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 csv_file = os.path.join(THIS_FOLDER, 'faculty_mentor_master_list.csv')
-
 df = readCsvIntoDataframe(csv_file)
-df = removeAndFixDataFrame(df)
 
 insertToStudentTableFromCSVFile(df,cursor)
 insertToProfessorTableFromCSVFile(df,cursor)
@@ -536,19 +599,12 @@ insertDataToOffline_dataTable(connection,"DOUBLE_margin_for_max_student_count","
 
 connection.commit()
 connection.close()
+#------------------------------------------------------       
 
-
+#------------ flask side -----------------------
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True			# If template change, there is no need to reload the APP
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0			# No caching, only for debugging purposes
-connection = sqlite3.connect("falcuty_mentor.db")
-connection.execute("PRAGMA foreign_keys = ON;")
-cursor = connection.cursor()
-globalMentoring = Mentoring()
-#------------------------------------------------------
-
-
-#------------ flask side -----------------------
 
 @app.route('/')
 def index():
@@ -563,54 +619,66 @@ def showall():
 	professor_table=[readTableIntoDataFrame(connection,"professor").to_html(classes='data',index=False)],
 	mentor_table=[readTableIntoDataFrame(connection,"mentoring").to_html(classes='data',index=False)],
 	offline_data_table=[readTableIntoDataFrame(connection,'offline_data').to_html(classes='data',index=False)], 
-	numberForEachTable=getAllNumbers(connection),
+	numberForEachTable=getAllNumbers(cursor),
 	professorDictionary=getProfessorAndStudentNumberInDicionary())
 
 # The main route for this APP
 @app.route('/main_menu',methods = ['POST', 'GET'])
 def mainMenu():
-	student_table = readTableIntoDataFrame(connection,"student").sort_values(by=['lastname'])
-	student_table = student_table['lastname'].str.lstrip().str.title() + ', ' + student_table['firstname'].str.lstrip().str.title()
-	
 	professorAndNumberDict = getProfessorAndStudentNumberInDicionary()
-	newString = ""
+	professorJsonString = ""
 	for professorName,count in sorted(professorAndNumberDict.items()):
 		status = ""
-		if count < getAllNumbers(connection)[3]:
+		if count < getAllNumbers(cursor)[3]:
 			status = "EMPTY"
-		elif count >= getAllNumbers(connection)[3] and count < getAllNumbers(connection)[4]:
+		elif count >= getAllNumbers(cursor)[3] and count < getAllNumbers(cursor)[4]:
 			status = "ALMOST FULL"
 		else:
 			status = "FULL"
-		newString += (json.dumps({
+		professorJsonString += (json.dumps({
 			"professorName":professorName.strip().title(),
 			"count":count,
 			'status': status
 		})) + ","
-	newString = '[' + newString[:-1] + ']'
+	professorJsonString = '[' + professorJsonString[:-1] + ']'
 
-	
-	return render_template("main_menu.html",student_table=student_table.array, professorJson=newString, numberForEachTable=getAllNumbers(connection))
+	student_table = readTableIntoDataFrame(connection,"student").sort_values(by=['lastname'])
+	student_table['duplicated_name'] = student_table.duplicated(subset=['lastname','firstname'], keep=False)
+	studentString = ""
+	for i in range(student_table.shape[0]):
+		duplicated = 0
+		if student_table.iloc[i].duplicated_name == True:
+			duplicated = 1
+		studentString += (json.dumps({
+			"studentName":student_table.iloc[i].lastname.title() + ", " + student_table.iloc[i].firstname.title(),
+			"relationship_id":findRelationshipIdByStudentId(cursor,student_table.iloc[i].ID),
+			'email': student_table.iloc[i].email,
+            'duplicated': str(duplicated)
+		})) + ","
+	studentString = '[' + studentString[:-1] + ']'    
+
+
+	return render_template("main_menu.html",studentJson=studentString, professorJson=professorJsonString, numberForEachTable=getAllNumbers(cursor))
 
 # Update the main_menu page by selecting the element "student_name_input"
 @app.route('/update',methods=['POST'])
 def update():
-	selected = request.form['name'] 
-	professorid = findProfessorByStudentId(findStudentIDByName(selected.split(',')[0].lower(),selected.split(',')[1].lstrip().lower()))
+	relationship_id = request.form['relationship_id'] 
+	professorid = findProfessorIdByMentoringId(cursor,relationship_id)
 	if professorid is not 'null':
 		professorname =  getProfessorObjectById(cursor,professorid).lastname
 	else:
 		professorname =  "None"
 	
 	studentCountForThisProfessor = getProfessorAndStudentNumberInDicionary()[professorname]
-	if studentCountForThisProfessor < getAllNumbers(connection)[3]:
+	if studentCountForThisProfessor < getAllNumbers(cursor)[3]:
 		color = "green"
-	elif studentCountForThisProfessor >= getAllNumbers(connection)[3] and studentCountForThisProfessor < getAllNumbers(connection)[4]:
+	elif studentCountForThisProfessor >= getAllNumbers(cursor)[3] and studentCountForThisProfessor < getAllNumbers(cursor)[4]:
 		color = "yellow"
 	else:
 		color = "red"
 		   
-	return jsonify({'RESULT':'SUCCESS',"selected_name":selected,'professor_name':professorname.capitalize(),'student_count':getProfessorAndStudentNumberInDicionary()[professorname],'number_color':color})
+	return jsonify({'RESULT':'SUCCESS','professor_name':professorname.capitalize(),'student_count':getProfessorAndStudentNumberInDicionary()[professorname],'number_color':color})
 
 # Update the main_menu page by selecting the element "mentor_name_input"
 @app.route('/update_from_professor_datalist',methods=['POST'])
@@ -618,9 +686,9 @@ def update_from_professor_datalist():
 	selected = request.form['name']	
 	professorname = selected.strip().lower()
 	studentCountForThisProfessor = getProfessorAndStudentNumberInDicionary()[professorname]
-	if studentCountForThisProfessor < getAllNumbers(connection)[3]:
+	if studentCountForThisProfessor < getAllNumbers(cursor)[3]:
 		color = "green"
-	elif studentCountForThisProfessor >= getAllNumbers(connection)[3] and studentCountForThisProfessor < getAllNumbers(connection)[4]:
+	elif studentCountForThisProfessor >= getAllNumbers(cursor)[3] and studentCountForThisProfessor < getAllNumbers(cursor)[4]:
 		color = "yellow"
 	else:
 		color = "red"
@@ -647,13 +715,14 @@ def assign_mentor_existed_student_check():
 	mentorName = request.form['mentorName'].lstrip().rstrip().lower()
 	assignDate = request.form['assignDate']
 	endDate = request.form['endDate']
+	relationship_id = request.form['relationship_id']
 	print("checking condition for: student " + studentName + " is assinging to mentor " + mentorName + " assigned date: " + assignDate + " end date " + endDate + ".")
 	
 	if len(studentName.split(',')) < 2:
 		return jsonify({'RESULT':'Student name is not in correct format. For example: "Lastname, Firstname" '})
 	
-	studentId = findStudentIDByName(studentName.split(',')[0].rstrip().lstrip(),studentName.split(',')[1].rstrip().lstrip())
-	professorId = findProfessorIDByName(mentorName,"")
+	studentId = findStudentIDByMentoringId(cursor,relationship_id)
+	professorId = findProfessorIDByName(cursor,mentorName,"")
 	
 	if studentId == "null":
 		return jsonify({'RESULT':'Unable to find this student. Try create new student.'})
@@ -661,7 +730,7 @@ def assign_mentor_existed_student_check():
 	if professorId == "null":
 		return jsonify({'RESULT':"Unable to find this mentor. Please double check this mentor's name."})
 	
-	if professorId == findProfessorByStudentId(studentId):
+	if professorId == findProfessorByStudentId(cursor,studentId):
 		return jsonify({'RESULT':'This student has already been assigned to this mentor.'})  
     
 	globalMentoring.professor_id = professorId
@@ -704,11 +773,11 @@ def assign_mentor_new_stduent_check():
 
     print("Checking conditions for student  " + studentName + " is assinging to mentor " + mentorName + " assigned date: " + assignDate + " end date " + endDate + ".")
     
-    student_id = findStudentIDByNameAndMail(studentLastName,studentFirstName,studentRebelMail)
+    student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentRebelMail)
     if student_id != "null":
         return jsonify({'RESULT':"Student already existed. Try turn off the New Student Switch."})
 
-    professorId = findProfessorIDByName(mentorName,"")       
+    professorId = findProfessorIDByName(cursor,mentorName,"")       
     if professorId == "null":
         return jsonify({'RESULT':"Unable to find this mentor. Please double check this mentor's name."})    
 
@@ -736,12 +805,80 @@ def add_header(r):
 
 @app.route('/mentoring_joined',methods=['POST','GET'])
 def mentoring_joined():
+	professorAndNumberDict = getProfessorAndStudentNumberInDicionary()
+	newString = ""
+	for professorName,count in sorted(professorAndNumberDict.items()):
+		newString += (json.dumps({
+			"professorName":professorName.strip().title(),
+			"count":count
+		})) + ","
+	newString = '[' + newString[:-1] + ']'
+    
+	try:
+		studentName = request.args.get('username').title()
+	except:
+		studentName = ""
+        
+	try:
+		email = request.args.get('email').lower().strip()
+	except:
+		email = ""
+    
 	return render_template("mentoring_joined.html",
 		mentoring_joined_tables=[readDatabaseIntoDataframe(connection).to_html(classes='data',index=False)],
-		studentName = request.args.get('username').title(), email=request.args.get('email').lower().strip())
+		studentName = studentName, email=email,
+		professorJson=newString)
   
 @app.route('/apply_settings',methods=['POST'])   
 def apply_settings():
     margin = float(request.form['margin'])
     updateDataFromOffline_dataTable(connection,'DOUBLE_margin_for_max_student_count',margin)
     return jsonify({'RESULT':'SUCCESS'}) 
+
+@app.route('/backup_database',methods=['POST','GET'])
+def backup_database():
+    return render_template("backup_database.html") 
+
+@app.route('/request_for_backup_database')   
+def request_for_backup_database():
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    db_file = os.path.join(THIS_FOLDER, "falcuty_mentor.db")
+    try:
+        file = send_file(db_file, as_attachment=True,attachment_filename='UNLV_CS_mentor.db') 
+    except Exception as e:
+        file = str(e)
+    
+    return file
+
+
+@app.route('/multiple_assign_page',methods=['POST','GET'])
+def multiple_assign_page():
+	professorAndNumberDict = getProfessorAndStudentNumberInDicionary()
+	newString = ""
+	for professorName,count in sorted(professorAndNumberDict.items()):
+		newString += (json.dumps({
+			"professorName":professorName.strip().title(),
+			"count":count
+		})) + ","
+	newString = '[' + newString[:-1] + ']'
+	studentForProfessorsJson = getStudentsForProfessor(connection)
+    
+	return render_template("multiple_assign_page.html",professorJson=newString,studentForProfessorsJson=studentForProfessorsJson)
+
+@app.route('/multiple_assign_request',methods=['POST','GET'])
+def multiple_assign_request():
+    teacherName = request.form['teacherName']
+    relationshipIdArray = request.form.getlist('relationshipIdArray[]')
+    massAssign(relationshipIdArray,teacherName)
+    return jsonify({'RESULT':'SUCCESS'})
+
+    
+# Running the app here
+if __name__ == '__main__':
+	connection = sqlite3.connect("falcuty_mentor.db")
+	connection.execute("PRAGMA foreign_keys = ON;")
+	cursor = connection.cursor()
+	globalMentoring = Mentoring()
+	run_simple('localhost', 5000, app,
+				use_debugger=True, use_evalex=True)
+

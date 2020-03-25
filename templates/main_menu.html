@@ -567,26 +567,18 @@
 
 		<label for="default" class="myLabel" id="studentLabel">Choose a Student</label>
 		
-		<!-----
-		<input class="myInput" list="items" type="text" id="itemsInput" placeholder="Student Name" spellcheck="false" onfocus="studentInputOnFocusFunction()"/>
-		<datalist id="items">
-		  {% for student in student_table %}
-			<option class="dataListOptions" value="{{student}}">
-		  {% endfor %}
-		</datalist>
-		----->
 		<input type='text'
-       class='myInput flexdatalist student'
-       data-search-in='studentName'
-       data-selection-required='true'
-       data-value-property='*'
-       data-min-length='0'
-       id='itemsInput'
-       name='student_name_input'
-       placeholder="Student Name"    
-       autocomplete="off"
-	   searchContain="true"
-	   />		
+		   class='myInput flexdatalist student'
+		   data-search-in='studentName'
+		   data-selection-required='true'
+		   data-value-property='*'
+		   data-min-length='0'
+		   id='itemsInput'
+		   name='student_name_input'
+		   placeholder="Student Name"    
+		   autocomplete="off"
+		   searchContain="true"
+	    />		
 		
 		
 		<label for="default" class="myLabel errorLabel" id="studentErrorLabel">Student name can not be empty.</label>
@@ -793,7 +785,7 @@
 
 	/* All the inputs onfocus functions */
 	function studentInputOnFocusFunction(){
-		//document.getElementById("itemsInput").value=''; 
+		//document.getElementById("itemsInput-flexdatalist").value=''; 
 		document.getElementById("studentErrorLabel").style.display = 'none';
 	}
 	
@@ -964,7 +956,7 @@
 			req = $.ajax({
 				url: '/assign_mentor_existed_student_check',
 				type:'POST',
-				data: {studentName:studentName,mentorName:mentorName,assignDate:assignDate,endDate:endDate}
+				data: {studentName:studentName,mentorName:mentorName,assignDate:assignDate,endDate:endDate,relationship_id:globalSelectedStudentRelationshipId}
 			});
 			
       // When request done, see if all the server side checks are valid, if not, error label is displayed

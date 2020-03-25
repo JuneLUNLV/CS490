@@ -137,7 +137,32 @@
 			.item-count{
 				position:absolute;
 				left:25%;
-			}		
+			}	
+
+			.item-email{
+				position: absolute;
+				left: 45%;
+				color: grey;
+				font-size: smaller;
+				font-style: italic;		
+				visibility:hidden;
+			}
+			
+			.item:hover .item-email{
+				position: absolute;
+				left: 45%;
+				color: white;
+				font-size: small;
+				font-style: italic;	
+			}	
+			
+			.item-relationship_id{
+				display:none;
+			}
+			
+			.item-duplicated{
+				display:none;
+			}
 
 			.my_modal {
 			  position: fixed;
@@ -176,7 +201,7 @@
 			  margin: 0;
 			  padding: 3rem;
 			  padding-bottom: 70px;
-        padding-top: 30px;
+			  padding-top: 30px;
 			  background-color: white;
 			  border-radius: 0.3125rem;
 			  box-shadow: 0 0 2.5rem rgba(0, 0, 0, 0.5);
@@ -482,8 +507,7 @@
       width:35%;
     }
       
-      
-			
+
 		</style>
     </head>
 
@@ -553,7 +577,7 @@
 		----->
 		<input type='text'
        class='myInput flexdatalist student'
-       data-search-in='professorName'
+       data-search-in='studentName'
        data-selection-required='true'
        data-value-property='*'
        data-min-length='0'
@@ -561,6 +585,7 @@
        name='student_name_input'
        placeholder="Student Name"    
        autocomplete="off"
+	   searchContain="true"
 	   />		
 		
 		
@@ -842,7 +867,7 @@
   /* Initial all variables which are the elements of the webpage*/
   /* First part of initialization are the elements from main_menu page*/
 	function assignButtonFunction(){	
-		studentNameInput = document.getElementById("itemsInput");
+		studentNameInput = document.getElementById("itemsInput-flexdatalist");
 		mentorNameInput = document.getElementById("itemsInput2-flexdatalist");
 		studentErrorLabel = document.getElementById("studentErrorLabel");
 		mentorErrorLabel = document.getElementById("mentorErrorLabel");
@@ -1049,7 +1074,7 @@
 	
 	// The default display of all elements in the page
 	function defaultState(){
-		document.getElementById("itemsInput").value="";
+		document.getElementById("itemsInput-flexdatalist").value="";
 		document.getElementById("studentLastNameInput").value="";
 		document.getElementById("studentFirstNameInput").value="";
 		document.getElementById("studentRebelMailInput").value="";
@@ -1092,62 +1117,57 @@
 		}
 	}
 
-  // Function that disable the drop down list for student input
-	function switchToNewStudent(){
-		$("#itemsInput").attr("list", "none");	
-	}
 
   // When the student input is selected, the function is triggered.
-	$("#itemsInput").on('input', function () {
-		var val = this.value;
-		
+	$('input.flexdatalist.student').on('change:flexdatalist', function(event, set, options) {
+		var val = set.text; 
     // Reset the mentor input if student input is empty.
 		if(this.value.length == 0)
 		{
 			document.getElementById("itemsInput2-flexdatalist").value=''
 			return;
 		}
+		console.log(val)
+		
+		let parsedSet = JSON.parse(set.value);
+		let relationship_id = parsedSet.relationship_id;
+		
 		
     // When the one of the student input avaliable is selected, the function is triggered.
     // It send a POST request to flask via ajax, so flask can find the correspond professor for this student and return a json
-		if($('#items option').filter(function(){
-			return this.value.toUpperCase() === val.toUpperCase();        
-		}).length) {
-
-			req = $.ajax({
-				url: '/update',
-				type:'POST',
-				data: {name:this.value}
-			});
+		req = $.ajax({
+			url: '/update',
+			type:'POST',
+			data: {relationship_id:relationship_id}
+		});
+		
+		req.done(function(data){
+	//Setting all the element displays
+			$('#studentCountPerMentor1').text("This mentor has ");
+			$('#studentCountPerMentor2').text(data.student_count);
+			$('#studentCountPerMentor3').text(" students.");
+			$("#itemsInput2-flexdatalist").val(data.professor_name);
+			mentorStudentTextColor(data.number_color);
 			
-			req.done(function(data){
-        //Setting all the element displays
-				$('#studentCountPerMentor1').text("This mentor has ");
-				$('#studentCountPerMentor2').text(data.student_count);
-				$('#studentCountPerMentor3').text(" students.");
-				$("#itemsInput2-flexdatalist").val(data.professor_name);
-				mentorStudentTextColor(data.number_color);
-				
-        // Change the background color of the mentor input for 1 second
-				var bg = $("#itemsInput2-flexdatalist").css('background'); // store original background
-				$("#itemsInput2-flexdatalist").css('background', 'rgba(187, 236, 240, 0.2)'); //change second element background
-				setTimeout(function() {
-					$("#itemsInput2-flexdatalist").css('background', bg); // change it back after ...
-				}, 1000); // waiting one second			
-			});	
-			
-      // Un-focus the student input
-			$("#itemsInput").blur();
-      
-      // Reset mentor input error labels 
-			mentorInputOnFocusFunction();
-      
-      // Making sure the user is not clicking too fast (click before the server return message), disbale the assign button for 0.3 second.
-			$("#assign_button_id").prop( "disabled", true );
+	// Change the background color of the mentor input for 1 second
+			var bg = $("#itemsInput2-flexdatalist").css('background'); // store original background
+			$("#itemsInput2-flexdatalist").css('background', 'rgba(187, 236, 240, 0.2)'); //change second element background
 			setTimeout(function() {
-				$("#assign_button_id").prop( "disabled", false ); // change it back after ...
-			}, 300); // waiting one second	
-		}
+				$("#itemsInput2-flexdatalist").css('background', bg); // change it back after ...
+			}, 1000); // waiting one second			
+		});	
+		
+  // Un-focus the student input
+		$("#itemsInput-flexdatalist").blur();
+  
+  // Reset mentor input error labels 
+		mentorInputOnFocusFunction();
+  
+  // Making sure the user is not clicking too fast (click before the server return message), disbale the assign button for 0.3 second.
+		$("#assign_button_id").prop( "disabled", true );
+		setTimeout(function() {
+			$("#assign_button_id").prop( "disabled", false ); // change it back after ...
+		}, 300); // waiting one second	
 	});
 	
   // When the mentor input is selected, the function is triggered.------------
@@ -1217,7 +1237,15 @@
 
   	$('input.flexdatalist.student').on('show:flexdatalist.results', function(event, set, options) {	
 		setTimeout(function() {
-			alert("student input clicked");
+			if($("#itemsInput-flexdatalist-results").length == 0)
+				return;
+			ul = $("#itemsInput-flexdatalist-results")[0]
+			for (var i = 0; i < ul.childNodes.length; i++){
+				li = ul.childNodes[i]
+				if(li.childNodes[3].textContent == "1 "){
+					li.childNodes[2].style.visibility = "visible";
+				}
+		}
 		}, 10); 
 	});
 
@@ -1230,7 +1258,7 @@
 		switchStatus = status;
 		defaultState()
 		if(status){
-			document.getElementById("itemsInput").style.display = "none";
+			document.getElementById("itemsInput-flexdatalist").style.display = "none";
 			document.getElementById("studentLabel").style.display = "none";
 			document.getElementById("studentLastNameLabel").style.display = "block";
 			document.getElementById("studentLastNameInput").style.display = "block";
@@ -1243,7 +1271,7 @@
 		}
 		
 		else{
-			document.getElementById("itemsInput").style.display = "block";
+			document.getElementById("itemsInput-flexdatalist").style.display = "block";
 			document.getElementById("studentLabel").style.display = "block";
 			document.getElementById("studentLastNameLabel").style.display = "none";
 			document.getElementById("studentLastNameInput").style.display = "none";
@@ -1256,17 +1284,18 @@
 		
   });
 	// Function that initialize the student input datalist
-    let jsonData = decodeHtml('{{professorJson}}');
-    $('.flexdatalist.mentor').flexdatalist({
+    let studentJsonData = decodeHtml('{{studentJson}}');
+    $('.flexdatalist.student').flexdatalist({
        minLength: 0,
        valueProperty: '*',
        selectionRequired: true,
-       visibleProperties: ["professorName","count","status"],
-       searchIn: 'professorName',
-       data: JSON.parse(jsonData)
+       visibleProperties: ["studentName","relationship_id","email","duplicated"],
+       searchIn: 'studentName',
+       data: JSON.parse(studentJsonData),
+	   searchContain: true
     });
-    document.getElementById("itemsInput2-flexdatalist").spellcheck = false
-    document.getElementById("itemsInput2-flexdatalist").onclick = mentorInputOnFocusFunction
+    document.getElementById("itemsInput-flexdatalist").spellcheck = false
+    document.getElementById("itemsInput-flexdatalist").onclick = studentInputOnFocusFunction
 
 
 

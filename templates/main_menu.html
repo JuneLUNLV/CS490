@@ -915,7 +915,7 @@
 		if(endDateCalendar.value.length > 0){
 			assignedDate = new Date(assignDateCalendar.value);
 			endDate = new Date(endDateCalendar.value);
-      //Clinet side check - for if the end date is earlier than the assign date, if so error label is displayed
+			//Clinet side check - for if the end date is earlier than the assign date, if so error label is displayed
 			if(assignedDate > endDate){
 				dateErrorLabel.style.display = "block";
 				boolSubmitSuccess = false;
@@ -1119,6 +1119,7 @@
 
 
   // When the student input is selected, the function is triggered.
+	var globalSelectedStudentRelationshipId = 0;
 	$('input.flexdatalist.student').on('change:flexdatalist', function(event, set, options) {
 		var val = set.text; 
     // Reset the mentor input if student input is empty.
@@ -1131,6 +1132,7 @@
 		
 		let parsedSet = JSON.parse(set.value);
 		let relationship_id = parsedSet.relationship_id;
+		globalSelectedStudentRelationshipId = parsedSet.relationship_id;
 		
 		
     // When the one of the student input avaliable is selected, the function is triggered.

@@ -1,1358 +1,1185 @@
 <!doctype html>
 <html class="myhtml">
-    <head>
-        <title>UNLV Faculty Mentoring Information Look Up</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-		<link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
-		<style>
-			*, *:before, *:after {
-			  -moz-box-sizing: border-box;
-			  -webkit-box-sizing: border-box;
-			  box-siz
-			  ing: border-box;
-			}
 
-			button {
-			  cursor: pointer;
-			}
+<head>
+	<title>UNLV Faculty Mentoring Information Look Up</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+	<style>
+	*,
+	*:before,
+	*:after {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-siz ing: border-box;
+	}
 
-			.myhtml {
-			  font-family: 'Ubuntu', sans-serif;
-			  font-size: 100%;
-			  background: #333;
-			  -webkit-font-smoothing: antialiased;
-			  height:100%;
-			}
+	button {
+		cursor: pointer;
+	}
 
-			#page-wrapper {
-			  width: 50%;
-			  background: #FFFFFF;
-			  padding: 1em;
-			  margin: 1em auto;
-			  border-top: 8px solid #69c773;
-			  box-shadow: 0 10px 10px rgba(0,0,0,0.8);
-			  margin-top:7%;
-			  border-radius:5px;
-			  padding-left:30px;
-        position:relative;
-			  
-			}
+	.myhtml {
+		font-family: 'Ubuntu', sans-serif;
+		font-size: 100%;
+		background: #333;
+		-webkit-font-smoothing: antialiased;
+		height: 100%;
+	}
 
-			.myh1 {
-			  margin-top: 0;
-			  font-size:2vw;
-			}
+	#page-wrapper {
+		width: 50%;
+		background: #FFFFFF;
+		padding: 1em;
+		margin: 1em auto;
+		border-top: 8px solid #69c773;
+		box-shadow: 0 10px 10px rgba(0, 0, 0, 0.8);
+		margin-top: 7%;
+		border-radius: 5px;
+		padding-left: 30px;
+		position: relative;
+	}
 
-			.myLabel {
-			  display: block;
-			  margin-top: 2em;
-			  margin-bottom: 0.5em;
-			  color: #999999;
-			  font-size:15px;
-			}
+	.myh1 {
+		margin-top: 0;
+		font-size: 2vw;
+	}
 
-			.myInput {
-			  width: 100%;
-			  padding: 0.5em 0.5em;
-			  font-size: 1.2em;
-			  border-radius: 3px; 
-			  border: 1px solid #D9D9D9;
-			  font-size:25px !important;
-			}
+	.myLabel {
+		display: block;
+		margin-top: 2em;
+		margin-bottom: 0.5em;
+		color: #999999;
+		font-size: 15px;
+	}
 
-			#assign_button:active {
-			  opacity: 1;
-			  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
-			}
-			
-			.assign_button{
-			  color: white;
-			  padding: 16px 32px;
-			  text-align: center;
-			  text-decoration: none;
-			  display: inline-block;
-			  font-size: 30px;
-			  margin: 4px 2px;
-			  transition-duration: 0.4s;
-			  cursor: pointer;
-			  background-color: white; 
-			  color: black; 
-			  border: 2px solid #4CAF50;
-			  display: inline-block;
-			  border-radius: 7px;
-			  width: 95%;
-			}
-			
-			.assign_button:hover , #assign_button:focus{
-			  background-color: #4CAF50;
-			  color: white;			
-			}
+	.myInput {
+		width: 100%;
+		padding: 0.5em 0.5em;
+		font-size: 1.2em;
+		border-radius: 3px;
+		border: 1px solid #D9D9D9;
+		font-size: 25px !important;
+	}
 
-			#assign_button2:active {
-			  opacity: 1;
-			  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
-			}
-			
-			.assign_button2{
-			  background-color: #4CAF50; /* Green */
-			  color: white;
-			  padding: 16px 32px;
-			  text-align: center;
-			  text-decoration: none;
-			  display: inline-block;
-			  font-size: 30px;
-			  margin: 4px 2px;
-			  transition-duration: 0.4s;
-			  cursor: pointer;
-			  background-color: white; 
-			  color: black; 
-			  border: 2px solid #4CAF50;
-			  display: inline-block;
-			  border-radius: 7px;
-			  width: 95%;
-			}
-			
-			.assign_button2:hover , #assign_button:focus{
-			  background-color: #F1204A;
-			  color: white;	
-		      border: 2px solid #F1204A;
-			  cursor: not-allowed;
-			}
-			
-			.errorLabel{
-				margin-top:0px;
-				color:red;
-				display:none;
-			}
-			
-			#empty{
-				height:15px;
-			}
-			
-			.item-status{
-				position:absolute;
-				left:45%;
-			}
-			
-			.item-count{
-				position:absolute;
-				left:25%;
-			}	
+	#assign_button:active {
+		opacity: 1;
+		box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
+	}
 
-			.item-email{
-				position: absolute;
-				left: 45%;
-				color: grey;
-				font-size: smaller;
-				font-style: italic;		
-				visibility:hidden;
-			}
-			
-			.item:hover .item-email{
-				position: absolute;
-				left: 45%;
-				color: white;
-				font-size: small;
-				font-style: italic;	
-			}	
-			
-			.item-relationship_id{
-				display:none;
-			}
-			
-			.item-duplicated{
-				display:none;
-			}
+	.assign_button {
+		color: white;
+		padding: 16px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 30px;
+		margin: 4px 2px;
+		transition-duration: 0.4s;
+		cursor: pointer;
+		background-color: white;
+		color: black;
+		border: 2px solid #4CAF50;
+		display: inline-block;
+		border-radius: 7px;
+		width: 95%;
+	}
 
-			.my_modal {
-			  position: fixed;
-			  top: 0;
-			  left: 0;
-			  display: flex;
-			  align-items: center;
-			  justify-content: center;
-			  height: 0vh;
-			  background-color: transparent;
-			  overflow: hidden;
-			  transition: background-color 0.25s ease;
-			  z-index: 9999;
-			}
+	.assign_button:hover,
+	#assign_button:focus {
+		background-color: #4CAF50;
+		color: white;
+	}
 
-			.my_modal.my_open {
-			  position: fixed;
-			  width: 100%;
-			  height: 100vh;
-			  background-color: rgba(0, 0, 0, 0.7);
-			  transition: background-color 0.25s;
-			  box-shadow:none;
-			  max-height:100%;
-			}
+	#assign_button2:active {
+		opacity: 1;
+		box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
+	}
 
-			.my_modal.my_open > .my_content-wrapper {
-			  transform: scale(1);
-			}
+	.assign_button2 {
+		background-color: #4CAF50;
+		/* Green */
+		color: white;
+		padding: 16px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 30px;
+		margin: 4px 2px;
+		transition-duration: 0.4s;
+		cursor: pointer;
+		background-color: white;
+		color: black;
+		border: 2px solid #4CAF50;
+		display: inline-block;
+		border-radius: 7px;
+		width: 95%;
+	}
 
-			.my_modal .my_content-wrapper {
-			  position: relative;
-			  display: flex;
-			  flex-direction: column;
-			  justify-content: flex-start;
-			  width: 50%;
-			  margin: 0;
-			  padding: 3rem;
-			  padding-bottom: 70px;
-			  padding-top: 30px;
-			  background-color: white;
-			  border-radius: 0.3125rem;
-			  box-shadow: 0 0 2.5rem rgba(0, 0, 0, 0.5);
-			  transform: scale(0);
-			  transition: transform 0.25s;
-			  transition-delay: 0.15s;
-			}
+	.assign_button2:hover,
+	#assign_button:focus {
+		background-color: #F1204A;
+		color: white;
+		border: 2px solid #F1204A;
+		cursor: not-allowed;
+	}
 
-			.my_modal .my_content-wrapper .my_close {
-			  position: absolute;
-			  top: 0.5rem;
-			  right: 0.5rem;
-			  display: flex;
-			  align-items: center;
-			  justify-content: center;
-			  width: 2.5rem;
-			  height: 2.5rem;
-			  border: none;
-			  background-color: transparent;
-			  font-size: 1.5rem;
-			  transition: 0.25s linear;
-			}
+	.errorLabel {
+		margin-top: 0px;
+		color: red;
+		display: none;
+	}
 
-			.my_modal .my_content-wrapper .my_close:before, .my_modal .my_content-wrapper .my_close:after {
-			  position: absolute;
-			  content: '';
-			  width: 1.25rem;
-			  height: 0.125rem;
-			  background-color: black;
-			}
+	#empty {
+		height: 15px;
+	}
 
-			.my_modal .my_content-wrapper .my_close:before {
-			  transform: rotate(-45deg);
-			}
+	.item-status {
+		position: absolute;
+		left: 45%;
+	}
 
-			.my_modal .my_content-wrapper .my_close:after {
-			  transform: rotate(45deg);
-			}
+	.item-count {
+		position: absolute;
+		left: 25%;
+	}
 
-			.my_modal .my_content-wrapper .my_close:hover {
-			  transform: rotate(360deg);
-			}
+	.item-email {
+		position: absolute;
+		left: 45%;
+		color: grey;
+		font-size: smaller;
+		font-style: italic;
+		visibility: hidden;
+	}
 
-			.my_modal .my_content-wrapper .my_close:hover:before, .my_modal .my_content-wrapper .my_close:hover:after {
-			  background-color: tomato;
-			}
+	.item:hover .item-email {
+		position: absolute;
+		left: 45%;
+		color: white;
+		font-size: small;
+		font-style: italic;
+	}
 
-			.my_modal .my_content-wrapper .my_modal-header {
-			  position: relative;
-			  display: flex;
-			  flex-direction: row;
-			  align-items: center;
-			  justify-content: space-between;
-			  width: 100%;
-			  margin: 0;
-			}
+	.item-relationship_id {
+		display: none;
+	}
 
-			.my_modal .my_content-wrapper .my_modal-header h2 {
-			  font-size: 2.3rem;
-			  letter-spacing: 0.5px;
-			}
+	.item-duplicated {
+		display: none;
+	}
 
-			.my_modal .my_content-wrapper .my_content {
-			  position: relative;
-			  display: flex;
-			  font-size: 1vw;
-			}
+	.my_modal {
+		position: fixed;
+		top: 0;
+		left: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 0vh;
+		background-color: transparent;
+		overflow: hidden;
+		transition: background-color 0.25s ease;
+		z-index: 9999;
+	}
 
-			.my_modal .my_content-wrapper .my_content p {
-			  line-height: 1.75;
-			}
+	.my_modal.my_open {
+		position: fixed;
+		width: 100%;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, 0.7);
+		transition: background-color 0.25s;
+		box-shadow: none;
+		max-height: 100%;
+	}
 
-			.my_modal .my_content-wrapper .my_modal-footer {
-				position: relative;
-				display: flex;
-				align-items: center;
-				justify-content: flex-end;
-				width: 100%;
-				margin: 0;
-				background-color: #1ae0a00f;
-				padding: 10px;
-				border-radius: 15px;
-			}
+	.my_modal.my_open>.my_content-wrapper {
+		transform: scale(1);
+	}
 
-			.my_modal .my_content-wrapper .my_modal-footer .my_action {
-			  position: relative;
-			  margin-left: 0.625rem;
-			  padding: 0.625rem 1.25rem;
-			  border: none;
-			  background-color: #fd6262;
-			  border-radius: 0.25rem;
-			  color: white;
-			  font-size: 1rem;
-			  font-weight: 300;
-			  overflow: hidden;
-			  z-index: 1;
-			  font-family: sans-serif;
-			  
-			}
+	.my_modal .my_content-wrapper {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		width: 50%;
+		margin: 0;
+		padding: 3rem;
+		padding-bottom: 70px;
+		padding-top: 30px;
+		background-color: white;
+		border-radius: 0.3125rem;
+		box-shadow: 0 0 2.5rem rgba(0, 0, 0, 0.5);
+		transform: scale(0);
+		transition: transform 0.25s;
+		transition-delay: 0.15s;
+	}
 
-			.my_modal .my_content-wrapper .my_modal-footer .my_action:before {
-			  position: absolute;
-			  content: '';
-			  top: 0;
-			  left: 0;
-			  width: 0%;
-			  height: 100%;
-			  background-color: rgba(255, 255, 255, 0.2);
-			  transition: width 0.25s;
-			  z-index: 0;
-			}
+	.my_modal .my_content-wrapper .my_close {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		border: none;
+		background-color: transparent;
+		font-size: 1.5rem;
+		transition: 0.25s linear;
+	}
 
-			.my_modal .my_content-wrapper .my_modal-footer .my_action:first-child {
-			  background-color: #2ecc71;
-			}
+	.my_modal .my_content-wrapper .my_close:before,
+	.my_modal .my_content-wrapper .my_close:after {
+		position: absolute;
+		content: '';
+		width: 1.25rem;
+		height: 0.125rem;
+		background-color: black;
+	}
 
-			.my_modal .my_content-wrapper .my_modal-footer .action:last-child {
-			  background-color: #e74c3c;
-			}
+	.my_modal .my_content-wrapper .my_close:before {
+		transform: rotate(-45deg);
+	}
 
-			.my_modal .my_content-wrapper .my_modal-footer .my_action:hover:before {
-			  width: 100%;
-			}	
+	.my_modal .my_content-wrapper .my_close:after {
+		transform: rotate(45deg);
+	}
 
-			input[type=checkbox] + label {
-			  display: block;
-			  margin: 0.2em;
-			  cursor: pointer;
-			  padding: 0.2em;
-			}
+	.my_modal .my_content-wrapper .my_close:hover {
+		transform: rotate(360deg);
+	}
 
-			input[type=checkbox] {
-			  display: none;
-			}
+	.my_modal .my_content-wrapper .my_close:hover:before,
+	.my_modal .my_content-wrapper .my_close:hover:after {
+		background-color: tomato;
+	}
 
-			input[type=checkbox] + label:before {
-				content: "\2714";
-				border: 0.1em solid #000;
-				border-radius: 0.2em;
-				display: inline-block;
-				height: fit-content;
-				margin-right: 0.2vw;
-				width: fit-content;
-				vertical-align: bottom;
-				color: transparent; 
-				transition: .2s;
-				transform: scale(1);
-				padding-left: 3px;
-				padding-right: 3px;
-				padding-top: 0px;
-				padding-bottom: 0px;
-			}
+	.my_modal .my_content-wrapper .my_modal-header {
+		position: relative;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		margin: 0;
+	}
 
-			input[type=checkbox] + label:active:before {
-			  transform: scale(0);
-			}
+	.my_modal .my_content-wrapper .my_modal-header h2 {
+		font-size: 2.3rem;
+		letter-spacing: 0.5px;
+	}
 
-			input[type=checkbox]:checked + label:before {
-			  background-color: MediumSeaGreen;
-			  border-color: MediumSeaGreen;
-			  color: #fff;
-			}
+	.my_modal .my_content-wrapper .my_content {
+		position: relative;
+		display: flex;
+		font-size: 1vw;
+	}
 
-			input[type=checkbox]:disabled + label:before {
-			  transform: scale(1);
-			  border-color: #aaa;
-			}
+	.my_modal .my_content-wrapper .my_content p {
+		line-height: 1.75;
+	}
 
-			input[type=checkbox]:checked:disabled + label:before {
-			  transform: scale(1);
-			  background-color: #bfb;
-			  border-color: #bfb;
-			}		
+	.my_modal .my_content-wrapper .my_modal-footer {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		width: 100%;
+		margin: 0;
+		background-color: #1ae0a00f;
+		padding: 10px;
+		border-radius: 15px;
+	}
 
-			#checkBoxForm{
-				text-align: right;
-				width: fit-content;
-				align-self: flex-end;
-				padding-bottom: 1%;
-			}
-			
-			#floatButtonDiv{
-				position: fixed;
-				right: 5vw;
-				bottom: 5vh;
-				padding-top: 15px;
-				margin-bottom: 0;
-				z-index: 997;
-			
-			}
-			
-			#floatButtonA{
-			    width: 3rem;
-				height: 3rem;
-				line-height: 32.4px;
-				transition: all .3s ease-in-out;
-			
-			}
-			
-			#floatButtonI{
-				line-height: 3.1rem;
-				font-size: 2.3rem;
-			}
-			
-			#floatButtonDiv:hover #floatButtonA {
-				transform:scale(1.5);
-			}			
+	.my_modal .my_content-wrapper .my_modal-footer .my_action {
+		position: relative;
+		margin-left: 0.625rem;
+		padding: 0.625rem 1.25rem;
+		border: none;
+		background-color: #fd6262;
+		border-radius: 0.25rem;
+		color: white;
+		font-size: 1rem;
+		font-weight: 300;
+		overflow: hidden;
+		z-index: 1;
+		font-family: sans-serif;
+	}
 
-			.tooltiptext {
-				visibility: hidden;
-				background-color: black;
-				color: #fff;
-				text-align: center;
-				padding: 1px 0;
-				border-radius: 6px;
-				position: absolute;
-				z-index: 1;
-				font-size: 70%;
-				width: 10vw;
-				left: -3.3vw;
-				top: -3vh;
-			}
-			
-			#floatButtonDiv:hover .tooltiptext {
-			  visibility: visible;
-			  transition-delay: 0.3s;
-			}		
+	.my_modal .my_content-wrapper .my_modal-footer .my_action:before {
+		position: absolute;
+		content: '';
+		top: 0;
+		left: 0;
+		width: 0%;
+		height: 100%;
+		background-color: rgba(255, 255, 255, 0.2);
+		transition: width 0.25s;
+		z-index: 0;
+	}
 
-			#settingIcon{
-				
-			}
-			
-			#rangeSliderFormId{
-				width:90%;
-				display:inline-flex;
-			
-			}
-			
-			#rangeSliderPId{
-				width:100%;
-	
-			}
-			
-			#rangeSliderInputId{
-				height: 7px;
-				background-color: #c9c9c9;
-				position: relative;
-				border-radius: 3px;
-				cursor: pointer;		
-			
-			}
-			
-			#rangeValueLabel{
-				positioN: absolute;
-				left: 0px;
-				margin-left: 1%;
-				user-select: none;
-				bottom: 30px;
-				height: 70%;
-				width: 40px;
-				/* justify-content: space-around; */
-				/* align-items: center; */
-				border-radius: 5px;
-				background-color: #40c7d6;
-				color: white;
-				font-weight: 600;
-				text-align: center;
-			}
-      
-      #settingIconButton{
-        font-size: 200%;
-        position: absolute;
-        cursor: pointer;
-        right: 20px;
-        top: 20%;
-      }
-      
-      #settingIconButton:before{
-         transform: rotate(-45deg);
-      }      
-      
-      
-      #settingIconButton:after{
-        transform: rotate(45deg);
-      }        
-      
-      
-      #settingIconButton:hover{
-        transform: rotate(360deg);
-        transition-duration: 2s;
-      }
-      
-    .dropdown-content {
-      top: 100% !important;
-    }
-    
-    #topRightCornerFunctionGroup{
-      position: absolute;
-      right: 0px;
-    }
-    
-    .calenderLabelDiv{
-      width:35%;
-    }
-      
+	.my_modal .my_content-wrapper .my_modal-footer .my_action:first-child {
+		background-color: #2ecc71;
+	}
 
-		</style>
-    </head>
+	.my_modal .my_content-wrapper .my_modal-footer .action:last-child {
+		background-color: #e74c3c;
+	}
 
+	.my_modal .my_content-wrapper .my_modal-footer .my_action:hover:before {
+		width: 100%;
+	}
 
+	input[type=checkbox]+label {
+		display: block;
+		margin: 0.2em;
+		cursor: pointer;
+		padding: 0.2em;
+	}
 
-	<body>	
-	
+	input[type=checkbox] {
+		display: none;
+	}
+
+	input[type=checkbox]+label:before {
+		content: "\2714";
+		border: 0.1em solid #000;
+		border-radius: 0.2em;
+		display: inline-block;
+		height: fit-content;
+		margin-right: 0.2vw;
+		width: fit-content;
+		vertical-align: bottom;
+		color: transparent;
+		transition: .2s;
+		transform: scale(1);
+		padding-left: 3px;
+		padding-right: 3px;
+		padding-top: 0px;
+		padding-bottom: 0px;
+	}
+
+	input[type=checkbox]+label:active:before {
+		transform: scale(0);
+	}
+
+	input[type=checkbox]:checked+label:before {
+		background-color: MediumSeaGreen;
+		border-color: MediumSeaGreen;
+		color: #fff;
+	}
+
+	input[type=checkbox]:disabled+label:before {
+		transform: scale(1);
+		border-color: #aaa;
+	}
+
+	input[type=checkbox]:checked:disabled+label:before {
+		transform: scale(1);
+		background-color: #bfb;
+		border-color: #bfb;
+	}
+
+	#checkBoxForm {
+		text-align: right;
+		width: fit-content;
+		align-self: flex-end;
+		padding-bottom: 1%;
+	}
+
+	#floatButtonDiv {
+		position: fixed;
+		right: 5vw;
+		bottom: 5vh;
+		padding-top: 15px;
+		margin-bottom: 0;
+		z-index: 997;
+	}
+
+	#floatButtonA {
+		width: 3rem;
+		height: 3rem;
+		line-height: 32.4px;
+		transition: all .3s ease-in-out;
+	}
+
+	#floatButtonI {
+		line-height: 3.1rem;
+		font-size: 2.3rem;
+	}
+
+	#floatButtonDiv:hover #floatButtonA {
+		transform: scale(1.5);
+	}
+
+	.tooltiptext {
+		visibility: hidden;
+		background-color: black;
+		color: #fff;
+		text-align: center;
+		padding: 1px 0;
+		border-radius: 6px;
+		position: absolute;
+		z-index: 1;
+		font-size: 70%;
+		width: 10vw;
+		left: -3.3vw;
+		top: -3vh;
+	}
+
+	#floatButtonDiv:hover .tooltiptext {
+		visibility: visible;
+		transition-delay: 0.3s;
+	}
+
+	#settingIcon {}
+
+	#rangeSliderFormId {
+		width: 90%;
+		display: inline-flex;
+	}
+
+	#rangeSliderPId {
+		width: 100%;
+	}
+
+	#rangeSliderInputId {
+		height: 7px;
+		background-color: #c9c9c9;
+		position: relative;
+		border-radius: 3px;
+		cursor: pointer;
+	}
+
+	#rangeValueLabel {
+		positioN: absolute;
+		left: 0px;
+		margin-left: 1%;
+		user-select: none;
+		bottom: 30px;
+		height: 70%;
+		width: 40px;
+		/* justify-content: space-around; */
+		/* align-items: center; */
+		border-radius: 5px;
+		background-color: #40c7d6;
+		color: white;
+		font-weight: 600;
+		text-align: center;
+	}
+
+	#settingIconButton {
+		font-size: 200%;
+		position: absolute;
+		cursor: pointer;
+		right: 20px;
+		top: 20%;
+	}
+
+	#settingIconButton:before {
+		transform: rotate(-45deg);
+	}
+
+	#settingIconButton:after {
+		transform: rotate(45deg);
+	}
+
+	#settingIconButton:hover {
+		transform: rotate(360deg);
+		transition-duration: 2s;
+	}
+
+	.dropdown-content {
+		top: 100% !important;
+	}
+
+	#topRightCornerFunctionGroup {
+		position: absolute;
+		right: 0px;
+	}
+
+	.calenderLabelDiv {
+		width: 35%;
+	}
+	</style>
+</head>
+
+<body>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 	<script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-157cd5b220a5c80d4ff8e0e70ac069bffd87a61252088146915e8726e5d9f147.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel= "stylesheet" type= "text/css" href= "{{url_for('static',filename='jquery.flexdatalist.min.css') }}">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='jquery.flexdatalist.min.css') }}">
 	<script src="{{url_for('static', filename='jquery.flexdatalist.min.js')}}"></script>
 	<script>
-		window.console = window.console || function(t) {};
-		if (document.location.search.match(/type=embed/gi)) {
-			window.parent.postMessage("resize", "*");
-		}
+	window.console = window.console || function(t) {};
+	if(document.location.search.match(/type=embed/gi)) {
+		window.parent.postMessage("resize", "*");
+	}
 	</script>
-
-  <ul id="dropdown1" class="dropdown-content">
-    <li class="divider"></li>
-    <li><a href="#!">Log Out</a></li>
-  </ul>
-
-
-  <nav>
-    <div class="nav-wrapper" style="background-color: #2b97d6;">
-      <a href="#" style="margin-left: 20px;margin-right: 40px;position:relative" class="brand-logo left">HOME</a>
-      <ul id="nav-mobile" class="left hide-on-med-and-down">
-        <li><a style="background-color: rgba(0,0,0,0.19);">Individual Assign</a></li>
-        <li><a onclick='window.location.href = "/multiple_assign_page";'>Mass Assign</a></li>
-        <li><a onclick="redirect1()">Table</a></li>
-        <li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
-         <li><a style = "position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">John<i class="material-icons right">arrow_drop_down</i></a></li>
-      </ul>
-    </div>
-  </nav>
-        
+	<ul id="dropdown1" class="dropdown-content">
+		<li class="divider"></li>
+		<li><a href="#!">Log Out</a></li>
+	</ul>
+	<nav>
+		<div class="nav-wrapper" style="background-color: #2b97d6;">
+			<a href="#" style="margin-left: 20px;margin-right: 40px;position:relative" class="brand-logo left">HOME</a>
+			<ul id="nav-mobile" class="left hide-on-med-and-down">
+				<li><a style="background-color: rgba(0,0,0,0.19);">Individual Assign</a></li>
+				<li><a onclick='window.location.href = "/multiple_assign_page";'>Mass Assign</a></li>
+				<li><a onclick="redirect1()">Table</a></li>
+				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
+				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">John<i class="material-icons right">arrow_drop_down</i></a></li>
+			</ul>
+		</div>
+	</nav>
 	<div id="page-wrapper">
-    <div id = "topRightCornerFunctionGroup">
-      <i id="settingIconButton" data-modal-trigger="trigger-2" class="large material-icons trigger" onclick="settingButtonFunction()">settings</i>
-
-      <div id="switchGroup" style="margin-right: 93px;">
-        <label style="font-size:1rem;color:black;cursor: default;">New Student</label>
-        <div class="switch" style="margin-left: 10px;">
-        <label style="font-size:10px;">
-          <input type="checkbox">
-          <span class="lever"></span>
-        </label>
-        </div>
-      </div>
-     </div> 
-  
-  
-    <h1 class="myh1">Student and Mentor Form</h1>
-
+		<div id="topRightCornerFunctionGroup">
+			<i id="settingIconButton" data-modal-trigger="trigger-2" class="large material-icons trigger" onclick="settingButtonFunction()">settings</i>
+			<div id="switchGroup" style="margin-right: 93px;">
+				<label style="font-size:1rem;color:black;cursor: default;">New Student</label>
+				<div class="switch" style="margin-left: 10px;">
+					<label style="font-size:10px;">
+						<input type="checkbox">
+						<span class="lever"></span>
+					</label>
+				</div>
+			</div>
+		</div>
+		<h1 class="myh1">Student and Mentor Form</h1>
 		<label for="default" class="myLabel" id="studentLabel">Choose a Student</label>
-		
-		<input type='text'
-		   class='myInput flexdatalist student'
-		   data-search-in='studentName'
-		   data-selection-required='true'
-		   data-value-property='*'
-		   data-min-length='0'
-		   id='itemsInput'
-		   name='student_name_input'
-		   placeholder="Student Name"    
-		   autocomplete="off"
-		   searchContain="true"
-	    />		
-		
-		
+		<input type='text' class='myInput flexdatalist student' data-search-in='studentName' data-selection-required='true' data-value-property='*' data-min-length='0' id='itemsInput' name='student_name_input' placeholder="Student Name" autocomplete="off" searchContain="true" />
 		<label for="default" class="myLabel errorLabel" id="studentErrorLabel">Student name can not be empty.</label>
-		
-		
 		<label style="display:none;" for="default" class="myLabel" id="studentLastNameLabel">Student Last Name</label>
-		<input style="display:none;" class="myInput"  type="text" id="studentLastNameInput" placeholder="Last Name" spellcheck="false"  autocomplete="on" onfocus="studentLastNameInputOnFocusFunction()"/>
+		<input style="display:none;" class="myInput" type="text" id="studentLastNameInput" placeholder="Last Name" spellcheck="false" autocomplete="on" onfocus="studentLastNameInputOnFocusFunction()" />
 		<label for="default" class="myLabel errorLabel" id="studentLastNameErrorLabel">Student last name can not be empty.</label>
-		
 		<label style="display:none;" for="default" class="myLabel" id="studentFirstNameLabel">Student First Name</label>
-		<input style="display:none;" class="myInput"  type="text" id="studentFirstNameInput" placeholder="First Name" spellcheck="false"  autocomplete="on" onfocus="studentFirstNameInputOnFocusFunction()" />
+		<input style="display:none;" class="myInput" type="text" id="studentFirstNameInput" placeholder="First Name" spellcheck="false" autocomplete="on" onfocus="studentFirstNameInputOnFocusFunction()" />
 		<label for="default" class="myLabel errorLabel" id="studentFirstNameErrorLabel">Student first name can not be empty.</label>
-		
-		
-		
 		<label style="display:none;" for="default" class="myLabel" id="studentRebelMailLabel">Student Rebel Mail</label>
-		<input style="display:none;" class="myInput"  type="text" id="studentRebelMailInput" placeholder="student@unlv.nevada.edu" spellcheck="false"  onfocus="studentRebelMailInputOnFocusFunction()" />		
+		<input style="display:none;" class="myInput" type="text" id="studentRebelMailInput" placeholder="student@unlv.nevada.edu" spellcheck="false" onfocus="studentRebelMailInputOnFocusFunction()" />
 		<label for="default" class="myLabel errorLabel" id="studentRebelMailErrorLabel">Student rebel mail can not be empty.</label>
-		
 		<div id="calenderDiv" style="display:inline-flex;width:100%;">
 			<div class='calenderLabelDiv'>
 				<label for="default" class="myLabel" id="studentRebelMailLabel">Assign Date</label>
-				<input type="text" autocomplete="off"  class="datepicker assignDateCalendar" id="assignDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>	
+				<input type="text" autocomplete="off" class="datepicker assignDateCalendar" id="assignDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>
 			</div>
 			<div style="width:20%"></div>
-			
 			<div class='calenderLabelDiv'>
 				<label for="default" class="myLabel" id="studentRebelMailLabel">End Date</label>
-				<input type="text" autocomplete="off" class="datepicker endDateCalendar" id="endDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>	
-			</div>		
+				<input type="text" autocomplete="off" class="datepicker endDateCalendar" id="endDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>
+			</div>
 		</div>
 		<label for="default" class="myLabel errorLabel" id="dateErrorLabel">Assigned date can not be later than end date.</label>
-		
-		
-		
 		<label for="default" class="myLabel">Choose a Mentor</label>
-		<input type='text'
-       class='myInput flexdatalist mentor'
-       data-search-in='professorName'
-       data-selection-required='true'
-       data-value-property='*'
-       data-min-length='0'
-       id='itemsInput2'
-       name='country_allresults'
-       placeholder="Mentor Name"    
-       autocomplete="off"
-	   />
+		<input type='text' class='myInput flexdatalist mentor' data-search-in='professorName' data-selection-required='true' data-value-property='*' data-min-length='0' id='itemsInput2' name='country_allresults' placeholder="Mentor Name" autocomplete="off" />
 		<label for="default" class="myLabel errorLabel" id="mentorErrorLabel">Mentor name can not be empty.</label>
 		<h4 style="margin-top:15px; font-weight:600; font-size:18px;" id="studentCountPerMentor"><span id="studentCountPerMentor1"></span><span id="studentCountPerMentor2"></span><span id="studentCountPerMentor3"></span></h4>
-		
-
-		
-		
 		<div id="empty"></div>
-		
 		<div style="text-align: center">
-			<input class="trigger assign_button" data-modal-trigger="trigger-2" style="outline: none;" onclick="assignButtonFunction()" id="assign_button_id" type = "submit" value = "Assign Mentor" />
+			<input class="trigger assign_button" data-modal-trigger="trigger-2" style="outline: none;" onclick="assignButtonFunction()" id="assign_button_id" type="submit" value="Assign Mentor" />
 		</div>
-		
 		<label for="default" class="myLabel errorLabel" id="mentorCountErrorLabel">Current mentor has to many students, please assign another mentor for this student.</label>
 		<label for="default" class="myLabel errorLabel" id="assignmentErrorLabel"></label>
 	</div>
-		
-	</body>
-
-	<!--------------------modal for confirmation----------------------------------->
-
-	<div class="my_modal" data-modal="trigger-2" id="modal_for_confirmation">
-		<article class="my_content-wrapper">
-			<button class="my_close" onclick="closeConfirmationModalAndResetGloablVariables()"></button>
-			<header class="my_modal-header">
-				<h2 style="font-size:1.5vw;">Student  Assignment  Confirmation
-        <!---<img style="height: 7vh;width: 7vh; margin-left: 1.9vh; margin-top: -1.1vh;position: absolute;"src="{{url_for('static', filename='images/icons/confirmation_icon.png')}}"></img>--->
-        </h2>
-			</header>
-			<div class="my_content">
-				<p>Student <span id="student_name_span" style="font-weight:bold;">StudentName</span> is going to be assigned to professor <span id="mentor_name_span" style="font-weight:bold;">MentorName</span>.<br>Please confirm this action.</p>				
-			</div>
-			<form id="checkBoxForm">            
-			  <input type="checkbox" id="checkBoxForEmail"  name="checkBoxForEmail-4" checked="true">        
-			  <label for="checkBoxForEmail" style="-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none; font-size: 0.9vw;">
-				Notify the professor and the student <span id="mentor_name_span2"></span> via E-mail.
-			  </label> 
+</body>
+<!--------------------modal for confirmation----------------------------------->
+<div class="my_modal" data-modal="trigger-2" id="modal_for_confirmation">
+	<article class="my_content-wrapper">
+		<button class="my_close" onclick="closeConfirmationModalAndResetGloablVariables()"></button>
+		<header class="my_modal-header">
+			<h2 style="font-size:1.5vw;">Student Assignment Confirmation
+				<!---<img style="height: 7vh;width: 7vh; margin-left: 1.9vh; margin-top: -1.1vh;position: absolute;"src="{{url_for('static', filename='images/icons/confirmation_icon.png')}}"></img>--->
+			</h2>
+		</header>
+		<div class="my_content">
+			<p>Student <span id="student_name_span" style="font-weight:bold;">StudentName</span> is going to be assigned to professor <span id="mentor_name_span" style="font-weight:bold;">MentorName</span>.<br>Please confirm this action.</p>
+		</div>
+		<form id="checkBoxForm">
+			<input type="checkbox" id="checkBoxForEmail" name="checkBoxForEmail-4" checked="true">
+			<label for="checkBoxForEmail" style="-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none; font-size: 0.9vw;"> Notify the professor and the student <span id="mentor_name_span2"></span> via E-mail. </label>
+		</form>
+		<footer class="my_modal-footer">
+			<button class="trigger my_action" data-modal-trigger="trigger-2" onclick="confirmButtonFunction()" id="confirmButtonOnModal1">Confirm</button>
+			<button class="my_action" onclick="closeConfirmationModalAndResetGloablVariables()">Cancel</button>
+		</footer>
+	</article>
+</div>
+<!--------------------modal for confirmation end----------------------------------->
+<!--------------------modal for successful asignment ----------------------------------->
+<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_assignment">
+	<article class="my_content-wrapper">
+		<header class="my_modal-header">
+			<h2 style="font-size:1.5vw;">Assignment Successful<img style="height: 2.5vw; width: 3vw; margin-left: 1.5vw;position:absolute;bottom: 14px;" src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
+		</header>
+		<div class="my_content">
+			<p>Student <span id="student_name_span_sucessful_assigned" style="font-weight:bold;">StudentName</span> is successfully assigned to mentor <span id="mentor_name_span_sucessful_assigned" style="font-weight:bold;">MentorName</span>.</p>
+		</div>
+		<footer class="my_modal-footer">
+			<button class="my_action" onclick='location.reload()'>Assign More Student</button>
+			<button style="background-color:#57BEF5;" class="my_action" onclick="redirect1()">Check Table</button>
+		</footer>
+	</article>
+</div>
+<!--------------------modal for successful asignment end----------------------------------->
+<!--------------------modal for setting display ----------------------------------->
+<h4 style="display:none" id="getMargin">{{numberForEachTable[5]}}</h4>
+<div class="my_modal" data-modal="trigger-2" id="modal_for_setting_display">
+	<article class="my_content-wrapper">
+		<header class="my_modal-header">
+			<h2><i id="settingIcon" style="margin-top: 0px; margin-bottom: 0px; margin-right: 10px;font-size: 100%;" class="large material-icons">settings</i>Setting</h2>
+		</header>
+		<div class="my_content" style="display:block">
+			<form action="#" id="rangeSliderFormId">
+				<h5 style="font-size: 1.64rem;line-height: 0%;margin-right: 3%;margin-bottom: 0;margin-top: 4.5%;">Margin: </h5>
+				<p class="range-field" id="rangeSliderPId">
+					<input type="range" id="rangeSliderInputId" min="0" max="100"><label id="rangeValueLabel">0</label></input>
+				</p>
 			</form>
-        
-			<footer class="my_modal-footer">
-				<button class="trigger my_action" data-modal-trigger="trigger-2" onclick="confirmButtonFunction()" id="confirmButtonOnModal1">Confirm</button>
-				<button class="my_action" onclick="closeConfirmationModalAndResetGloablVariables()">Cancel</button>
-			</footer>
-		</article>
-	</div>
-	
-
-	<!--------------------modal for confirmation end----------------------------------->
-
-
-	<!--------------------modal for successful asignment ----------------------------------->
-	<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_assignment">
-		<article class="my_content-wrapper">
-			<header class="my_modal-header">
-				<h2 style="font-size:1.5vw;">Assignment Successful<img style="height: 2.5vw; width: 3vw; margin-left: 1.5vw;position:absolute;bottom: 14px;"src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
-			</header>	
-			<div class="my_content">
-				<p>Student <span id="student_name_span_sucessful_assigned" style="font-weight:bold;">StudentName</span> is successfully assigned to mentor <span id="mentor_name_span_sucessful_assigned" style="font-weight:bold;">MentorName</span>.</p>				
-			</div>
-			<footer class="my_modal-footer">
-				<button class="my_action" onclick='location.reload()'>Assign More Student</button>
-				<button style="background-color:#57BEF5;" class="my_action" onclick="redirect1()">Check Table</button>
-			</footer>			
-	
-		</article>
-	</div>
-	<!--------------------modal for successful asignment end----------------------------------->
-	
-	<!--------------------modal for setting display ----------------------------------->
-	<h4 style="display:none" id="getMargin">{{numberForEachTable[5]}}</h4>
-	<div class="my_modal" data-modal="trigger-2" id="modal_for_setting_display">
-		<article class="my_content-wrapper">
-			<header class="my_modal-header">
-				<h2><i id="settingIcon" style="margin-top: 0px; margin-bottom: 0px; margin-right: 10px;font-size: 100%;" class="large material-icons">settings</i>Setting</h2>
-				
-			</header>	
-			<div class="my_content" style="display:block">
-
-				<form action="#" id="rangeSliderFormId">
-					<h5 style="font-size: 1.64rem;line-height: 0%;margin-right: 3%;margin-bottom: 0;margin-top: 4.5%;">Margin: </h5>
-					<p class="range-field" id="rangeSliderPId">
-					  <input type="range" id="rangeSliderInputId" min="0" max="100"><label id="rangeValueLabel">0</label></input>  
-					</p>
-				  </form>
 			<h5>Average Student Per Mentor: <span id="studentPerMentorLabel">{{numberForEachTable[3]}}</span></h5>
 			<h5>Maximum Student Per Mentor Allowed: <span id="maxStudentPerMentorLabel">0</span></h5>
-			</div>
-			<footer class="my_modal-footer">
-				<button class="my_action" onclick="applySettings()" >Apply</button>
-				<button style="background-color:#e74c3c;" class="my_action" onclick="document.getElementById('modal_for_setting_display').classList.remove('my_open');">Cancel</button>
-			</footer>			
-	
-		</article>
-	</div>
-	<!--------------------modal for successful setting display ----------------------------------->	
-	
-	<script>
-		//Function for range slider
-    let margin = parseFloat({{numberForEachTable[5]}});
-		let marginInPercentage = margin * 100;
-		document.getElementById('rangeSliderInputId').value = marginInPercentage;
-		document.getElementById('rangeValueLabel').style.marginLeft = marginInPercentage-2.8+ '%';
-		document.getElementById('rangeValueLabel').textContent = marginInPercentage + '%';
-		document.getElementById('maxStudentPerMentorLabel').textContent = parseInt((margin+1) * parseInt(document.getElementById('studentPerMentorLabel').textContent));
-		$('#rangeSliderInputId').on('change input', function() {
-			var $this = $(this);
-		  document.getElementById('rangeValueLabel').textContent = $this.val() + '%';
-		  document.getElementById('rangeValueLabel').style.marginLeft = $this.val()-2.8 + '%';
-		  margin = $this.val() / 100;
-		  document.getElementById('maxStudentPerMentorLabel').textContent = parseInt((margin+1) * parseInt(document.getElementById('studentPerMentorLabel').textContent));
+		</div>
+		<footer class="my_modal-footer">
+			<button class="my_action" onclick="applySettings()">Apply</button>
+			<button style="background-color:#e74c3c;" class="my_action" onclick="document.getElementById('modal_for_setting_display').classList.remove('my_open');">Cancel</button>
+		</footer>
+	</article>
+</div>
+<!--------------------modal for successful setting display ----------------------------------->
+<script>
+//Function for range slider
+let margin = parseFloat({
+	{
+		numberForEachTable[5]
+	}
+});
+let marginInPercentage = margin * 100;
+document.getElementById('rangeSliderInputId').value = marginInPercentage;
+document.getElementById('rangeValueLabel').style.marginLeft = marginInPercentage - 2.8 + '%';
+document.getElementById('rangeValueLabel').textContent = marginInPercentage + '%';
+document.getElementById('maxStudentPerMentorLabel').textContent = parseInt((margin + 1) * parseInt(document.getElementById('studentPerMentorLabel').textContent));
+$('#rangeSliderInputId').on('change input', function() {
+	var $this = $(this);
+	document.getElementById('rangeValueLabel').textContent = $this.val() + '%';
+	document.getElementById('rangeValueLabel').style.marginLeft = $this.val() - 2.8 + '%';
+	margin = $this.val() / 100;
+	document.getElementById('maxStudentPerMentorLabel').textContent = parseInt((margin + 1) * parseInt(document.getElementById('studentPerMentorLabel').textContent));
+});
+
+function applySettings() {
+	req = $.ajax({
+		url: '/apply_settings',
+		type: 'POST',
+		data: {
+			margin: margin
+		}
+	});
+	$('body')[0].style.cursor = 'progress';
+	setTimeout(function() {
+		window.location.href = window.location.href;
+	}, 1000); // waiting one second	
+}
+
+function settingButtonFunction() {
+	let button = document.getElementById("settingIconButton");
+	const trigger = button.getAttribute('data-modal-trigger');
+	const modal = document.getElementById("modal_for_setting_display");
+	const contentWrapper = modal.querySelector('.my_content-wrapper');
+	contentWrapper.addEventListener('click', e => e.stopPropagation());
+	modal.classList.toggle('my_open');
+}
+</script>
+<script>
+// Global variables
+let switchStatus = false;
+let mentorNumberColor = "green";
+let mostRecentAssignedStudentName = "";
+let mostRecentAssignedStudentEmail = "";
+/* If page is come from other page by clicking the back button, refresh this page */
+if(window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+	location.reload()
+}
+/* Redirect to mentoring_join page, with 2 parameters, student name and student email */
+function redirect1() {
+	window.location.href = "/mentoring_joined?username=" + mostRecentAssignedStudentName + "&email=" + mostRecentAssignedStudentEmail;
+}
+/* All the inputs onfocus functions */
+function studentInputOnFocusFunction() {
+	//document.getElementById("itemsInput-flexdatalist").value=''; 
+	document.getElementById("studentErrorLabel").style.display = 'none';
+}
+
+function mentorInputOnFocusFunction() {
+	//document.getElementById("itemsInput2-flexdatalist").value=''; 
+	document.getElementById("mentorErrorLabel").style.display = 'none';
+	document.getElementById("mentorCountErrorLabel").style.display = "none";
+}
+
+function studentLastNameInputOnFocusFunction() {
+	document.getElementById("studentLastNameErrorLabel").style.display = 'none';
+}
+
+function studentFirstNameInputOnFocusFunction() {
+	document.getElementById("studentFirstNameErrorLabel").style.display = 'none';
+}
+
+function studentRebelMailInputOnFocusFunction() {
+	document.getElementById("studentRebelMailErrorLabel").style.display = 'none';
+}
+/* All the inputs onfocus functions */
+/* Modals operations */
+/* This function is used for button onclick for 2 close buttons in confirmation modal */
+function closeConfirmationModalAndResetGloablVariables() {
+	document.getElementById('modal_for_confirmation').classList.remove('my_open');
+	mostRecentAssignedStudentName = '';
+	mostRecentAssignedStudentName = '';
+}
+/* This function is used by below by the confirmButtonFunction() */
+function openSuccessfulAssignmentModalAndCloseConfirmationModal() {
+	document.getElementById('modal_for_confirmation').classList.remove('my_open');
+	let button = document.getElementById("confirmButtonOnModal1");
+	const trigger = button.getAttribute('data-modal-trigger');
+	const modal = document.getElementById("modal_for_successful_assignment");
+	const contentWrapper = modal.querySelector('.my_content-wrapper');
+	contentWrapper.addEventListener('click', e => e.stopPropagation());
+	modal.classList.toggle('my_open');
+}
+/* Function to called when the confirm button in the confirm modal is clicked */
+function confirmButtonFunction() {
+	if(switchStatus == false) {
+		req = $.ajax({
+			url: '/assign_mentor_existed_student',
+			type: 'POST'
 		});
-		
-		function applySettings(){
-			req = $.ajax({
-				url: '/apply_settings',
-				type:'POST',
-				data: {margin:margin}
-			});				
-			$('body')[0].style.cursor = 'progress';
-			setTimeout(function() {
-					window.location.href=window.location.href;
-					
-				}, 1000); // waiting one second	
-		}
-		
-		function settingButtonFunction(){
-			let button = document.getElementById("settingIconButton");
-			const trigger = button.getAttribute('data-modal-trigger');
-			const modal = document.getElementById("modal_for_setting_display");
-			const contentWrapper = modal.querySelector('.my_content-wrapper');
-			contentWrapper.addEventListener('click', e => e.stopPropagation());
-			modal.classList.toggle('my_open');
-		
-		}
-
-		
-	</script>
-	
-	
-
-	<script>
-  // Global variables
-	let switchStatus = false;
-	let mentorNumberColor = "green";
-	let mostRecentAssignedStudentName = "";
-	let mostRecentAssignedStudentEmail = "";
-	
-	
-  /* If page is come from other page by clicking the back button, refresh this page */
-	if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
-		location.reload()
+		openSuccessfulAssignmentModalAndCloseConfirmationModal()
+	} else {
+		req = $.ajax({
+			url: '/assign_mentor_new_stduent',
+			type: 'POST'
+		});
+		openSuccessfulAssignmentModalAndCloseConfirmationModal()
 	}
-
-  /* Redirect to mentoring_join page, with 2 parameters, student name and student email */
-	function redirect1(){
-		window.location.href = "/mentoring_joined?username="+mostRecentAssignedStudentName+"&email="+mostRecentAssignedStudentEmail;
+}
+/* Modals operations */
+/* Assign button function */
+/* Initial all variables which are the elements of the webpage*/
+/* First part of initialization are the elements from main_menu page*/
+function assignButtonFunction() {
+	studentNameInput = document.getElementById("itemsInput-flexdatalist");
+	mentorNameInput = document.getElementById("itemsInput2-flexdatalist");
+	studentErrorLabel = document.getElementById("studentErrorLabel");
+	mentorErrorLabel = document.getElementById("mentorErrorLabel");
+	studentLastNameErrorLabel = document.getElementById("studentLastNameErrorLabel");
+	studentFirstNameErrorLabel = document.getElementById("studentFirstNameErrorLabel");
+	studentRebelMailErrorLabel = document.getElementById("studentRebelMailErrorLabel");
+	studentLastNameInput = document.getElementById("studentLastNameInput");
+	studentFirstNameInput = document.getElementById("studentFirstNameInput");
+	studentRebelMailInput = document.getElementById("studentRebelMailInput");
+	assignDateCalendar = document.getElementById("assignDateCalendarId");
+	endDateCalendar = document.getElementById("endDateCalendarId");
+	dateErrorLabel = document.getElementById("dateErrorLabel");
+	assignmentErrorLabel = document.getElementById("assignmentErrorLabel");
+	emailNotifyCheckBox = document.getElementById("checkBoxForEmail");
+	/* Second part of initialization are the elements from two modals */
+	button = document.getElementById("assign_button_id");
+	const trigger = button.getAttribute('data-modal-trigger');
+	const modal = document.getElementById("modal_for_confirmation");
+	const contentWrapper = modal.querySelector('.my_content-wrapper');
+	const close = modal.querySelector('.my_close');
+	student_name_span = document.getElementById("student_name_span");
+	mentor_name_span = document.getElementById("mentor_name_span");
+	//		mentor_name_span2 = document.getElementById("mentor_name_span2");
+	student_name_span_sucessful_assigned = document.getElementById("student_name_span_sucessful_assigned");
+	mentor_name_span_sucessful_assigned = document.getElementById("mentor_name_span_sucessful_assigned");
+	/* Setting default values for some elements */
+	assignmentErrorLabel.style.display = "none";
+	emailNotifyCheckBox.checked = true;
+	let boolSubmitSuccess = true;
+	/* Client side check - for if the mentor has too many students , if so error label is displayed*/
+	if(mentorNumberColor == "red") {
+		document.getElementById("mentorCountErrorLabel").textContent = "Current mentor has too many students, please assign another mentor for this student."
+		document.getElementById("mentorCountErrorLabel").style.display = "block";
+		boolSubmitSuccess = false;
 	}
-
-	/* All the inputs onfocus functions */
-	function studentInputOnFocusFunction(){
-		//document.getElementById("itemsInput-flexdatalist").value=''; 
-		document.getElementById("studentErrorLabel").style.display = 'none';
-	}
-	
-	function mentorInputOnFocusFunction(){
-		//document.getElementById("itemsInput2-flexdatalist").value=''; 
-		document.getElementById("mentorErrorLabel").style.display = 'none';
-		document.getElementById("mentorCountErrorLabel").style.display = "none";
-	}	
-
-	function studentLastNameInputOnFocusFunction(){
-		document.getElementById("studentLastNameErrorLabel").style.display = 'none';
-	}
-	
-	function studentFirstNameInputOnFocusFunction(){
-		document.getElementById("studentFirstNameErrorLabel").style.display = 'none';
-	}
-
-
-	function studentRebelMailInputOnFocusFunction(){
-		document.getElementById("studentRebelMailErrorLabel").style.display = 'none';
-	}
-  /* All the inputs onfocus functions */
-
-
-
-	/* Modals operations */
-  
-  /* This function is used for button onclick for 2 close buttons in confirmation modal */
-	function closeConfirmationModalAndResetGloablVariables(){
-		document.getElementById('modal_for_confirmation').classList.remove('my_open');
-		mostRecentAssignedStudentName='';
-		mostRecentAssignedStudentName='';
-	}
-	
-  /* This function is used by below by the confirmButtonFunction() */
-	function openSuccessfulAssignmentModalAndCloseConfirmationModal(){
-		document.getElementById('modal_for_confirmation').classList.remove('my_open');
-		let button = document.getElementById("confirmButtonOnModal1");
-		const trigger = button.getAttribute('data-modal-trigger');
-		const modal = document.getElementById("modal_for_successful_assignment");
-		const contentWrapper = modal.querySelector('.my_content-wrapper');
-		contentWrapper.addEventListener('click', e => e.stopPropagation());
-		modal.classList.toggle('my_open');
-	}
-	
-	/* Function to called when the confirm button in the confirm modal is clicked */
-	function confirmButtonFunction(){
-	
-		if(switchStatus == false){
-				req = $.ajax({
-				url: '/assign_mentor_existed_student',
-				type:'POST'
-			});
-			openSuccessfulAssignmentModalAndCloseConfirmationModal()
-		}
-		
-		else{
-				req = $.ajax({
-				url: '/assign_mentor_new_stduent',
-				type:'POST'
-			});
-			openSuccessfulAssignmentModalAndCloseConfirmationModal()	
-		
-		}
-	}
-  /* Modals operations */
-	
-	
-  /* Assign button function */
-  
-  /* Initial all variables which are the elements of the webpage*/
-  /* First part of initialization are the elements from main_menu page*/
-	function assignButtonFunction(){	
-		studentNameInput = document.getElementById("itemsInput-flexdatalist");
-		mentorNameInput = document.getElementById("itemsInput2-flexdatalist");
-		studentErrorLabel = document.getElementById("studentErrorLabel");
-		mentorErrorLabel = document.getElementById("mentorErrorLabel");
-		studentLastNameErrorLabel = document.getElementById("studentLastNameErrorLabel");
-		studentFirstNameErrorLabel = document.getElementById("studentFirstNameErrorLabel");
-		studentRebelMailErrorLabel = document.getElementById("studentRebelMailErrorLabel");
-		studentLastNameInput = document.getElementById("studentLastNameInput");
-		studentFirstNameInput = document.getElementById("studentFirstNameInput");
-		studentRebelMailInput = document.getElementById("studentRebelMailInput");
-		assignDateCalendar = document.getElementById("assignDateCalendarId");
-		endDateCalendar = document.getElementById("endDateCalendarId");
-		dateErrorLabel = document.getElementById("dateErrorLabel");
-		assignmentErrorLabel = document.getElementById("assignmentErrorLabel");
-		emailNotifyCheckBox = document.getElementById("checkBoxForEmail");
-		
-    /* Second part of initialization are the elements from two modals */
-		button = document.getElementById("assign_button_id");
-		const trigger = button.getAttribute('data-modal-trigger');
-		const modal = document.getElementById("modal_for_confirmation");
-		const contentWrapper = modal.querySelector('.my_content-wrapper');
-		const close = modal.querySelector('.my_close');
-		student_name_span = document.getElementById("student_name_span");
-		mentor_name_span = document.getElementById("mentor_name_span");
-//		mentor_name_span2 = document.getElementById("mentor_name_span2");
-		student_name_span_sucessful_assigned = document.getElementById("student_name_span_sucessful_assigned");
-		mentor_name_span_sucessful_assigned = document.getElementById("mentor_name_span_sucessful_assigned");
-
-    /* Setting default values for some elements */
-		assignmentErrorLabel.style.display = "none";
-		emailNotifyCheckBox.checked = true;
-		let boolSubmitSuccess = true;
-	
-
-    /* Client side check - for if the mentor has too many students , if so error label is displayed*/
-		if(mentorNumberColor == "red"){
-			document.getElementById("mentorCountErrorLabel").textContent = "Current mentor has too many students, please assign another mentor for this student."
-			document.getElementById("mentorCountErrorLabel").style.display = "block";
+	/* getting values from two date inputs, set it to "null" if input empty */
+	let endDate = "";
+	let assignDate = "";
+	if(endDateCalendar.value.length > 0) {
+		assignedDate = new Date(assignDateCalendar.value);
+		endDate = new Date(endDateCalendar.value);
+		//Clinet side check - for if the end date is earlier than the assign date, if so error label is displayed
+		if(assignedDate > endDate) {
+			dateErrorLabel.style.display = "block";
 			boolSubmitSuccess = false;
 		}
-		
-    /* getting values from two date inputs, set it to "null" if input empty */
-		let endDate = "";
-		let assignDate = "";		
-		
-		if(endDateCalendar.value.length > 0){
-			assignedDate = new Date(assignDateCalendar.value);
-			endDate = new Date(endDateCalendar.value);
-			//Clinet side check - for if the end date is earlier than the assign date, if so error label is displayed
-			if(assignedDate > endDate){
-				dateErrorLabel.style.display = "block";
-				boolSubmitSuccess = false;
-			}
-			endDate = endDateCalendar.value;				
-		}
-		else{
-			endDate = "null";
-		}
-		
-		if(assignDateCalendar.value.length > 0){
-			assignDate = assignDateCalendar.value
-		}
-		else{
-			assignDate = "null";
-		}	
-		
-		
-		//Client side check - for if mentor name input is empty or not, if so error label is displayed
-		if(mentorNameInput.value.length == 0)
-		{
-			mentorErrorLabel.style.display = "block";
+		endDate = endDateCalendar.value;
+	} else {
+		endDate = "null";
+	}
+	if(assignDateCalendar.value.length > 0) {
+		assignDate = assignDateCalendar.value
+	} else {
+		assignDate = "null";
+	}
+	//Client side check - for if mentor name input is empty or not, if so error label is displayed
+	if(mentorNameInput.value.length == 0) {
+		mentorErrorLabel.style.display = "block";
+		boolSubmitSuccess = false;
+	}
+	/*  -------------------- Assigning exsited student conditions checking -----------------------*/
+	// Client side check - to see if the student name input is empty of not, if so error label is displayed
+	if(switchStatus == false) {
+		if(studentNameInput.value.length == 0) {
+			studentErrorLabel.style.display = "block";
 			boolSubmitSuccess = false;
-		}	
-		
-		
-		/*  -------------------- Assigning exsited student conditions checking -----------------------*/
-    // Client side check - to see if the student name input is empty of not, if so error label is displayed
-		if(switchStatus == false){
-			if(studentNameInput.value.length == 0)
-			{
-				studentErrorLabel.style.display = "block";
-				boolSubmitSuccess = false;
+		}
+		// If any one part of checking gone worng, stop the submit function.
+		if(boolSubmitSuccess == false) return;
+		// Receiving values from labels and assigning them variables
+		let studentName = studentNameInput.value;
+		let mentorName = mentorNameInput.value;
+		// Use ajax to send POST request to flask, and do some additional server side checkings
+		console.log("student " + studentName + " is assinge to mentor " + mentorName + " (conditions checking).");
+		req = $.ajax({
+			url: '/assign_mentor_existed_student_check',
+			type: 'POST',
+			data: {
+				studentName: studentName,
+				mentorName: mentorName,
+				assignDate: assignDate,
+				endDate: endDate,
+				relationship_id: globalSelectedStudentRelationshipId
 			}
-			
-			// If any one part of checking gone worng, stop the submit function.
-			if(boolSubmitSuccess == false)
+		});
+		// When request done, see if all the server side checks are valid, if not, error label is displayed
+		req.done(function(data) {
+			if(data.RESULT != "SUCCESS") {
+				assignmentErrorLabel.textContent = data.RESULT
+				assignmentErrorLabel.style.display = "block"
 				return;
-			
-      // Receiving values from labels and assigning them variables
-			let studentName = studentNameInput.value;
-			let mentorName = mentorNameInput.value;
-			
-      // Use ajax to send POST request to flask, and do some additional server side checkings
-			console.log("student " + studentName + " is assinge to mentor " + mentorName + " (conditions checking).");
-			req = $.ajax({
-				url: '/assign_mentor_existed_student_check',
-				type:'POST',
-				data: {studentName:studentName,mentorName:mentorName,assignDate:assignDate,endDate:endDate,relationship_id:globalSelectedStudentRelationshipId}
-			});
-			
-      // When request done, see if all the server side checks are valid, if not, error label is displayed
-			req.done(function(data){
-				if(data.RESULT != "SUCCESS"){
-					assignmentErrorLabel.textContent = data.RESULT
-					assignmentErrorLabel.style.display = "block"
-					return;
-				}
-        // If success, display the confirmation modal, and setting all the texts.
-				else{
-					student_name_span.textContent = studentName;
-					mentor_name_span.textContent = mentorName;
-		//			mentor_name_span2.textContent = mentorName;
-					student_name_span_sucessful_assigned.textContent = studentName;
-					mentor_name_span_sucessful_assigned.textContent = mentorName;
-					contentWrapper.addEventListener('click', e => e.stopPropagation());
-
-					modal.classList.toggle('my_open');
-          
-          // Setting global variables so that they can be used as parameter when redirecting
-					mostRecentAssignedStudentName = studentName;
-					mostRecentAssignedStudentEmail = "";
-				}
-			});	
-			
-		}
-		/*  -------------------- End assigning exsited student conditions checking -----------------------*/
-		
-		
-		/*  -------------------- Assigning new student conditions checking -----------------------*/
-		else{
-			
-      /* More client side checks, if not pass error label is displayed */
-			if(studentLastNameInput.value.length == 0)
-			{
-				studentLastNameErrorLabel.style.display = "block";
-				boolSubmitSuccess = false;
 			}
-			
-			if(studentFirstNameInput.value.length == 0)
-			{
-				studentFirstNameErrorLabel.style.display = "block";
-				boolSubmitSuccess = false;
+			// If success, display the confirmation modal, and setting all the texts.
+			else {
+				student_name_span.textContent = studentName;
+				mentor_name_span.textContent = mentorName;
+				//			mentor_name_span2.textContent = mentorName;
+				student_name_span_sucessful_assigned.textContent = studentName;
+				mentor_name_span_sucessful_assigned.textContent = mentorName;
+				contentWrapper.addEventListener('click', e => e.stopPropagation());
+				modal.classList.toggle('my_open');
+				// Setting global variables so that they can be used as parameter when redirecting
+				mostRecentAssignedStudentName = studentName;
+				mostRecentAssignedStudentEmail = "";
 			}
-			
-			if(studentRebelMailInput.value.length == 0)
-			{
-				studentRebelMailErrorLabel.textContent = "Student rebel mail can not be empty.";
-				studentRebelMailErrorLabel.style.display = "block";
-				return;
-			}		
-
-			if(!studentRebelMailInput.value.includes("@unlv.nevada.edu"))
-			{
-				studentRebelMailErrorLabel.textContent = "Student rebel mail does not contains @unlv.nevada.edu.";
-				studentRebelMailErrorLabel.style.display = "block";	
-				boolSubmitSuccess = false;
-			}
-			
-			if(boolSubmitSuccess == false)
-				return;
-			/* Client side erorr checks done */
-      
-      /* Seding POST request to flask for additional server side check using ajax. */
-			let studentLastName = studentLastNameInput.value;
-			let studentFirstName = studentFirstNameInput.value;
-			let studentRebelMail = studentRebelMailInput.value;
-			let mentorName = mentorNameInput.value;
-
-			console.log(endDate,assignDate,studentLastName,studentFirstName,studentRebelMail,mentorName);
-			
-			req = $.ajax({
-				url: '/assign_mentor_new_stduent_check',
-				type:'POST',
-				data: {studentFirstName:studentFirstName,studentLastName:studentLastName,mentorName:mentorName,assignDate:assignDate,endDate:endDate,studentRebelMail:studentRebelMail}
-			});	
-
-			req.done(function(data){
-				if(data.RESULT != "SUCCESS"){
-					assignmentErrorLabel.textContent = data.RESULT
-					assignmentErrorLabel.style.display = "block"
-					return;
-				}
-				else{
-					student_name_span.textContent = studentLastName + ", " + studentFirstName;
-					mentor_name_span.textContent = mentorName;
-		//			mentor_name_span2.textContent = mentorName;
-					student_name_span_sucessful_assigned.textContent = studentLastName + ", " + studentFirstName
-					mentor_name_span_sucessful_assigned.textContent = mentorName;
-					contentWrapper.addEventListener('click', e => e.stopPropagation());
-
-					modal.classList.toggle('my_open');
-          
-          // Setting global variables for redirecting parameters
-					mostRecentAssignedStudentName = studentLastName + ", " + studentFirstName;
-					mostRecentAssignedStudentEmail = studentRebelMail;
-				}
-			});				
-		}
-		
-		/*  -------------------- End assigning new student conditions checking -----------------------*/
-		
-	
+		});
 	}
-	
-	
-	// The default display of all elements in the page
-	function defaultState(){
-		document.getElementById("itemsInput-flexdatalist").value="";
-		document.getElementById("studentLastNameInput").value="";
-		document.getElementById("studentFirstNameInput").value="";
-		document.getElementById("studentRebelMailInput").value="";
-		document.getElementById("itemsInput2-flexdatalist").value="";
-		document.getElementById("endDateCalendarId").value = "";
-		document.getElementById("studentCountPerMentor1").textContent ="";
-		document.getElementById("studentCountPerMentor2").textContent ="";
-		document.getElementById("studentCountPerMentor3").textContent ="";
-		document.getElementById('assign_button_id').classList.remove('assign_button','assign_button2');
-		document.getElementById('assign_button_id').classList.add('assign_button');
-		errorLabels = document.getElementsByClassName("errorLabel");
-		for (let label of errorLabels) {
-			label.style.display="none";
+	/*  -------------------- End assigning exsited student conditions checking -----------------------*/
+	/*  -------------------- Assigning new student conditions checking -----------------------*/
+	else {
+		/* More client side checks, if not pass error label is displayed */
+		if(studentLastNameInput.value.length == 0) {
+			studentLastNameErrorLabel.style.display = "block";
+			boolSubmitSuccess = false;
 		}
-		
-	}
-
-  // Change color for the student count text, as well as the global variable mentorNumberColor.
-	function mentorStudentTextColor(color){
-		mentorNumberColor = color;
-		let button = document.getElementById('assign_button_id');
-		if(color == "green"){
-			$('#studentCountPerMentor2').css('color',"#31E151")
-			button.classList.remove('assign_button','assign_button2');
-			button.classList.add('assign_button');
-			document.getElementById("mentorCountErrorLabel").style.display = "none"
-			}
-		else if(color== "yellow")
-		{
-			$('#studentCountPerMentor2').css('color',"#ffd996")
-			button.classList.remove('assign_button','assign_button2');
-			button.classList.add('assign_button');	
-			document.getElementById("mentorCountErrorLabel").style.display = "none"			
+		if(studentFirstNameInput.value.length == 0) {
+			studentFirstNameErrorLabel.style.display = "block";
+			boolSubmitSuccess = false;
 		}
-		else{
-			$('#studentCountPerMentor2').css('color',"#DB0B0B")
-			//$('#assign_button').prop('disabled', true);
-			button.classList.remove('assign_button','assign_button2');
-			button.classList.add('assign_button2');		
-		}
-	}
-
-
-  // When the student input is selected, the function is triggered.
-	var globalSelectedStudentRelationshipId = 0;
-	$('input.flexdatalist.student').on('change:flexdatalist', function(event, set, options) {
-		var val = set.text; 
-    // Reset the mentor input if student input is empty.
-		if(this.value.length == 0)
-		{
-			document.getElementById("itemsInput2-flexdatalist").value=''
+		if(studentRebelMailInput.value.length == 0) {
+			studentRebelMailErrorLabel.textContent = "Student rebel mail can not be empty.";
+			studentRebelMailErrorLabel.style.display = "block";
 			return;
 		}
-		console.log(val)
-		
-		let parsedSet = JSON.parse(set.value);
-		let relationship_id = parsedSet.relationship_id;
-		globalSelectedStudentRelationshipId = parsedSet.relationship_id;
-		
-		
-    // When the one of the student input avaliable is selected, the function is triggered.
-    // It send a POST request to flask via ajax, so flask can find the correspond professor for this student and return a json
+		if(!studentRebelMailInput.value.includes("@unlv.nevada.edu")) {
+			studentRebelMailErrorLabel.textContent = "Student rebel mail does not contains @unlv.nevada.edu.";
+			studentRebelMailErrorLabel.style.display = "block";
+			boolSubmitSuccess = false;
+		}
+		if(boolSubmitSuccess == false) return;
+		/* Client side erorr checks done */
+		/* Seding POST request to flask for additional server side check using ajax. */
+		let studentLastName = studentLastNameInput.value;
+		let studentFirstName = studentFirstNameInput.value;
+		let studentRebelMail = studentRebelMailInput.value;
+		let mentorName = mentorNameInput.value;
+		console.log(endDate, assignDate, studentLastName, studentFirstName, studentRebelMail, mentorName);
 		req = $.ajax({
-			url: '/update',
-			type:'POST',
-			data: {relationship_id:relationship_id}
+			url: '/assign_mentor_new_stduent_check',
+			type: 'POST',
+			data: {
+				studentFirstName: studentFirstName,
+				studentLastName: studentLastName,
+				mentorName: mentorName,
+				assignDate: assignDate,
+				endDate: endDate,
+				studentRebelMail: studentRebelMail
+			}
 		});
-		
-		req.done(function(data){
-	//Setting all the element displays
-			$('#studentCountPerMentor1').text("This mentor has ");
-			$('#studentCountPerMentor2').text(data.student_count);
-			$('#studentCountPerMentor3').text(" students.");
-			$("#itemsInput2-flexdatalist").val(data.professor_name);
-			mentorStudentTextColor(data.number_color);
-			
-	// Change the background color of the mentor input for 1 second
-			var bg = $("#itemsInput2-flexdatalist").css('background'); // store original background
-			$("#itemsInput2-flexdatalist").css('background', 'rgba(187, 236, 240, 0.2)'); //change second element background
-			setTimeout(function() {
-				$("#itemsInput2-flexdatalist").css('background', bg); // change it back after ...
-			}, 1000); // waiting one second			
-		});	
-		
-  // Un-focus the student input
-		$("#itemsInput-flexdatalist").blur();
-  
-  // Reset mentor input error labels 
-		mentorInputOnFocusFunction();
-  
-  // Making sure the user is not clicking too fast (click before the server return message), disbale the assign button for 0.3 second.
-		$("#assign_button_id").prop( "disabled", true );
-		setTimeout(function() {
-			$("#assign_button_id").prop( "disabled", false ); // change it back after ...
-		}, 300); // waiting one second	
-	});
-	
-  // When the mentor input is selected, the function is triggered.------------
-	$('input.flexdatalist.mentor').on('change:flexdatalist', function(event, set, options) {
-		var val = set.text;       
-		if(val.length == 0)
-		{
-			document.getElementById("studentCountPerMentor1").textContent ="";
-			document.getElementById("studentCountPerMentor2").textContent ="";
-			document.getElementById("studentCountPerMentor3").textContent ="";
-			mentorStudentTextColor("green");
-			return;
-		}
-		
-	
-		req = $.ajax({
-			url: '/update_from_professor_datalist',
-			type:'POST',
-			data: {name:val}
-		});
-		
-		
-		req.done(function(data){
-			$('#studentCountPerMentor1').text("This mentor has ");
-			$('#studentCountPerMentor2').text(data.student_count);
-			$('#studentCountPerMentor3').text(" students.");
-			mentorStudentTextColor(data.number_color);
-			
-			$("#itemsInput2-flexdatalist").css('background', 'rgba(187, 236, 240, 0.2)'); //change second element background
-			setTimeout(function() {
-				$("#itemsInput2-flexdatalist").css('background', '#FfFFFF'); // change it back after ...
-			}, 700); // waiting one second			
-				
-		});	
-		
-		
-		
-		$("#itemsInput2-flexdatalist").blur();
-		$("#assign_button_id").prop( "disabled", true );
-		setTimeout(function() {
-			$("#assign_button_id").prop( "disabled", false ); // change it back after ...
-		}, 300); // waiting one second	
-		
-	});
-  
-  // End mentor input selected function-----------------------------------------
-
-  	$('input.flexdatalist.mentor').on('show:flexdatalist.results', function(event, set, options) {	
-		setTimeout(function() {
-			if($("#itemsInput2-flexdatalist-results").length == 0)
+		req.done(function(data) {
+			if(data.RESULT != "SUCCESS") {
+				assignmentErrorLabel.textContent = data.RESULT
+				assignmentErrorLabel.style.display = "block"
 				return;
-			ul = $("#itemsInput2-flexdatalist-results")[0]
-			for (var i = 0; i < ul.childNodes.length; i++){
-				li = ul.childNodes[i]
-				if(li.childNodes[2].textContent == "FULL "){
-					li.childNodes[2].style.color = "#db0b0b"
-				}
-				else if(li.childNodes[2].textContent == "ALMOST FULL "){
-					li.childNodes[2].style.color = "#ffd996"
-				}
-				else{
-					li.childNodes[2].style.color = "#31e151"
-				}
-		}
-		}, 10); 
-	});
-
-  	$('input.flexdatalist.student').on('show:flexdatalist.results', function(event, set, options) {	
-		setTimeout(function() {
-			if($("#itemsInput-flexdatalist-results").length == 0)
-				return;
-			ul = $("#itemsInput-flexdatalist-results")[0]
-			for (var i = 0; i < ul.childNodes.length; i++){
-				li = ul.childNodes[i]
-				if(li.childNodes[3].textContent == "1 "){
-					li.childNodes[2].style.visibility = "visible";
-				}
-		}
-		}, 10); 
-	});
-
-	
-	// Function that handle the switch for New Stduent.
-  // First, it reset everything to default display
-  // Then according to the value(true or false) of the switch, it sets the display of the page
-  $(".switch").find("input[type=checkbox]").on("change",function() {
-    var status = $(this).prop('checked');
-		switchStatus = status;
-		defaultState()
-		if(status){
-			document.getElementById("itemsInput-flexdatalist").style.display = "none";
-			document.getElementById("studentLabel").style.display = "none";
-			document.getElementById("studentLastNameLabel").style.display = "block";
-			document.getElementById("studentLastNameInput").style.display = "block";
-			document.getElementById("studentFirstNameLabel").style.display = "block";
-			document.getElementById("studentFirstNameInput").style.display = "block";
-			document.getElementById("studentRebelMailLabel").style.display = "block";
-			document.getElementById("studentRebelMailInput").style.display = "block";
-			document.getElementById("calenderDiv").style.display = "inline-flex";
-			document.getElementById("page-wrapper").style.marginTop = "3%";
-		}
-		
-		else{
-			document.getElementById("itemsInput-flexdatalist").style.display = "block";
-			document.getElementById("studentLabel").style.display = "block";
-			document.getElementById("studentLastNameLabel").style.display = "none";
-			document.getElementById("studentLastNameInput").style.display = "none";
-			document.getElementById("studentFirstNameLabel").style.display = "none";
-			document.getElementById("studentFirstNameInput").style.display = "none";
-			document.getElementById("studentRebelMailLabel").style.display = "none";
-			document.getElementById("studentRebelMailInput").style.display = "none";
-			document.getElementById("page-wrapper").style.marginTop = "7%";
-		}
-		
-  });
-	// Function that initialize the student input datalist
-    let studentJsonData = decodeHtml('{{studentJson}}');
-    $('.flexdatalist.student').flexdatalist({
-       minLength: 0,
-       valueProperty: '*',
-       selectionRequired: true,
-       visibleProperties: ["studentName","relationship_id","email","duplicated"],
-       searchIn: 'studentName',
-       data: JSON.parse(studentJsonData),
-	   searchContain: true
-    });
-    document.getElementById("itemsInput-flexdatalist").spellcheck = false
-    document.getElementById("itemsInput-flexdatalist").onclick = studentInputOnFocusFunction
-
-
-
-    // Function that initialize the mentor input datalist
-    let jsonData = decodeHtml('{{professorJson}}');
-    $('.flexdatalist.mentor').flexdatalist({
-       minLength: 0,
-       valueProperty: '*',
-       selectionRequired: true,
-       visibleProperties: ["professorName","count","status"],
-       searchIn: 'professorName',
-       data: JSON.parse(jsonData)
-    });
-    document.getElementById("itemsInput2-flexdatalist").spellcheck = false
-    document.getElementById("itemsInput2-flexdatalist").onclick = mentorInputOnFocusFunction
-    
-      /* Function that initialize calendar for assign date */
-    document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.assignDateCalendar');
-      var today = new Date();
-      var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-      var options = {"format" : "mm/dd/yyyy","defaultDate":today,"setDefaultDate":true}
-      var instances = M.Datepicker.init(elems, options);
-    });
-    
-    $(document).ready(function(){
-      $('.datepicker').datepicker();
-    });  
-
-
-    /* Function that initialize calendar for end date */
-    document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.endDateCalendar');
-      var options = {"format" : "mm/dd/yyyy"}
-      var instances = M.Datepicker.init(elems, options);
-    });
-
-
-    $(document).ready(function(){
-      $('.datepicker').datepicker();
-    });
-  
-  // Funciton that initialize the floating button 
-	document.addEventListener('DOMContentLoaded', function() {
-		var elems = document.querySelectorAll('.fixed-action-btn');
-		var instances = M.FloatingActionButton.init(elems, {
+			} else {
+				student_name_span.textContent = studentLastName + ", " + studentFirstName;
+				mentor_name_span.textContent = mentorName;
+				//			mentor_name_span2.textContent = mentorName;
+				student_name_span_sucessful_assigned.textContent = studentLastName + ", " + studentFirstName
+				mentor_name_span_sucessful_assigned.textContent = mentorName;
+				contentWrapper.addEventListener('click', e => e.stopPropagation());
+				modal.classList.toggle('my_open');
+				// Setting global variables for redirecting parameters
+				mostRecentAssignedStudentName = studentLastName + ", " + studentFirstName;
+				mostRecentAssignedStudentEmail = studentRebelMail;
+			}
 		});
+	}
+	/*  -------------------- End assigning new student conditions checking -----------------------*/
+}
+// The default display of all elements in the page
+function defaultState() {
+	document.getElementById("itemsInput-flexdatalist").value = "";
+	document.getElementById("studentLastNameInput").value = "";
+	document.getElementById("studentFirstNameInput").value = "";
+	document.getElementById("studentRebelMailInput").value = "";
+	document.getElementById("itemsInput2-flexdatalist").value = "";
+	document.getElementById("endDateCalendarId").value = "";
+	document.getElementById("studentCountPerMentor1").textContent = "";
+	document.getElementById("studentCountPerMentor2").textContent = "";
+	document.getElementById("studentCountPerMentor3").textContent = "";
+	document.getElementById('assign_button_id').classList.remove('assign_button', 'assign_button2');
+	document.getElementById('assign_button_id').classList.add('assign_button');
+	errorLabels = document.getElementsByClassName("errorLabel");
+	for(let label of errorLabels) {
+		label.style.display = "none";
+	}
+}
+// Change color for the student count text, as well as the global variable mentorNumberColor.
+function mentorStudentTextColor(color) {
+	mentorNumberColor = color;
+	let button = document.getElementById('assign_button_id');
+	if(color == "green") {
+		$('#studentCountPerMentor2').css('color', "#31E151")
+		button.classList.remove('assign_button', 'assign_button2');
+		button.classList.add('assign_button');
+		document.getElementById("mentorCountErrorLabel").style.display = "none"
+	} else if(color == "yellow") {
+		$('#studentCountPerMentor2').css('color', "#ffd996")
+		button.classList.remove('assign_button', 'assign_button2');
+		button.classList.add('assign_button');
+		document.getElementById("mentorCountErrorLabel").style.display = "none"
+	} else {
+		$('#studentCountPerMentor2').css('color', "#DB0B0B")
+		//$('#assign_button').prop('disabled', true);
+		button.classList.remove('assign_button', 'assign_button2');
+		button.classList.add('assign_button2');
+	}
+}
+// When the student input is selected, the function is triggered.
+var globalSelectedStudentRelationshipId = 0;
+$('input.flexdatalist.student').on('change:flexdatalist', function(event, set, options) {
+	var val = set.text;
+	// Reset the mentor input if student input is empty.
+	if(this.value.length == 0) {
+		document.getElementById("itemsInput2-flexdatalist").value = ''
+		return;
+	}
+	console.log(val)
+	let parsedSet = JSON.parse(set.value);
+	let relationship_id = parsedSet.relationship_id;
+	globalSelectedStudentRelationshipId = parsedSet.relationship_id;
+	// When the one of the student input avaliable is selected, the function is triggered.
+	// It send a POST request to flask via ajax, so flask can find the correspond professor for this student and return a json
+	req = $.ajax({
+		url: '/update',
+		type: 'POST',
+		data: {
+			relationship_id: relationship_id
+		}
 	});
+	req.done(function(data) {
+		//Setting all the element displays
+		$('#studentCountPerMentor1').text("This mentor has ");
+		$('#studentCountPerMentor2').text(data.student_count);
+		$('#studentCountPerMentor3').text(" students.");
+		$("#itemsInput2-flexdatalist").val(data.professor_name);
+		mentorStudentTextColor(data.number_color);
+		// Change the background color of the mentor input for 1 second
+		var bg = $("#itemsInput2-flexdatalist").css('background'); // store original background
+		$("#itemsInput2-flexdatalist").css('background', 'rgba(187, 236, 240, 0.2)'); //change second element background
+		setTimeout(function() {
+			$("#itemsInput2-flexdatalist").css('background', bg); // change it back after ...
+		}, 1000); // waiting one second			
+	});
+	// Un-focus the student input
+	$("#itemsInput-flexdatalist").blur();
+	// Reset mentor input error labels 
+	mentorInputOnFocusFunction();
+	// Making sure the user is not clicking too fast (click before the server return message), disbale the assign button for 0.3 second.
+	$("#assign_button_id").prop("disabled", true);
+	setTimeout(function() {
+		$("#assign_button_id").prop("disabled", false); // change it back after ...
+	}, 300); // waiting one second	
+});
+// When the mentor input is selected, the function is triggered.------------
+$('input.flexdatalist.mentor').on('change:flexdatalist', function(event, set, options) {
+	var val = set.text;
+	if(val.length == 0) {
+		document.getElementById("studentCountPerMentor1").textContent = "";
+		document.getElementById("studentCountPerMentor2").textContent = "";
+		document.getElementById("studentCountPerMentor3").textContent = "";
+		mentorStudentTextColor("green");
+		return;
+	}
+	req = $.ajax({
+		url: '/update_from_professor_datalist',
+		type: 'POST',
+		data: {
+			name: val
+		}
+	});
+	req.done(function(data) {
+		$('#studentCountPerMentor1').text("This mentor has ");
+		$('#studentCountPerMentor2').text(data.student_count);
+		$('#studentCountPerMentor3').text(" students.");
+		mentorStudentTextColor(data.number_color);
+		$("#itemsInput2-flexdatalist").css('background', 'rgba(187, 236, 240, 0.2)'); //change second element background
+		setTimeout(function() {
+			$("#itemsInput2-flexdatalist").css('background', '#FfFFFF'); // change it back after ...
+		}, 700); // waiting one second			
+	});
+	$("#itemsInput2-flexdatalist").blur();
+	$("#assign_button_id").prop("disabled", true);
+	setTimeout(function() {
+		$("#assign_button_id").prop("disabled", false); // change it back after ...
+	}, 300); // waiting one second	
+});
+// End mentor input selected function-----------------------------------------
+$('input.flexdatalist.mentor').on('show:flexdatalist.results', function(event, set, options) {
+	setTimeout(function() {
+		if($("#itemsInput2-flexdatalist-results").length == 0) return;
+		ul = $("#itemsInput2-flexdatalist-results")[0]
+		for(var i = 0; i < ul.childNodes.length; i++) {
+			li = ul.childNodes[i]
+			if(li.childNodes[2].textContent == "FULL ") {
+				li.childNodes[2].style.color = "#db0b0b"
+			} else if(li.childNodes[2].textContent == "ALMOST FULL ") {
+				li.childNodes[2].style.color = "#ffd996"
+			} else {
+				li.childNodes[2].style.color = "#31e151"
+			}
+		}
+	}, 10);
+});
+$('input.flexdatalist.student').on('show:flexdatalist.results', function(event, set, options) {
+	setTimeout(function() {
+		if($("#itemsInput-flexdatalist-results").length == 0) return;
+		ul = $("#itemsInput-flexdatalist-results")[0]
+		for(var i = 0; i < ul.childNodes.length; i++) {
+			li = ul.childNodes[i]
+			if(li.childNodes[3].textContent == "1 ") {
+				li.childNodes[2].style.visibility = "visible";
+			}
+		}
+	}, 10);
+});
+// Function that handle the switch for New Stduent.
+// First, it reset everything to default display
+// Then according to the value(true or false) of the switch, it sets the display of the page
+$(".switch").find("input[type=checkbox]").on("change", function() {
+	var status = $(this).prop('checked');
+	switchStatus = status;
+	defaultState()
+	if(status) {
+		document.getElementById("itemsInput-flexdatalist").style.display = "none";
+		document.getElementById("studentLabel").style.display = "none";
+		document.getElementById("studentLastNameLabel").style.display = "block";
+		document.getElementById("studentLastNameInput").style.display = "block";
+		document.getElementById("studentFirstNameLabel").style.display = "block";
+		document.getElementById("studentFirstNameInput").style.display = "block";
+		document.getElementById("studentRebelMailLabel").style.display = "block";
+		document.getElementById("studentRebelMailInput").style.display = "block";
+		document.getElementById("calenderDiv").style.display = "inline-flex";
+		document.getElementById("page-wrapper").style.marginTop = "3%";
+	} else {
+		document.getElementById("itemsInput-flexdatalist").style.display = "block";
+		document.getElementById("studentLabel").style.display = "block";
+		document.getElementById("studentLastNameLabel").style.display = "none";
+		document.getElementById("studentLastNameInput").style.display = "none";
+		document.getElementById("studentFirstNameLabel").style.display = "none";
+		document.getElementById("studentFirstNameInput").style.display = "none";
+		document.getElementById("studentRebelMailLabel").style.display = "none";
+		document.getElementById("studentRebelMailInput").style.display = "none";
+		document.getElementById("page-wrapper").style.marginTop = "7%";
+	}
+});
+// Function that initialize the student input datalist
+let studentJsonData = decodeHtml('{{studentJson}}');
+$('.flexdatalist.student').flexdatalist({
+	minLength: 0,
+	valueProperty: '*',
+	selectionRequired: true,
+	visibleProperties: ["studentName", "relationship_id", "email", "duplicated"],
+	searchIn: 'studentName',
+	data: JSON.parse(studentJsonData),
+	searchContain: true
+});
+document.getElementById("itemsInput-flexdatalist").spellcheck = false
+document.getElementById("itemsInput-flexdatalist").onclick = studentInputOnFocusFunction
+// Function that initialize the mentor input datalist
+let jsonData = decodeHtml('{{professorJson}}');
+$('.flexdatalist.mentor').flexdatalist({
+	minLength: 0,
+	valueProperty: '*',
+	selectionRequired: true,
+	visibleProperties: ["professorName", "count", "status"],
+	searchIn: 'professorName',
+	data: JSON.parse(jsonData)
+});
+document.getElementById("itemsInput2-flexdatalist").spellcheck = false
+document.getElementById("itemsInput2-flexdatalist").onclick = mentorInputOnFocusFunction
+/* Function that initialize calendar for assign date */
+document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.assignDateCalendar');
+	var today = new Date();
+	var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+	var options = {
+		"format": "mm/dd/yyyy",
+		"defaultDate": today,
+		"setDefaultDate": true
+	}
+	var instances = M.Datepicker.init(elems, options);
+});
+$(document).ready(function() {
+	$('.datepicker').datepicker();
+});
+/* Function that initialize calendar for end date */
+document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.endDateCalendar');
+	var options = {
+		"format": "mm/dd/yyyy"
+	}
+	var instances = M.Datepicker.init(elems, options);
+});
+$(document).ready(function() {
+	$('.datepicker').datepicker();
+});
+// Funciton that initialize the floating button 
+document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.fixed-action-btn');
+	var instances = M.FloatingActionButton.init(elems, {});
+});
+//nav bar drop down
+$(".dropdown-trigger").dropdown({
+	belowOrigin: true
+});
 
-  //nav bar drop down
-    $(".dropdown-trigger").dropdown({
-      belowOrigin: true
-    });
-    
-    function decodeHtml(str) {
-      return str.replace(/&#(\d+);/g, function(match, dec) {
-        return String.fromCharCode(dec);
-      });
-  }
-  
-	
-	
-	</script>
-	
+function decodeHtml(str) {
+	return str.replace(/&#(\d+);/g, function(match, dec) {
+		return String.fromCharCode(dec);
+	});
+}
+</script>
+
 </html>
-

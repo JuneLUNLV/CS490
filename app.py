@@ -19,13 +19,159 @@ import os
 # professor(mysqlite_table):	['ID'(PRIMARY KEY, AUTOINCREMENT), 'lastname'(lowercase), 'firstname'(lowercase), 'email'] UNIQUE(lastname,firstname,email)
 # mentoring(mysqlite_table):	['ID'(PRIMARY, AUTOINCREMENT), 'professor_id'(FOREIGN), 'student_id'(FOREIGN), 'dateAssigned'(NULLABLE), 'endDate'(NULLABLE)] UNIQUE(professor_id,student_id)
 
+
+
+
+# ----------------------------------- Student Database Table Related Code Area ----------------------------------------------------------------
+###############################################################################################################################################
+###############################################################################################################################################
+
 class Student:
 	def __init__(self, id=None, lastname="",firstname="" , email=""):
 		self.id = id
 		self.lastname = lastname
 		self.firstname = firstname
 		self.email = email
+
+
+#--------------Student Table-------------------
+#   ID,lastname,firstname,email
+def createStudentTable(cursor):
+	sql_command_drop_table = """
+	DROP TABLE IF EXISTS student;"""
+	cursor.execute(sql_command_drop_table)
+
+	sql_command = """
+	CREATE TABLE student ( 
+	ID INTEGER PRIMARY KEY AUTOINCREMENT ,
+	lastname VARCHAR(255) NOT NULL,  
+	firstname VARCHAR(255) NOT NULL,
+	email VARCHAR(255),
+	UNIQUE(lastname,firstname,email)
+	);
+	"""
+	cursor.execute(sql_command)
+
+# Find function student ID by name using SELECT, if nothing found, return string "null", else return int(id)
+def findStudentIDByName(cursor,lastname,firstname):
+	studentLastName = lastname.lower()
+	studentFirstName = firstname.lower()
+	sql_command = 'SELECT ID FROM student WHERE firstname ="'  + studentFirstName + '" AND lastname = "' + studentLastName + '";'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+	
+	if len(rows) == 0:
+		return "null"
+	
+	for row in rows:
+		return(row[0])
+
+
+def findStudentIDByNameAndMail(cursor,lastname,firstname,mail):
+	studentLastName = lastname.lower()
+	studentFirstName = firstname.lower()
+	sql_command = 'SELECT ID FROM student WHERE firstname ="'  + studentFirstName + '" AND lastname = "' + studentLastName + '" AND email = "' + mail +'";'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+	
+	if len(rows) == 0:
+		return "null"
+	
+	for row in rows:
+		return(row[0])
+
+#  Find student name by id using SELECT, return string "null", else return (str(lastname), str(firstname))
+def findStudentNameById(cursor,id):
+	sql_command = 'SELECT lastname, firstname FROM student WHERE ID = "' + str(id) + '";'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+	   
+	if len(rows) == 0:
+		return "null"
+	
+	for row in rows:
+		return(row[0],row[1])
+
+#  Find student object by student id using SELECT, return string "null", else return student object	
+def getStudentObjectById(cursor,id):
+	sql_command = 'SELECT * FROM student WHERE ID = "' + str(id) + '";'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+	
+	if len(rows) == 0:
+		return "null"	
 		
+	student = Student()
+	for row in rows:
+		student.id = row[0]
+		student.lastname = row[1]
+		student.firstname = row[2]
+		student.email = row[3]
+	return student
+
+#   Delete a row in student TABLE by student id, return true if success, else return false
+def deleteStudentById(cursor,id):
+	sql_command = 'DELETE FROM student WHERE ID = ' + str(id)  + ';'
+	try:
+		cursor.execute(sql_command)
+	except:
+		return False
+		
+	return True
+
+# Inserting student table from csv file
+def insertToStudentTableFromCSVFile(df,cursor):
+	studentArr = df.get("Student")
+	studentEmailArr = df.get("Rebel_Mail")
+	for i in range(len(studentArr)):
+		if ',' in studentArr[i]:
+			studentLastName = studentArr[i].split(',')[0].lstrip().rstrip().lower()
+			studentFirstName = studentArr[i].split(',')[1].lstrip().rstrip().lower()
+		else:
+			studentLastName = studentArr[i].lstrip().rstrip().lower()
+			studentFirstName = ""
+		studentEmail = str(studentEmailArr[i]).strip().lower()
+
+		sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
+		sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
+
+		try:
+			cursor.execute(sql_command)
+		except sqlite3.IntegrityError:
+			print("student [" + studentArr[i].lower() + "] is already in the student table")
+
+
+#  Find professor id by student id using SELECT, return string "null", else return int(id)
+def findProfessorByStudentId(cursor,id):
+	sql_command = 'SELECT professor_id FROM mentoring WHERE student_id = "' + str(id) + '";'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+	   
+	if len(rows) == 0:
+		return "null"
+	
+	for row in rows:
+		return(row[0])
+
+def insertNewStudent(curosor,studentLastName,studentFirstName,studentEmail):
+        sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
+        sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
+
+        try:
+            cursor.execute(sql_command)
+        except sqlite3.IntegrityError:
+            return "EXISTED"
+        
+        student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)      
+        return student_id
+
+#===============================================================================================================================================
+
+
+
+# ----------------------------------- Professor Database Table Related Code Area ----------------------------------------------------------------
+###############################################################################################################################################
+###############################################################################################################################################
 
 class Professor:
 	def __init__(self, id=None, lastname="", firstname="", email=""):
@@ -33,21 +179,25 @@ class Professor:
 		self.lastname = lastname
 		self.firstname = firstname
 		self.email = email	
-        
-class Mentoring:
-	def __init__(self, id=None, professor_id="", student_id="", dateAssigned="", endDate="", studentName="",professorName="",studentRebelMail=""):
-		self.id = id
-		self.professor_id = professor_id
-		self.student_id = student_id
-		self.dateAssigned = dateAssigned
-		self.endDate = endDate
-		self.studentName = studentName
-		self.professorName = professorName
-		self.studentRebelMail = studentRebelMail
-        
-        
-        
 		
+#--------------Professor Table-------------------
+#   ID,lastname,firstname,email
+def createProfessorTable(cursor):
+	sql_command_drop_table = """
+	DROP TABLE IF EXISTS professor;"""
+	cursor.execute(sql_command_drop_table)
+
+	sql_command = """
+	CREATE TABLE professor ( 
+	ID INTEGER PRIMARY KEY AUTOINCREMENT ,
+	lastname VARCHAR(255) NOT NULL,  
+	firstname VARCHAR(255) NOT NULL,
+	email VARCHAR(255),
+	UNIQUE(lastname,firstname,email)
+	);
+	"""
+	cursor.execute(sql_command)
+
 #dictionary that stores the emails of each professor
 professor_email_dict={'bein':'wolfgang.bein@unlv.edu',
 					 'berghel':'hlb@acm.org',
@@ -70,45 +220,103 @@ professor_email_dict={'bein':'wolfgang.bein@unlv.edu',
 					 'cacho':'jorge.fonsecacacho@unlv.edu',
 					 'vasko':'androvas@unlv.nevada.edu',
 					 'dolly':'rudolpha.jorgensen@unlv.edu',
-					 'chidella':'kishore.chidella@unlv.edu'}		
-		
+					 'chidella':'kishore.chidella@unlv.edu'}
 
-#--------------Student Table-------------------
-#   ID,lastname,firstname,email
-def createStudentTable(cursor):
-	sql_command_drop_table = """
-	DROP TABLE IF EXISTS student;"""
-	cursor.execute(sql_command_drop_table)
-
-	sql_command = """
-	CREATE TABLE student ( 
-	ID INTEGER PRIMARY KEY AUTOINCREMENT ,
-	lastname VARCHAR(255) NOT NULL,  
-	firstname VARCHAR(255) NOT NULL,
-	email VARCHAR(255),
-	UNIQUE(lastname,firstname,email)
-	);
-	"""
+# Find professor ID by name using SELECT,if nothing found, return string "null", else return int(id)
+def findProfessorIDByName(cursor,lastname,firstname):
+	professorLastName = lastname.lower()
+	professorFirstName = firstname.lower()
+	sql_command = 'SELECT ID FROM professor WHERE firstname ="'  + professorFirstName + '" AND lastname = "' + professorLastName + '";'
 	cursor.execute(sql_command)
+	rows = cursor.fetchall()
 
-#--------------Professor Table-------------------
-#   ID,lastname,firstname,email
-def createProfessorTable(cursor):
-	sql_command_drop_table = """
-	DROP TABLE IF EXISTS professor;"""
-	cursor.execute(sql_command_drop_table)
+	if len(rows) == 0:
+		return "null"   
+	
+	for row in rows:
+		return(row[0])
 
-	sql_command = """
-	CREATE TABLE professor ( 
-	ID INTEGER PRIMARY KEY AUTOINCREMENT ,
-	lastname VARCHAR(255) NOT NULL,  
-	firstname VARCHAR(255) NOT NULL,
-	email VARCHAR(255),
-	UNIQUE(lastname,firstname,email)
-	);
-	"""
+#  Find professor name by id using SELECT, return string "null", else return (str(lastname), str(firstname))
+def findProfessorNameById(cursor,id):
+	sql_command = 'SELECT lastname, firstname FROM professor WHERE ID = "' + str(id) + '";'
 	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+	   
+	if len(rows) == 0:
+		return "null"
+	
+	for row in rows:
+		return(row[0],row[1])
 
+	
+
+#  Find professor object by professor id using SELECT, return string "null", else return professor object	
+def getProfessorObjectById(cursor,id):
+	sql_command = 'SELECT * FROM professor WHERE ID = "' + str(id) + '";'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+
+	if len(rows) == 0:
+		return "null"	
+
+	professor = Professor()
+	for row in rows:
+		professor.id = row[0]
+		professor.lastname = row[1]
+		professor.firstname = row[2]
+		professor.email = row[3]
+	return professor
+	
+#   Delete a row in professor TABLE by student id, return true if success, else return false	
+def deleteProfessorById(cursor,id):
+	sql_command = 'DELETE FROM professor WHERE ID = ' + str(id)  + ';'
+	try:
+		cursor.execute(sql_command)
+	except:
+		return False
+
+	return True
+
+# Inserting professor table from csv file
+def insertToProfessorTableFromCSVFile(df,cursor):
+	professorArr = df.get("Professor")
+	for i in range(len(professorArr)):
+		if ',' in professorArr[i]:
+			professorLastName = professorArr[i].split()[0].lstrip().rstrip().lower()
+			professorFirstName = professorArr[i].split()[1].lstrip().rstrip().lower()
+		else:
+			professorLastName = professorArr[i].split()[0].lstrip().rstrip().lower()
+			professorFirstName = ""
+		professorEmail = professor_email_dict[professorLastName]
+
+		sql_command = "INSERT INTO professor(lastname, firstname, email) VALUES "
+		sql_command += '("' + professorLastName + '", "' + professorFirstName +'", "' + professorEmail + '");' 
+
+		try:
+			cursor.execute(sql_command)
+		except sqlite3.IntegrityError:
+			#print("professor [" + professorArr[i].lower() + "] is already in the professor table") 
+			pass
+
+
+#===============================================================================================================================================
+
+
+# ----------------------------------- Mentoring Database Table Related Code Area ----------------------------------------------------------------
+################################################################################################################################################
+################################################################################################################################################
+
+class Mentoring:
+	def __init__(self, id=None, professor_id="", student_id="", dateAssigned="", endDate="", studentName="",professorName="",studentRebelMail=""):
+		self.id = id
+		self.professor_id = professor_id
+		self.student_id = student_id
+		self.dateAssigned = dateAssigned
+		self.endDate = endDate
+		self.studentName = studentName
+		self.professorName = professorName
+		self.studentRebelMail = studentRebelMail
+        
 #--------------Mentoring Table-------------------
 #   ID,professor_id,student_id,dateAssigned,endDate
 def createMentoringTable(cursor):
@@ -129,8 +337,120 @@ def createMentoringTable(cursor):
 	);
 	"""
 	cursor.execute(sql_command)
+
+
+#  Inserting mentoring table from csv file
+def insertToMentoringTableFromCSVFile(df,cursor):
+	for i in range(df.shape[0]):
+		studentName = str(df.iloc[i].get("Student"))
+		professorName = str(df.iloc[i].get("Professor"))
+		dateAssigned = str(df.iloc[i].get("Assigned_Date")).strip() 
+		try:
+			dateTimeObj = parse(dateAssigned)
+			dateAssigned = dateTimeObj.strftime("%m/%d/%Y")
+		except:
+			dateAssigned = "null"
+		if(len(studentName.split(',')) > 1):
+			student_id = findStudentIDByName(cursor,studentName.split(',')[0].lstrip().rstrip().lower(),studentName.split(',')[1].lstrip().rstrip().lower())
+		else:
+			student_id = findStudentIDByName(cursor,studentName,"")
+		if(len(professorName.split(',')) > 1):
+			professor_id = findProfessorIDByName(cursor,professorName.split(',')[0].lstrip().rstrip().lower(),professorName.split(',')[1].lstrip().rstrip().lower())
+		else:
+			professor_id = findProfessorIDByName(cursor,professorName.strip(),"")
+		
+		sql_command = "INSERT INTO mentoring(professor_id, student_id, dateAssigned, endDate) VALUES "
+		sql_command += '("' + str(professor_id) + '", "' + str(student_id) +'", "'+ dateAssigned + '", "null");' 
+
+		try:
+			cursor.execute(sql_command)
+		except sqlite3.IntegrityError:
+			print("Student [" + studentName + "] already in Mentoring table. (student has already been assigned).")
+
+#   Return the number of student for a professor by using the professor id
+#   If professor_id is invalid, return "null", else return int(count)
+def getNumberOfStudentForMentorID(cursor,professor_id):
+	sql_command = 'SELECT COUNT(*) FROM mentoring where professor_id = '+ str(professor_id) + ';'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+
+	if len(rows) == 0:
+		return "null"
+
+	for row in rows:
+		return(row[0])
+
+#   Return a dictionary in format such:
+#   {
+#		professorName: studentCount  
+#	}  
+def getProfessorAndStudentNumberInDicionary():
+	professorDictionary = {}
+	for i in range(1,numberOfCountInTable(cursor,'professor')+1):
+		professorDictionary.update({findProfessorNameById(cursor,i)[0] : getNumberOfStudentForMentorID(cursor,i)})
+	return professorDictionary
+
+#   Assign a student to mentor by UPDATE using mentor_id and student_id
+#   All the error checkings are done in the Flask part
+def assignExistedStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
+	sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '", dateAssigned = "' + str(assignDate) + '", endDate = "' + str(endDate) + '" WHERE student_id = "' + str(studentId)  + '";'
+	print(sql_command)
+	connection.cursor().execute(sql_command)
+	connection.commit()
     
-#--------------Mentoring Table-------------------
+def assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
+    sql_command = "INSERT INTO mentoring(student_id, professor_id, dateAssigned, endDate) VALUES "
+    sql_command += '("' + str(studentId) + '", "' + str(professorId) +'", "' + str(assignDate) + '", "' + str(endDate) +  '");' 
+    print(sql_command)
+    connection.cursor().execute(sql_command)
+    connection.commit()  
+
+def massAssign(arr,professorName):
+    professorName = professorName.lower()
+    professorId = findProfessorIDByName(cursor,professorName,"")
+    for i in arr:
+        assignFromRelationshipId(connection,i,professorId)
+
+def assignFromRelationshipId(connection,mentoringId,professorId):
+    sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '" WHERE ID = "' + str(mentoringId)  + '";'
+    #print(sql_command)
+    try:
+        connection.cursor().execute(sql_command)
+    except Exception as e: 
+        print(e)
+    connection.commit()   
+
+def findProfessorIdByMentoringId(cursor,relationship_id):
+    sql_command = 'SELECT professor_id FROM mentoring where ID = '+ str(relationship_id) + ';'
+    cursor.execute(sql_command)
+    rows = cursor.fetchall()
+
+    if len(rows) == 0:
+        return "null"
+
+    for row in rows:
+        return(row[0])  
+    
+def findStudentIdByRelationshipId(cursor,relationship_id):
+    sql_command = 'SELECT student_id FROM mentoring WHERE ID ="'  + str(relationship_id) + '";'
+    cursor.execute(sql_command)
+    rows = cursor.fetchall()
+
+    if len(rows) == 0:
+        return "null"
+
+    for row in rows:
+        return(row[0])
+
+#===============================================================================================================================================
+
+
+# ----------------------------------- Offline_data Table Related Code Area ----------------------------------------------------------------
+################################################################################################################################################
+################################################################################################################################################
+
+
+#--------------Offline_data Table-------------------
 def createOfflineDataTable(cursor):
     sql_command_drop_tbale = '''
     DROP TABLE IF EXISTS offline_data;
@@ -175,142 +495,12 @@ def updateDataFromOffline_dataTable(connection,data_name,data_value):
 	connection.cursor().execute(sql_command)
 	connection.commit()    
 
-    
-    
-# Find function student ID by name using SELECT, if nothing found, return string "null", else return int(id)
-def findStudentIDByName(cursor,lastname,firstname):
-	studentLastName = lastname.lower()
-	studentFirstName = firstname.lower()
-	sql_command = 'SELECT ID FROM student WHERE firstname ="'  + studentFirstName + '" AND lastname = "' + studentLastName + '";'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
-	
-	if len(rows) == 0:
-		return "null"
-	
-	for row in rows:
-		return(row[0])
-    
-def findStudentIDByNameAndMail(cursor,lastname,firstname,mail):
-	studentLastName = lastname.lower()
-	studentFirstName = firstname.lower()
-	sql_command = 'SELECT ID FROM student WHERE firstname ="'  + studentFirstName + '" AND lastname = "' + studentLastName + '" AND email = "' + mail +'";'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
-	
-	if len(rows) == 0:
-		return "null"
-	
-	for row in rows:
-		return(row[0])
+#===============================================================================================================================================
 
 
-# Find professor ID by name using SELECT,if nothing found, return string "null", else return int(id)
-def findProfessorIDByName(cursor,lastname,firstname):
-	professorLastName = lastname.lower()
-	professorFirstName = firstname.lower()
-	sql_command = 'SELECT ID FROM professor WHERE firstname ="'  + professorFirstName + '" AND lastname = "' + professorLastName + '";'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
-
-	if len(rows) == 0:
-		return "null"   
-	
-	for row in rows:
-		return(row[0])
-		
-		
-#  Find student name by id using SELECT, return string "null", else return (str(lastname), str(firstname))
-def findStudentNameById(cursor,id):
-	sql_command = 'SELECT lastname, firstname FROM student WHERE ID = "' + str(id) + '";'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
-	   
-	if len(rows) == 0:
-		return "null"
-	
-	for row in rows:
-		return(row[0],row[1])
-		
-#  Find professor name by id using SELECT, return string "null", else return (str(lastname), str(firstname))
-def findProfessorNameById(cursor,id):
-	sql_command = 'SELECT lastname, firstname FROM professor WHERE ID = "' + str(id) + '";'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
-	   
-	if len(rows) == 0:
-		return "null"
-	
-	for row in rows:
-		return(row[0],row[1])
-
-#  Find professor id by student id using SELECT, return string "null", else return int(id)
-def findProfessorByStudentId(cursor,id):
-	sql_command = 'SELECT professor_id FROM mentoring WHERE student_id = "' + str(id) + '";'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
-	   
-	if len(rows) == 0:
-		return "null"
-	
-	for row in rows:
-		return(row[0])
-	
-#  Find student object by student id using SELECT, return string "null", else return student object	
-def getStudentObjectById(cursor,id):
-	sql_command = 'SELECT * FROM student WHERE ID = "' + str(id) + '";'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
-	
-	if len(rows) == 0:
-		return "null"	
-		
-	student = Student()
-	for row in rows:
-		student.id = row[0]
-		student.lastname = row[1]
-		student.firstname = row[2]
-		student.email = row[3]
-	return student
-
-
-#  Find professor object by professor id using SELECT, return string "null", else return professor object	
-def getProfessorObjectById(cursor,id):
-	sql_command = 'SELECT * FROM professor WHERE ID = "' + str(id) + '";'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
-
-	if len(rows) == 0:
-		return "null"	
-
-	professor = Professor()
-	for row in rows:
-		professor.id = row[0]
-		professor.lastname = row[1]
-		professor.firstname = row[2]
-		professor.email = row[3]
-	return professor
-
-
-#   Delete a row in student TABLE by student id, return true if success, else return false
-def deleteStudentById(cursor,id):
-	sql_command = 'DELETE FROM student WHERE ID = ' + str(id)  + ';'
-	try:
-		cursor.execute(sql_command)
-	except:
-		return False
-		
-	return True
-	
-#   Delete a row in professor TABLE by student id, return true if success, else return false	
-def deleteProfessorById(cursor,id):
-	sql_command = 'DELETE FROM professor WHERE ID = ' + str(id)  + ';'
-	try:
-		cursor.execute(sql_command)
-	except:
-		return False
-
-	return True
+# ----------------------------------- Pandas Dataframe Related Code Area ----------------------------------------------------------------
+################################################################################################################################################
+################################################################################################################################################
 
 #   Read all 3 tables and join them together, and load into a Pandas dataframe
 #   Organize all the column name and sort the dataframe by professor name
@@ -354,76 +544,6 @@ def readCsvIntoDataframe(filename="TEMP_DATASET.csv",originalCVSFile = True):
         df = removeAndFixDataFrame(df)
     return df
 
-# Inserting student table from csv file
-def insertToStudentTableFromCSVFile(df,cursor):
-	studentArr = df.get("Student")
-	studentEmailArr = df.get("Rebel_Mail")
-	for i in range(len(studentArr)):
-		if ',' in studentArr[i]:
-			studentLastName = studentArr[i].split(',')[0].lstrip().rstrip().lower()
-			studentFirstName = studentArr[i].split(',')[1].lstrip().rstrip().lower()
-		else:
-			studentLastName = studentArr[i].lstrip().rstrip().lower()
-			studentFirstName = ""
-		studentEmail = str(studentEmailArr[i]).strip().lower()
-
-		sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
-		sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
-
-		try:
-			cursor.execute(sql_command)
-		except sqlite3.IntegrityError:
-			print("student [" + studentArr[i].lower() + "] is already in the student table")
-
-# Inserting professor table from csv file
-def insertToProfessorTableFromCSVFile(df,cursor):
-	professorArr = df.get("Professor")
-	for i in range(len(professorArr)):
-		if ',' in professorArr[i]:
-			professorLastName = professorArr[i].split()[0].lstrip().rstrip().lower()
-			professorFirstName = professorArr[i].split()[1].lstrip().rstrip().lower()
-		else:
-			professorLastName = professorArr[i].split()[0].lstrip().rstrip().lower()
-			professorFirstName = ""
-		professorEmail = professor_email_dict[professorLastName]
-
-		sql_command = "INSERT INTO professor(lastname, firstname, email) VALUES "
-		sql_command += '("' + professorLastName + '", "' + professorFirstName +'", "' + professorEmail + '");' 
-
-		try:
-			cursor.execute(sql_command)
-		except sqlite3.IntegrityError:
-			#print("professor [" + professorArr[i].lower() + "] is already in the professor table") 
-			pass
-
-#  Inserting mentoring table from csv file
-def insertToMentoringTableFromCSVFile(df,cursor):
-	for i in range(df.shape[0]):
-		studentName = str(df.iloc[i].get("Student"))
-		professorName = str(df.iloc[i].get("Professor"))
-		dateAssigned = str(df.iloc[i].get("Assigned_Date")).strip() 
-		try:
-			dateTimeObj = parse(dateAssigned)
-			dateAssigned = dateTimeObj.strftime("%m/%d/%Y")
-		except:
-			dateAssigned = "null"
-		if(len(studentName.split(',')) > 1):
-			student_id = findStudentIDByName(cursor,studentName.split(',')[0].lstrip().rstrip().lower(),studentName.split(',')[1].lstrip().rstrip().lower())
-		else:
-			student_id = findStudentIDByName(cursor,studentName,"")
-		if(len(professorName.split(',')) > 1):
-			professor_id = findProfessorIDByName(cursor,professorName.split(',')[0].lstrip().rstrip().lower(),professorName.split(',')[1].lstrip().rstrip().lower())
-		else:
-			professor_id = findProfessorIDByName(cursor,professorName.strip(),"")
-		
-		sql_command = "INSERT INTO mentoring(professor_id, student_id, dateAssigned, endDate) VALUES "
-		sql_command += '("' + str(professor_id) + '", "' + str(student_id) +'", "'+ dateAssigned + '", "null");' 
-
-		try:
-			cursor.execute(sql_command)
-		except sqlite3.IntegrityError:
-			print("Student [" + studentName + "] already in Mentoring table. (student has already been assigned).")
-
 #   Remove some row which contains 'ERROR' in student name from dataframe
 #   Add "@unlv.nevda.edu" to some incompleted mail  
 def removeAndFixDataFrame(df):
@@ -438,6 +558,12 @@ def removeAndFixDataFrame(df):
 				new_df.at[index,"Rebel_Mail"] = mail.strip() + "@unlv.nevada.edu"
 	
 	return new_df
+
+#===============================================================================================================================================
+
+# ----------------------------------- General / Helper Function Code Area ----------------------------------------------------------------
+################################################################################################################################################
+################################################################################################################################################
 
 #   Return the number of row in given table, if tablename is incorrect, return "null", else return int(count)
 def numberOfCountInTable(cursor,tableName):   
@@ -464,57 +590,7 @@ def getAllNumbers(cursor):
 	returnArr.append(margin)
 	return returnArr
 
-#   Return the number of student for a professor by using the professor id
-#   If professor_id is invalid, return "null", else return int(count)
-def getNumberOfStudentForMentorID(cursor,professor_id):
-	sql_command = 'SELECT COUNT(*) FROM mentoring where professor_id = '+ str(professor_id) + ';'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
 
-	if len(rows) == 0:
-		return "null"
-
-	for row in rows:
-		return(row[0])
-
-#   Return a dictionary in format such:
-#   {
-#		professorName: studentCount  
-#	}  
-def getProfessorAndStudentNumberInDicionary():
-	professorDictionary = {}
-	for i in range(1,numberOfCountInTable(cursor,'professor')+1):
-		professorDictionary.update({findProfessorNameById(cursor,i)[0] : getNumberOfStudentForMentorID(cursor,i)})
-	return professorDictionary
-
-#   Assign a student to mentor by UPDATE using mentor_id and student_id
-#   All the error checkings are done in the Flask part
-def assignExistedStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
-	sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '", dateAssigned = "' + str(assignDate) + '", endDate = "' + str(endDate) + '" WHERE student_id = "' + str(studentId)  + '";'
-	print(sql_command)
-	connection.cursor().execute(sql_command)
-	connection.commit()
-    
-    
-def insertNewStudent(curosor,studentLastName,studentFirstName,studentEmail):
-        sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
-        sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
-
-        try:
-            cursor.execute(sql_command)
-        except sqlite3.IntegrityError:
-            return "EXISTED"
-        
-        student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)      
-        return student_id
-    
-def assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
-    sql_command = "INSERT INTO mentoring(student_id, professor_id, dateAssigned, endDate) VALUES "
-    sql_command += '("' + str(studentId) + '", "' + str(professorId) +'", "' + str(assignDate) + '", "' + str(endDate) +  '");' 
-    print(sql_command)
-    connection.cursor().execute(sql_command)
-    connection.commit()  
-    
 def getStudentsForProfessor(connection):
     df= readDatabaseIntoDataframe(connection)
     professorNames = list(getProfessorAndStudentNumberInDicionary().keys())
@@ -541,42 +617,8 @@ def getStudentsForProfessor(connection):
     newString = '[' + newString[:-1] + ']'
     return newString    
 
-def massAssign(arr,professorName):
-    professorName = professorName.lower()
-    professorId = findProfessorIDByName(cursor,professorName,"")
-    for i in arr:
-        assignFromRelationshipId(connection,i,professorId)
-
-def assignFromRelationshipId(connection,mentoringId,professorId):
-    sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '" WHERE ID = "' + str(mentoringId)  + '";'
-    #print(sql_command)
-    try:
-        connection.cursor().execute(sql_command)
-    except Exception as e: 
-        print(e)
-    connection.commit()            
-    
-def findProfessorIdByMentoringId(cursor,relationship_id):
-    sql_command = 'SELECT professor_id FROM mentoring where ID = '+ str(relationship_id) + ';'
-    cursor.execute(sql_command)
-    rows = cursor.fetchall()
-
-    if len(rows) == 0:
-        return "null"
-
-    for row in rows:
-        return(row[0])  
-    
-def findRelationshipIdByStudentId(cursor,relationship_id):
-    sql_command = 'SELECT student_id FROM mentoring WHERE ID ="'  + str(relationship_id) + '";'
-    cursor.execute(sql_command)
-    rows = cursor.fetchall()
-
-    if len(rows) == 0:
-        return "null"
-
-    for row in rows:
-        return(row[0])
+         
+#===============================================================================================================================================
 
 #-------------Main Part For Database-------------------
 connection = sqlite3.connect("falcuty_mentor.db")
@@ -651,7 +693,7 @@ def mainMenu():
 			duplicated = 1
 		studentString += (json.dumps({
 			"studentName":student_table.iloc[i].lastname.title() + ", " + student_table.iloc[i].firstname.title(),
-			"relationship_id":findRelationshipIdByStudentId(cursor,student_table.iloc[i].ID),
+			"relationship_id":findStudentIdByRelationshipId(cursor,student_table.iloc[i].ID),
 			'email': student_table.iloc[i].email,
             'duplicated': str(duplicated)
 		})) + ","
@@ -721,7 +763,7 @@ def assign_mentor_existed_student_check():
 	if len(studentName.split(',')) < 2:
 		return jsonify({'RESULT':'Student name is not in correct format. For example: "Lastname, Firstname" '})
 	
-	studentId = findStudentIDByMentoringId(cursor,relationship_id)
+	studentId = findStudentIdByRelationshipId(cursor,relationship_id)
 	professorId = findProfessorIDByName(cursor,mentorName,"")
 	
 	if studentId == "null":

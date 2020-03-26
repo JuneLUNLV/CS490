@@ -37,6 +37,16 @@
 		user-select: none;
 	}
 
+	#floatButtonDiv3 {
+		position: fixed;
+		right: 180px;
+		bottom: 5vh;
+		padding-top: 15px;
+		margin-bottom: 0;
+		z-index: 997;
+		user-select: none;
+	}	
+
 	#floatButtonA {
 		width: 3rem;
 		height: 3rem;
@@ -51,6 +61,13 @@
 		transition: all .3s ease-in-out;
 	}
 
+	#floatButtonC {
+		width: 3rem;
+		height: 3rem;
+		line-height: 32.4px;
+		transition: all .3s ease-in-out;
+	}	
+
 	#floatButtonI {
 		line-height: 3.1rem;
 		font-size: 2.3rem;
@@ -60,6 +77,11 @@
 		line-height: 3.1rem;
 		font-size: 2.3rem;
 	}
+	#floatButtonIII {
+		line-height: 3.1rem;
+		font-size: 2.3rem;
+	}
+
 
 	#floatButtonDiv:hover #floatButtonA {
 		transform: scale(1.5);
@@ -69,6 +91,9 @@
 		transform: scale(1.5);
 	}
 
+	#floatButtonDiv3:hover #floatButtonC {
+		transform: scale(1.5);
+	}
 	.tooltiptext {
 		visibility: hidden;
 		background-color: black;
@@ -301,6 +326,40 @@
 		width: 100%;
 	}
 
+	.table_action{
+		position: relative;
+		margin-left: 0.625rem;
+		padding: 0.625rem 1.25rem;
+		border: none;
+		background-color: #fd6262;
+		border-radius: 0.25rem;
+		color: white;
+		font-size: 1rem;
+		font-weight: 300;
+		overflow: hidden;
+		z-index: 1;
+		font-family: sans-serif;		
+	}
+
+	.table_action:before{
+		position: absolute;
+		content: '';
+		top: 0;
+		left: 0;
+		width: 0%;
+		height: 100%;
+		background-color: rgba(255, 255, 255, 0.2);
+		transition: width 0.25s;
+		z-index: 0;
+	}
+
+	.table_action:hover:before{
+		width:100%;
+	}
+
+
+
+
 	.select-box {
 		position: relative;
 		display: block;
@@ -327,6 +386,11 @@
 		.select-box {
 			width: 30%;
 		}
+	}
+
+	.checkbox_td{
+		padding-left: 20px;
+    	padding-right: 0px;
 	}
 
 	.select-box__current {
@@ -465,9 +529,9 @@
 			</ul>
 		</div>
 	</nav>
-	<div id="changedHistoryDiv">
-		<p>hello</p>
-	</div> 
+
+
+
 
 	<div id="filterDiv">
 		<input type='text' placeholder='Filter table by mentor(s)' class='flexdatalist' data-search-in='professorName' data-visible-properties='["professorName","count"]' data-selection-required='true' data-value-property='id' data-text-property='{professorName}, {count}' data-min-length='0' multiple='multiple' name='country_id_multiple'>
@@ -487,6 +551,12 @@
 		<a class="btn-floating btn-small orange" id="floatButtonB" onclick='ExportTableAs()'><i id="floatButtonII" class="large material-icons">screen_share</i></a>
 	</div>
 	<!-------------------- end floating button for redirecting to export modal ----------------------------------->
+	<!-------------------- floating button for redirecting to export page ----------------------------------->
+	<div class="fixed-action-btn" id="floatButtonDiv3">
+		<a class="btn-floating btn-small red" id="floatButtonC" onclick='changeHistory()'><i id="floatButtonIII" class="large material-icons">assignment</i></a>
+	</div>
+	<!-------------------- end floating button for redirecting to export modal ----------------------------------->
+
 	<!-------------------------------------- epxort modal --------------------------------------------------------------------->
 	<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_assignment">
 		<article class="my_content-wrapper">
@@ -528,6 +598,44 @@
 		</article>
 	</div>
 	<!-------------------------------------- end epxort modal --------------------------------------------------------------------->
+
+	<!-------------------------------------- epxort modal --------------------------------------------------------------------->
+	<div class="my_modal my_open" data-modal="trigger-2" id="modal_for_change_history">
+		<article class="my_content-wrapper">
+			<header class="my_modal-header">
+				<h2 style="font-size:1.5vw;">Most Recent Change History</h2>
+			</header>
+			<div class="my_content">
+				<table>
+					<tr style="background-color: #2ecc71;">
+					  <th></th>
+					  <th>Professor</th>
+					  <th>Student</th>
+					  <th>Rebel Mail</th>
+					  <th>Date Assigned</th>
+					  <th>End Date</th>
+					  <th>Modify Datetime</th>
+					  <th></th>
+					</tr>
+					<tr>
+					  <td class="checkbox_td"><label><input type="checkbox" /><span></span></label></td>
+					  <td>Bein</td>
+					  <td>Liang, Junyan</td>
+					  <td>liangj10@unlv.nevada.edu</td>
+					  <td>02/02/2011</td>
+					  <td>null</td>
+					  <td>03/26/2020 13:25:34</td>
+					  <td><button style="background-color:#34e943;" class="table_action">Goto</button></td>
+					</tr>
+				</table>
+			</div>
+			<footer class="my_modal-footer">
+				<button style="background-color:#e74c3c;" class="my_action">close</button>
+			</footer>
+		</article>
+	</div>
+	<!-------------------------------------- end epxort modal --------------------------------------------------------------------->
+
 </body>
   <script>
     studentName = '{{studentName}}';
@@ -694,6 +802,10 @@
         });
       }
     }
+
+	function changeHistory(){
+
+	}
 
     function dataURLtoBlob(dataurl) {
       var arr = dataurl.split(','),

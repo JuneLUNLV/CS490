@@ -1,56 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<title>Table V01</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="{{url_for('static',filename='images/icons/favicon.ico')}}"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='vendor/bootstrap/css/bootstrap.min.css')}}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css')}}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='vendor/animate/animate.css')}}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='vendor/select2/select2.min.css')}}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='vendor/perfect-scrollbar/perfect-scrollbar.css')}}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/util.css')}}">
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/main.css')}}">
-<!--===============================================================================================-->
+  <title>Bootstrap-select Tests (Bootstrap 4)</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bootstrap-select.css">
+
 </head>
 <body>
-	
-	<div class="limiter" >
-			<div style="width:80%; margin-left:10%" class="wrap-table100">
-				<div class="table100">
-				{% for table in mentoring_joined_tables %}
-					{{ table|safe }}
-				{% endfor %}
-				</div>
-			</div>
-	</div>
-	
 
+<div class="container">
+  <form>
+    <div class="form-group row">
+      <label class="col-lg-2 control-label" for="lunchBegins">searchStyle: 'begins'</label>
+      <div class="col-lg-10">
+        <select id="lunchBegins" class="selectpicker" data-live-search="true" data-live-search-style="begins" title="Please select a lunch ...">
+          <option>Hot Dog, Fries and a Soda</option>
+          <option>Burger, Shake and a Smile</option>
+          <option>Sugar, Spice and all things nice</option>
+          <option>Baby Back Ribs</option>
+          <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+        </select>
+      </div>
+    </div>
+  </form>
+</div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.bundle.min.js"></script>
+<script src="bootstrap-select.js"></script>
 
-	
+<script>
 
-<!--===============================================================================================-->	
-	<script src="{{url_for('static', filename='vendor/jquery/jquery-3.2.1.min.js')}}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/bootstrap/js/popper.js')}}"></script>
-	<script src="{{url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js')}}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/select2/select2.min.js')}}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='js/main.js')}}"></script>
-	
-	<script>
-		$("th").css("background-color","white")
-	</script>
-
+</script>
 </body>
 </html>

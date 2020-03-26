@@ -134,18 +134,6 @@ def insertToStudentTableFromCSVFile(df,cursor):
 			print("student [" + studentArr[i].lower() + "] is already in the student table")
 
 
-#  Find professor id by student id using SELECT, return string "null", else return int(id)
-def findProfessorByStudentId(cursor,id):
-	sql_command = 'SELECT professor_id FROM mentoring WHERE student_id = "' + str(id) + '";'
-	cursor.execute(sql_command)
-	rows = cursor.fetchall()
-	   
-	if len(rows) == 0:
-		return "null"
-	
-	for row in rows:
-		return(row[0])
-
 def insertNewStudent(cursor,studentLastName,studentFirstName,studentEmail):
         sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
         sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
@@ -435,6 +423,19 @@ def findStudentIdByRelationshipId(cursor,relationship_id):
 
     for row in rows:
         return(row[0])
+
+#  Find professor id by student id using SELECT, return string "null", else return int(id)
+def findProfessorByStudentId(cursor,id):
+	sql_command = 'SELECT professor_id FROM mentoring WHERE student_id = "' + str(id) + '";'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+	   
+	if len(rows) == 0:
+		return "null"
+	
+	for row in rows:
+		return(row[0])
+
 
 #===============================================================================================================================================
 

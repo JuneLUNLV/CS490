@@ -5,6 +5,10 @@ from dateutil.parser import parse
 import os
 import json
 import datetime
+import inspect
+import logging
+
+logging.basicConfig(filename='sql_commands.log',level=logging.DEBUG)
 
 #Caldwell,Ivan Alexander id 26 repeated
 #Robenalt, Evan id 605 repeated
@@ -14,6 +18,7 @@ import datetime
 # student(mysqlite_table):		['ID'(PRIMARY KEY,AUTOINCREMENT), 'lastname'(lowercase), 'firstname(lowercase)', 'email'] UNIQUE(lastname,firstname,email)
 # professor(mysqlite_table):	['ID'(PRIMARY KEY, AUTOINCREMENT), 'lastname'(lowercase), 'firstname'(lowercase), 'email'] UNIQUE(lastname,firstname,email)
 # mentoring(mysqlite_table):	['ID'(PRIMARY, AUTOINCREMENT), 'professor_id'(FOREIGN), 'student_id'(FOREIGN), 'dateAssigned'(NULLABLE), 'endDate'(NULLABLE)] UNIQUE(professor_id,student_id)
+
 
 
 # ----------------------------------- Student Database Table Related Code Area ----------------------------------------------------------------
@@ -44,14 +49,21 @@ def createStudentTable(cursor):
 	UNIQUE(lastname,firstname,email)
 	);
 	"""
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	cursor.execute(sql_command)
+
 
 # Find function student ID by name using SELECT, if nothing found, return string "null", else return int(id)
 def findStudentIDByName(cursor,lastname,firstname):
 	studentLastName = lastname.lower()
 	studentFirstName = firstname.lower()
 	sql_command = 'SELECT ID FROM student WHERE firstname ="'  + studentFirstName + '" AND lastname = "' + studentLastName + '";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 	
 	if len(rows) == 0:
@@ -65,7 +77,12 @@ def findStudentIDByNameAndMail(cursor,lastname,firstname,mail):
 	studentLastName = lastname.lower()
 	studentFirstName = firstname.lower()
 	sql_command = 'SELECT ID FROM student WHERE firstname ="'  + studentFirstName + '" AND lastname = "' + studentLastName + '" AND email = "' + mail +'";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 	
 	if len(rows) == 0:
@@ -77,7 +94,13 @@ def findStudentIDByNameAndMail(cursor,lastname,firstname,mail):
 #  Find student name by id using SELECT, return string "null", else return (str(lastname), str(firstname))
 def findStudentNameById(cursor,id):
 	sql_command = 'SELECT lastname, firstname FROM student WHERE ID = "' + str(id) + '";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+
 	rows = cursor.fetchall()
 	   
 	if len(rows) == 0:
@@ -89,7 +112,12 @@ def findStudentNameById(cursor,id):
 #  Find student object by student id using SELECT, return string "null", else return student object	
 def getStudentObjectById(cursor,id):
 	sql_command = 'SELECT * FROM student WHERE ID = "' + str(id) + '";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 	
 	if len(rows) == 0:
@@ -106,9 +134,10 @@ def getStudentObjectById(cursor,id):
 #   Delete a row in student TABLE by student id, return true if success, else return false
 def deleteStudentById(cursor,id):
 	sql_command = 'DELETE FROM student WHERE ID = ' + str(id)  + ';'
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		cursor.execute(sql_command)
-	except:
+	except Exception as e: 
 		return False
 		
 	return True
@@ -128,24 +157,25 @@ def insertToStudentTableFromCSVFile(df,cursor):
 
 		sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
 		sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
-
+		#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 		try:
 			cursor.execute(sql_command)
 		except sqlite3.IntegrityError:
 			print("student [" + studentArr[i].lower() + "] is already in the student table")
+			logging.warning("student [" + studentArr[i].lower() + "] is already in the student table")
 
 
 def insertNewStudent(cursor,studentLastName,studentFirstName,studentEmail):
-		sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
-		sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
-
-		try:
-			cursor.execute(sql_command)
-		except sqlite3.IntegrityError:
-			return "EXISTED"
-		
-		student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)	  
-		return student_id
+	sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
+	sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except sqlite3.IntegrityError:
+		return "EXISTED"
+	
+	student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)	  
+	return student_id
 
 #===============================================================================================================================================
 
@@ -178,6 +208,7 @@ def createProfessorTable(cursor):
 	UNIQUE(lastname,firstname,email)
 	);
 	"""
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	cursor.execute(sql_command)
 
 #dictionary that stores the emails of each professor
@@ -209,7 +240,12 @@ def findProfessorIDByName(cursor,lastname,firstname):
 	professorLastName = lastname.lower()
 	professorFirstName = firstname.lower()
 	sql_command = 'SELECT ID FROM professor WHERE firstname ="'  + professorFirstName + '" AND lastname = "' + professorLastName + '";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 
 	if len(rows) == 0:
@@ -221,7 +257,12 @@ def findProfessorIDByName(cursor,lastname,firstname):
 #  Find professor name by id using SELECT, return string "null", else return (str(lastname), str(firstname))
 def findProfessorNameById(cursor,id):
 	sql_command = 'SELECT lastname, firstname FROM professor WHERE ID = "' + str(id) + '";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 	   
 	if len(rows) == 0:
@@ -235,7 +276,12 @@ def findProfessorNameById(cursor,id):
 #  Find professor object by professor id using SELECT, return string "null", else return professor object	
 def getProfessorObjectById(cursor,id):
 	sql_command = 'SELECT * FROM professor WHERE ID = "' + str(id) + '";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 
 	if len(rows) == 0:
@@ -252,9 +298,10 @@ def getProfessorObjectById(cursor,id):
 #   Delete a row in professor TABLE by student id, return true if success, else return false	
 def deleteProfessorById(cursor,id):
 	sql_command = 'DELETE FROM professor WHERE ID = ' + str(id)  + ';'
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		cursor.execute(sql_command)
-	except:
+	except Exception as e: 
 		return False
 
 	return True
@@ -273,7 +320,7 @@ def insertToProfessorTableFromCSVFile(df,cursor):
 
 		sql_command = "INSERT INTO professor(lastname, firstname, email) VALUES "
 		sql_command += '("' + professorLastName + '", "' + professorFirstName +'", "' + professorEmail + '");' 
-
+		#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 		try:
 			cursor.execute(sql_command)
 		except sqlite3.IntegrityError:
@@ -319,6 +366,7 @@ def createMentoringTable(cursor):
 	UNIQUE(student_id)
 	);
 	"""
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	cursor.execute(sql_command)
 
 
@@ -331,7 +379,7 @@ def insertToMentoringTableFromCSVFile(df,cursor):
 		try:
 			dateTimeObj = parse(dateAssigned)
 			dateAssigned = dateTimeObj.strftime("%m/%d/%Y")
-		except:
+		except Exception as e: 
 			dateAssigned = "null"
 		if(len(studentName.split(',')) > 1):
 			student_id = findStudentIDByName(cursor,studentName.split(',')[0].lstrip().rstrip().lower(),studentName.split(',')[1].lstrip().rstrip().lower())
@@ -344,17 +392,23 @@ def insertToMentoringTableFromCSVFile(df,cursor):
 		
 		sql_command = "INSERT INTO mentoring(professor_id, student_id, dateAssigned, endDate) VALUES "
 		sql_command += '("' + str(professor_id) + '", "' + str(student_id) +'", "'+ dateAssigned + '", "null");' 
-
+		#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 		try:
 			cursor.execute(sql_command)
 		except sqlite3.IntegrityError:
 			print("Student [" + studentName + "] already in Mentoring table. (student has already been assigned).")
+			logging.warning("Student [" + studentName + "] already in Mentoring table. (student has already been assigned).")
 
 #   Return the number of student for a professor by using the professor id
 #   If professor_id is invalid, return "null", else return int(count)
 def getNumberOfStudentForMentorID(cursor,professor_id):
 	sql_command = 'SELECT COUNT(*) FROM mentoring where professor_id = '+ str(professor_id) + ';'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 
 	if len(rows) == 0:
@@ -377,25 +431,38 @@ def getProfessorAndStudentNumberInDicionary(cursor):
 #   All the error checkings are done in the Flask part
 def assignExistedStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
 	sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '", dateAssigned = "' + str(assignDate) + '", endDate = "' + str(endDate) + '" WHERE student_id = "' + str(studentId)  + '";'
-	print(sql_command)
-	connection.cursor().execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		connection.cursor().execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	connection.commit()
 	
 def assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
 	sql_command = "INSERT INTO mentoring(student_id, professor_id, dateAssigned, endDate) VALUES "
 	sql_command += '("' + str(studentId) + '", "' + str(professorId) +'", "' + str(assignDate) + '", "' + str(endDate) +  '");' 
-	print(sql_command)
-	connection.cursor().execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		connection.cursor().execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	connection.commit()
 
 	sql_command = 'SELECT ID FROM mentoring where student_id = '+ str(studentId) + ' AND professor_id = ' + str(professorId) +  ';'
-	print(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	cursor = connection.cursor()
-	cursor.execute(sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 	relationship_id = rows[0][0]
 	if(relationship_id != studentId):
-		print("warning: studentid is not equal to relationship_id when inserting into most_recent_mentoring_updates table.")
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	insertDataToMost_recent_mentoring_updatesTable(connection,relationship_id)
 	
 
@@ -409,17 +476,23 @@ def massAssign(connection,arr,professorName):
 
 def assignFromRelationshipId(connection,mentoringId,professorId):
 	sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '" WHERE ID = "' + str(mentoringId)  + '";'
-	#print(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		connection.cursor().execute(sql_command)
 	except Exception as e: 
-		print(e)
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	connection.commit()   
 	insertDataToMost_recent_mentoring_updatesTable(connection,mentoringId)
 
 def findProfessorIdByMentoringId(cursor,relationship_id):
 	sql_command = 'SELECT professor_id FROM mentoring where ID = '+ str(relationship_id) + ';'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 
 	if len(rows) == 0:
@@ -430,7 +503,12 @@ def findProfessorIdByMentoringId(cursor,relationship_id):
 	
 def findStudentIdByRelationshipId(cursor,relationship_id):
 	sql_command = 'SELECT student_id FROM mentoring WHERE ID ="'  + str(relationship_id) + '";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 
 	if len(rows) == 0:
@@ -442,7 +520,12 @@ def findStudentIdByRelationshipId(cursor,relationship_id):
 #  Find professor id by student id using SELECT, return string "null", else return int(id)
 def findProfessorByStudentId(cursor,id):
 	sql_command = 'SELECT professor_id FROM mentoring WHERE student_id = "' + str(id) + '";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 	   
 	if len(rows) == 0:
@@ -475,13 +558,13 @@ def createOfflineDataTable(cursor):
 	UNIQUE(data_name)
 	);
 	'''
-	
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	cursor.execute(sql_command)
 
 def insertDataToOffline_dataTable(connection,data_name,data_value):
 	sql_command = "INSERT INTO offline_data(data_name, data_value) VALUES "
 	sql_command += '("' + str(data_name) + '", "' + str(data_value) + '");' 
-
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		connection.cursor().execute(sql_command)
 	except sqlite3.IntegrityError:
@@ -491,7 +574,12 @@ def insertDataToOffline_dataTable(connection,data_name,data_value):
 	
 def getDataFromOffline_dataTable(cursor,data_name):
 	sql_command = 'SELECT data_value FROM offline_data WHERE data_name = "'  + str(data_name) + '";'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
    
 	if len(rows) == 0:
@@ -502,7 +590,12 @@ def getDataFromOffline_dataTable(cursor,data_name):
 	
 def updateDataFromOffline_dataTable(connection,data_name,data_value):
 	sql_command = 'UPDATE offline_data SET data_value= "' + str(data_value)  + '" WHERE data_name = "' + str(data_name)  + '";'
-	connection.cursor().execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		connection.cursor().execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	connection.commit()	
 
 #===============================================================================================================================================
@@ -527,13 +620,13 @@ def createMost_recent_mentoring_updatesTable(cursor):
 	FOREIGN KEY(mentoring_id) REFERENCES mentoring(ID)
 	);
 	'''
-	
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	cursor.execute(sql_command)
 
 def checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,modify_date):
 	sql_command = "INSERT INTO most_recent_mentoring_updates(mentoring_id, modify_date) VALUES "
 	sql_command += '("' + str(mentoring_id) + '", "' + str(modify_date) + '");' 
-	print(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		connection.cursor().execute(sql_command)
 	except sqlite3.IntegrityError:
@@ -544,9 +637,10 @@ def checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,modify
 def deleteDataFromMost_recent_mentoring_updatesTable(connection,mentoring_id):
 	sql_command = 'DELETE FROM most_recent_mentoring_updates WHERE mentoring_id = ' + str(mentoring_id)  + ';'
 	cursor = connection.cursor()
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		cursor.execute(sql_command)
-	except:
+	except Exception as e: 
 		return False
 	connection.commit()
 	return True
@@ -582,7 +676,8 @@ def insertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id):
 	else:
 		return
 	if checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,currentDTString) == False:
-		print("Error when inserting into most_recent_mentoring_updates table.")
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 
 # ----------------------------------- Most_recent_mentoring_updates Table Related Code Area ----------------------------------------------------------------
 ################################################################################################################################################
@@ -667,7 +762,12 @@ def removeAndFixDataFrame(df):
 #   Return the number of row in given table, if tablename is incorrect, return "null", else return int(count)
 def numberOfCountInTable(cursor,tableName):   
 	sql_command = 'SELECT COUNT(*) FROM '+ tableName +';'
-	cursor.execute(sql_command)
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	rows = cursor.fetchall()
 	
 	if len(rows) == 0:
@@ -681,7 +781,7 @@ def numberOfCountInTable(cursor,tableName):
 def getAllNumbers(cursor):
 	try:
 		margin = float(getDataFromOffline_dataTable(cursor,'DOUBLE_margin_for_max_student_count'))
-	except:
+	except Exception as e: 
 		margin = 0
 	returnArr = [numberOfCountInTable(cursor,'student'),numberOfCountInTable(cursor,'professor'),numberOfCountInTable(cursor,'mentoring')]
 	averageStudentPerMentor = int(numberOfCountInTable(cursor,'student')/numberOfCountInTable(cursor,'professor'))

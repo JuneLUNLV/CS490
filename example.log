@@ -1,0 +1,25 @@
+DEBUG:root:This message should go to the log file
+DEBUG:root:This message should go to the log file123
+DEBUG:parso.cache:pickle loaded: D:\Miniconda\lib\string.py
+DEBUG:parso.cache:pickle loaded: D:\Miniconda\lib\importlib\_bootstrap_external.py
+DEBUG:parso.cache:pickle loaded: D:\Miniconda\lib\importlib\_bootstrap.py
+DEBUG:parso.cache:pickle loaded: D:\Miniconda\lib\collections\__init__.py
+DEBUG:parso.cache:pickle loaded: D:\Miniconda\lib\io.py
+DEBUG:parso.cache:pickle loaded: D:\Miniconda\lib\os.py
+DEBUG:parso.cache:pickle loaded: D:\Miniconda\lib\threading.py
+DEBUG:parso.cache:pickle loaded: D:\Miniconda\lib\traceback.py
+DEBUG:parso.cache:pickle loaded: D:\Miniconda\lib\warnings.py
+DEBUG:parso.python.diff:diff parser start
+DEBUG:parso.python.diff:line_lengths old: 2; new: 2
+DEBUG:parso.python.diff:-> code[equal] old[1:1] new[1:1]
+DEBUG:parso.python.diff:copy old[1:1] new[1:1]
+DEBUG:parso.python.diff:-> code[replace] old[2:2] new[2:2]
+DEBUG:parso.python.diff:parse_part from 2 to 2 (to 1 in part parser)
+DEBUG:parso.python.diff:diff parser end
+DEBUG:parso.python.diff:diff parser start
+DEBUG:parso.python.diff:line_lengths old: 2; new: 2
+DEBUG:parso.python.diff:-> code[equal] old[1:1] new[1:1]
+DEBUG:parso.python.diff:copy old[1:1] new[1:1]
+DEBUG:parso.python.diff:-> code[replace] old[2:2] new[2:2]
+DEBUG:parso.python.diff:parse_part from 2 to 2 (to 1 in part parser)
+DEBUG:parso.python.diff:diff parser end

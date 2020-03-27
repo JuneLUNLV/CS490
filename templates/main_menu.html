@@ -649,11 +649,7 @@
 <!--------------------modal for successful setting display ----------------------------------->
 <script>
 //Function for range slider
-let margin = parseFloat({
-	{
-		numberForEachTable[5]
-	}
-});
+let margin = parseFloat('{{numberForEachTable[5]}}');
 let marginInPercentage = margin * 100;
 document.getElementById('rangeSliderInputId').value = marginInPercentage;
 document.getElementById('rangeValueLabel').style.marginLeft = marginInPercentage - 2.8 + '%';
@@ -702,7 +698,7 @@ if(window.performance && window.performance.navigation.type === window.performan
 }
 /* Redirect to mentoring_join page, with 2 parameters, student name and student email */
 function redirect1() {
-	window.location.href = "/mentoring_joined?username=" + mostRecentAssignedStudentName + "&email=" + mostRecentAssignedStudentEmail;
+	window.location.href = "/mentoring_joined";
 }
 /* All the inputs onfocus functions */
 function studentInputOnFocusFunction() {

@@ -4,12 +4,13 @@ import pandas as pd
 from dateutil.parser import parse
 import os
 import json
+import datetime
 
 #Caldwell,Ivan Alexander id 26 repeated
 #Robenalt, Evan id 605 repeated
 #Chua,Andreana id 144 repeated
 
-# df(Pandas): 					['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date'] 
+# df(Pandas):					 ['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date'] 
 # student(mysqlite_table):		['ID'(PRIMARY KEY,AUTOINCREMENT), 'lastname'(lowercase), 'firstname(lowercase)', 'email'] UNIQUE(lastname,firstname,email)
 # professor(mysqlite_table):	['ID'(PRIMARY KEY, AUTOINCREMENT), 'lastname'(lowercase), 'firstname'(lowercase), 'email'] UNIQUE(lastname,firstname,email)
 # mentoring(mysqlite_table):	['ID'(PRIMARY, AUTOINCREMENT), 'professor_id'(FOREIGN), 'student_id'(FOREIGN), 'dateAssigned'(NULLABLE), 'endDate'(NULLABLE)] UNIQUE(professor_id,student_id)
@@ -135,16 +136,16 @@ def insertToStudentTableFromCSVFile(df,cursor):
 
 
 def insertNewStudent(cursor,studentLastName,studentFirstName,studentEmail):
-        sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
-        sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
+		sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
+		sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
 
-        try:
-            cursor.execute(sql_command)
-        except sqlite3.IntegrityError:
-            return "EXISTED"
-        
-        student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)      
-        return student_id
+		try:
+			cursor.execute(sql_command)
+		except sqlite3.IntegrityError:
+			return "EXISTED"
+		
+		student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)	  
+		return student_id
 
 #===============================================================================================================================================
 
@@ -288,7 +289,7 @@ def insertToProfessorTableFromCSVFile(df,cursor):
 ################################################################################################################################################
 
 class Mentoring:
-	def __init__(self, id=None, professor_id="", student_id="", dateAssigned="", endDate="", studentName="",professorName="",studentRebelMail=""):
+	def __init__(self, id=None, professor_id="", student_id="", dateAssigned="", endDate="", studentName="",professorName="",studentRebelMail="",relationship_id=""):
 		self.id = id
 		self.professor_id = professor_id
 		self.student_id = student_id
@@ -297,7 +298,8 @@ class Mentoring:
 		self.studentName = studentName
 		self.professorName = professorName
 		self.studentRebelMail = studentRebelMail
-        
+		self.relationship_id = relationship_id
+		
 #--------------Mentoring Table-------------------
 #   ID,professor_id,student_id,dateAssigned,endDate
 def createMentoringTable(cursor):
@@ -378,51 +380,64 @@ def assignExistedStudentToProfessorById(connection,studentId,professorId,assignD
 	print(sql_command)
 	connection.cursor().execute(sql_command)
 	connection.commit()
-    
+	
 def assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
-    sql_command = "INSERT INTO mentoring(student_id, professor_id, dateAssigned, endDate) VALUES "
-    sql_command += '("' + str(studentId) + '", "' + str(professorId) +'", "' + str(assignDate) + '", "' + str(endDate) +  '");' 
-    print(sql_command)
-    connection.cursor().execute(sql_command)
-    connection.commit()  
+	sql_command = "INSERT INTO mentoring(student_id, professor_id, dateAssigned, endDate) VALUES "
+	sql_command += '("' + str(studentId) + '", "' + str(professorId) +'", "' + str(assignDate) + '", "' + str(endDate) +  '");' 
+	print(sql_command)
+	connection.cursor().execute(sql_command)
+	connection.commit()
+
+	sql_command = 'SELECT ID FROM mentoring where student_id = '+ str(studentId) + ' AND professor_id = ' + str(professorId) +  ';'
+	print(sql_command)
+	cursor = connection.cursor()
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
+	relationship_id = rows[0][0]
+	if(relationship_id != studentId):
+		print("warning: studentid is not equal to relationship_id when inserting into most_recent_mentoring_updates table.")
+	insertDataToMost_recent_mentoring_updatesTable(connection,relationship_id)
+	
+
 
 def massAssign(connection,arr,professorName):
-    cursor = connection.cursor()
-    professorName = professorName.lower()
-    professorId = findProfessorIDByName(cursor,professorName,"")
-    for i in arr:
-        assignFromRelationshipId(connection,i,professorId)
+	cursor = connection.cursor()
+	professorName = professorName.lower()
+	professorId = findProfessorIDByName(cursor,professorName,"")
+	for i in arr:
+		assignFromRelationshipId(connection,i,professorId)
 
 def assignFromRelationshipId(connection,mentoringId,professorId):
-    sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '" WHERE ID = "' + str(mentoringId)  + '";'
-    #print(sql_command)
-    try:
-        connection.cursor().execute(sql_command)
-    except Exception as e: 
-        print(e)
-    connection.commit()   
+	sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '" WHERE ID = "' + str(mentoringId)  + '";'
+	#print(sql_command)
+	try:
+		connection.cursor().execute(sql_command)
+	except Exception as e: 
+		print(e)
+	connection.commit()   
+	insertDataToMost_recent_mentoring_updatesTable(connection,mentoringId)
 
 def findProfessorIdByMentoringId(cursor,relationship_id):
-    sql_command = 'SELECT professor_id FROM mentoring where ID = '+ str(relationship_id) + ';'
-    cursor.execute(sql_command)
-    rows = cursor.fetchall()
+	sql_command = 'SELECT professor_id FROM mentoring where ID = '+ str(relationship_id) + ';'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
 
-    if len(rows) == 0:
-        return "null"
+	if len(rows) == 0:
+		return "null"
 
-    for row in rows:
-        return(row[0])  
-    
+	for row in rows:
+		return(row[0])  
+	
 def findStudentIdByRelationshipId(cursor,relationship_id):
-    sql_command = 'SELECT student_id FROM mentoring WHERE ID ="'  + str(relationship_id) + '";'
-    cursor.execute(sql_command)
-    rows = cursor.fetchall()
+	sql_command = 'SELECT student_id FROM mentoring WHERE ID ="'  + str(relationship_id) + '";'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
 
-    if len(rows) == 0:
-        return "null"
+	if len(rows) == 0:
+		return "null"
 
-    for row in rows:
-        return(row[0])
+	for row in rows:
+		return(row[0])
 
 #  Find professor id by student id using SELECT, return string "null", else return int(id)
 def findProfessorByStudentId(cursor,id):
@@ -447,67 +462,105 @@ def findProfessorByStudentId(cursor,id):
 
 #--------------Offline_data Table-------------------
 def createOfflineDataTable(cursor):
-    sql_command_drop_tbale = '''
-    DROP TABLE IF EXISTS offline_data;
-    '''
-    cursor.execute(sql_command_drop_tbale)
-    
-    sql_command = '''
-    CREATE TABLE offline_data(
-    ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    data_name VARCHAR(255) NOT NULL,
-    data_value VARCHAR(255) NOT NULL,
-    UNIQUE(data_name)
-    );
-    '''
-    
-    cursor.execute(sql_command)
+	sql_command_drop_tbale = '''
+	DROP TABLE IF EXISTS offline_data;
+	'''
+	cursor.execute(sql_command_drop_tbale)
+	
+	sql_command = '''
+	CREATE TABLE offline_data(
+	ID INTEGER PRIMARY KEY AUTOINCREMENT,
+	data_name VARCHAR(255) NOT NULL,
+	data_value VARCHAR(255) NOT NULL,
+	UNIQUE(data_name)
+	);
+	'''
+	
+	cursor.execute(sql_command)
 
 def insertDataToOffline_dataTable(connection,data_name,data_value):
-    sql_command = "INSERT INTO offline_data(data_name, data_value) VALUES "
-    sql_command += '("' + str(data_name) + '", "' + str(data_value) + '");' 
+	sql_command = "INSERT INTO offline_data(data_name, data_value) VALUES "
+	sql_command += '("' + str(data_name) + '", "' + str(data_value) + '");' 
 
-    try:
-        connection.cursor().execute(sql_command)
-    except sqlite3.IntegrityError:
-        return "EXISTED"
-    connection.commit()
-    return "SUCCESS"
-    
+	try:
+		connection.cursor().execute(sql_command)
+	except sqlite3.IntegrityError:
+		return "EXISTED"
+	connection.commit()
+	return "SUCCESS"
+	
 def getDataFromOffline_dataTable(cursor,data_name):
-    sql_command = 'SELECT data_value FROM offline_data WHERE data_name = "'  + str(data_name) + '";'
-    cursor.execute(sql_command)
-    rows = cursor.fetchall()
+	sql_command = 'SELECT data_value FROM offline_data WHERE data_name = "'  + str(data_name) + '";'
+	cursor.execute(sql_command)
+	rows = cursor.fetchall()
    
-    if len(rows) == 0:
-            return "null"
+	if len(rows) == 0:
+			return "null"
 
-    for row in rows:
-        return(row[0])  
-    
+	for row in rows:
+		return(row[0])  
+	
 def updateDataFromOffline_dataTable(connection,data_name,data_value):
 	sql_command = 'UPDATE offline_data SET data_value= "' + str(data_value)  + '" WHERE data_name = "' + str(data_name)  + '";'
 	connection.cursor().execute(sql_command)
-	connection.commit()    
+	connection.commit()	
 
 #===============================================================================================================================================
 
-
-# ----------------------------------- Pandas Dataframe Related Code Area ----------------------------------------------------------------
+# ----------------------------------- Most_recent_mentoring_updates Table Related Code Area ----------------------------------------------------------------
 ################################################################################################################################################
 ################################################################################################################################################
 
-#   Read all 3 tables and join them together, and load into a Pandas dataframe
-#   Organize all the column name and sort the dataframe by professor name
-#   Note, the name columns are joined by the format of "Lastname, Firstname"
-def readDatabaseIntoDataframe(connection):
+#--------------Most_recent_mentoring_updates Table-------------------
+def createMost_recent_mentoring_updatesTable(cursor):
+	sql_command_drop_tbale = '''
+	DROP TABLE IF EXISTS most_recent_mentoring_updates;
+	'''
+	cursor.execute(sql_command_drop_tbale)
+	
+	sql_command = '''
+	CREATE TABLE most_recent_mentoring_updates(
+	ID INTEGER PRIMARY KEY AUTOINCREMENT,
+	mentoring_id VARCHAR(255) NOT NULL,
+	modify_date VARCHAR(255) NOT NULL,
+	UNIQUE(mentoring_id),
+	FOREIGN KEY(mentoring_id) REFERENCES mentoring(ID)
+	);
+	'''
+	
+	cursor.execute(sql_command)
+
+def checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,modify_date):
+	sql_command = "INSERT INTO most_recent_mentoring_updates(mentoring_id, modify_date) VALUES "
+	sql_command += '("' + str(mentoring_id) + '", "' + str(modify_date) + '");' 
+	print(sql_command)
+	try:
+		connection.cursor().execute(sql_command)
+	except sqlite3.IntegrityError:
+		return False
+	connection.commit()
+	return True
+
+def deleteDataFromMost_recent_mentoring_updatesTable(connection,mentoring_id):
+	sql_command = 'DELETE FROM most_recent_mentoring_updates WHERE mentoring_id = ' + str(mentoring_id)  + ';'
+	cursor = connection.cursor()
+	try:
+		cursor.execute(sql_command)
+	except:
+		return False
+	connection.commit()
+	return True
+
+def getMost_recent_mentoring_updatesTableAsDataframeForFlask(connection):
+
 	sql_command = """
-	SELECT student.firstname as student_firstname, student.lastname as student_lastname, 
+	SELECT mentoring.ID as id, student.firstname as student_firstname, student.lastname as student_lastname, 
 	professor.firstname as professor_firstname, professor.lastname as professor_lastname,
-	student.email, mentoring.dateAssigned, mentoring.endDate
-	FROM mentoring, student, professor 
-	WHERE mentoring.student_id = student.ID AND mentoring.professor_id = professor.ID
+	student.email, mentoring.dateAssigned, mentoring.endDate, most_recent_mentoring_updates.modify_date as modify_date
+	FROM mentoring, student, professor, most_recent_mentoring_updates
+	WHERE most_recent_mentoring_updates.mentoring_id = mentoring.ID AND mentoring.student_id = student.ID AND mentoring.professor_id = professor.ID
 	"""
+
 	df =  pd.read_sql_query(sql_command, connection)
 	df["Student"] =  df["student_lastname"].str.title().str.rstrip().str.lstrip() + ", " + df["student_firstname"].str.title().str.lstrip().str.lstrip()
 	df["Professor"] = df["professor_lastname"].str.title().str.lstrip().str.rstrip()
@@ -516,7 +569,58 @@ def readDatabaseIntoDataframe(connection):
 	del df["professor_firstname"]
 	del df["professor_lastname"]
 	df.rename(columns={"email":"Student Rebel Email", "dateAssigned":"Date Assigned", "endDate": "End Date"}, inplace=True)
-	col = ["Professor","Student","Student Rebel Email","Date Assigned","End Date"]
+	col = ["id","Professor","Student","Student Rebel Email","Date Assigned","End Date","modify_date"]
+	df = df[col]
+	df.sort_values(by=['Professor','Student'],inplace=True)
+	return df
+
+def insertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id):
+	currentDT = datetime.datetime.now()
+	currentDTString = currentDT.strftime("%m/%d/%Y %H:%M:%S")
+	if checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,currentDTString) == False:
+		deleteDataFromMost_recent_mentoring_updatesTable(connection,mentoring_id)
+	else:
+		return
+	if checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,currentDTString) == False:
+		print("Error when inserting into most_recent_mentoring_updates table.")
+
+# ----------------------------------- Most_recent_mentoring_updates Table Related Code Area ----------------------------------------------------------------
+################################################################################################################################################
+################################################################################################################################################
+
+#   Read all 3 tables and join them together, and load into a Pandas dataframe
+#   Organize all the column name and sort the dataframe by professor name
+#   Note, the name columns are joined by the format of "Lastname, Firstname"
+def readDatabaseIntoDataframe(connection, withId = False):
+	if withId == False:
+		sql_command = """
+		SELECT student.firstname as student_firstname, student.lastname as student_lastname, 
+		professor.firstname as professor_firstname, professor.lastname as professor_lastname,
+		student.email, mentoring.dateAssigned, mentoring.endDate
+		FROM mentoring, student, professor 
+		WHERE mentoring.student_id = student.ID AND mentoring.professor_id = professor.ID
+		"""
+	else:
+		sql_command = """
+		SELECT mentoring.ID as id, student.firstname as student_firstname, student.lastname as student_lastname, 
+		professor.firstname as professor_firstname, professor.lastname as professor_lastname,
+		student.email, mentoring.dateAssigned, mentoring.endDate
+		FROM mentoring, student, professor 
+		WHERE mentoring.student_id = student.ID AND mentoring.professor_id = professor.ID
+		"""
+
+	df =  pd.read_sql_query(sql_command, connection)
+	df["Student"] =  df["student_lastname"].str.title().str.rstrip().str.lstrip() + ", " + df["student_firstname"].str.title().str.lstrip().str.lstrip()
+	df["Professor"] = df["professor_lastname"].str.title().str.lstrip().str.rstrip()
+	del df["student_firstname"]
+	del df["student_lastname"]
+	del df["professor_firstname"]
+	del df["professor_lastname"]
+	df.rename(columns={"email":"Student Rebel Email", "dateAssigned":"Date Assigned", "endDate": "End Date"}, inplace=True)
+	if withId == True:
+		col = ["id","Professor","Student","Student Rebel Email","Date Assigned","End Date"]
+	else:
+		col = ["Professor","Student","Student Rebel Email","Date Assigned","End Date"]
 	df = df[col]
 	df.sort_values(by=['Professor','Student'],inplace=True)
 	return df
@@ -530,14 +634,14 @@ def readTableIntoDataFrame(connection,tableName):
 
 # Using pandas to extract the csv file
 def readCsvIntoDataframe(filename="TEMP_DATASET.csv",originalCVSFile = True):
-    if originalCVSFile == True:
-        colnames=['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date'] 
-    else:
-        colnames=['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date', "End_Date"] 
-    df = pd.read_csv(filename,names=colnames,header=None,encoding = "ISO-8859-1")
-    if originalCVSFile == True:
-        df = removeAndFixDataFrame(df)
-    return df
+	if originalCVSFile == True:
+		colnames=['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date'] 
+	else:
+		colnames=['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date', "End_Date"] 
+	df = pd.read_csv(filename,names=colnames,header=None,encoding = "ISO-8859-1")
+	if originalCVSFile == True:
+		df = removeAndFixDataFrame(df)
+	return df
 
 #   Remove some row which contains 'ERROR' in student name from dataframe
 #   Add "@unlv.nevda.edu" to some incompleted mail  
@@ -590,31 +694,31 @@ def getAllNumbers(cursor):
 
 
 def getStudentsForProfessor(connection):
-    df= readDatabaseIntoDataframe(connection)
-    cursor = connection.cursor()
-    professorNames = list(getProfessorAndStudentNumberInDicionary(cursor).keys())
-    newString = ""
-    for i in range(len(professorNames)):    
-        professorName = professorNames[i].capitalize()
-        df1 = df[df['Professor'] == professorName].sort_values(by=['Student'])
-        df1.index = df1.index + 1 
-        df1.reset_index(drop=False,inplace=True)
-        studentArr = df1['Student'].array.to_numpy().tolist()
-        relationshipIdArr = df1['index'].array.to_numpy().tolist()
-        nameAndIdDictArr = []
-        for j in range(len(studentArr)):
-            mydict = {
-                "studentName":studentArr[j],
-                "relationshipId":relationshipIdArr[j]
-            }
-            nameAndIdDictArr.append(mydict)
-            
-        newString += (json.dumps({
-            "professorName":professorName,
-            "nameAndIdDictArr":nameAndIdDictArr,
-        })) + ","
-    newString = '[' + newString[:-1] + ']'
-    return newString    
+	df= readDatabaseIntoDataframe(connection)
+	cursor = connection.cursor()
+	professorNames = list(getProfessorAndStudentNumberInDicionary(cursor).keys())
+	newString = ""
+	for i in range(len(professorNames)):	
+		professorName = professorNames[i].capitalize()
+		df1 = df[df['Professor'] == professorName].sort_values(by=['Student'])
+		df1.index = df1.index + 1 
+		df1.reset_index(drop=False,inplace=True)
+		studentArr = df1['Student'].array.to_numpy().tolist()
+		relationshipIdArr = df1['index'].array.to_numpy().tolist()
+		nameAndIdDictArr = []
+		for j in range(len(studentArr)):
+			mydict = {
+				"studentName":studentArr[j],
+				"relationshipId":relationshipIdArr[j]
+			}
+			nameAndIdDictArr.append(mydict)
+			
+		newString += (json.dumps({
+			"professorName":professorName,
+			"nameAndIdDictArr":nameAndIdDictArr,
+		})) + ","
+	newString = '[' + newString[:-1] + ']'
+	return newString	
 
-         
+		 
 #===============================================================================================================================================

@@ -10,6 +10,7 @@ def runScript():
   db_helper.createProfessorTable(cursor)
   db_helper.createMentoringTable(cursor)
   db_helper.createOfflineDataTable(cursor)
+  db_helper.createMost_recent_mentoring_updatesTable(cursor)
 
   connection.execute("PRAGMA foreign_keys = ON;")
 

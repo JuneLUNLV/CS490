@@ -528,7 +528,7 @@
 			<ul id="nav-mobile" class="left hide-on-med-and-down">
 				<li><a style="background-color: rgba(0,0,0,0.19);">Individual Assign</a></li>
 				<li><a onclick='window.location.href = "/multiple_assign_page";'>Mass Assign</a></li>
-				<li><a onclick="redirect1()">Table</a></li>
+				<li><a onclick="redirect2()">Table</a></li>
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">John<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
@@ -562,12 +562,12 @@
 		<label for="default" class="myLabel errorLabel" id="studentRebelMailErrorLabel">Student rebel mail can not be empty.</label>
 		<div id="calenderDiv" style="display:inline-flex;width:100%;">
 			<div class='calenderLabelDiv'>
-				<label for="default" class="myLabel" id="studentRebelMailLabel">Assign Date</label>
+				<label for="default" class="myLabel" id="studentRebelMailLabel1">Assign Date</label>
 				<input type="text" autocomplete="off" class="datepicker assignDateCalendar" id="assignDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>
 			</div>
 			<div style="width:20%"></div>
 			<div class='calenderLabelDiv'>
-				<label for="default" class="myLabel" id="studentRebelMailLabel">End Date</label>
+				<label for="default" class="myLabel" id="studentRebelMailLabel2">End Date</label>
 				<input type="text" autocomplete="off" class="datepicker endDateCalendar" id="endDateCalendarId" style="width:100%" onfocus='this.value="";document.getElementById("dateErrorLabel").style.display="none";'>
 			</div>
 		</div>
@@ -613,7 +613,7 @@
 		<header class="my_modal-header">
 			<h2 style="font-size:1.5vw;">Assignment Successful<img style="height: 2.5vw; width: 3vw; margin-left: 1.5vw;position:absolute;bottom: 14px;" src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
 		</header>
-		<div class="my_content">
+		<div class="my_content" style="margin-top: 40px;margin-bottom: 40px;">
 			<p>Student <span id="student_name_span_sucessful_assigned" style="font-weight:bold;">StudentName</span> is successfully assigned to mentor <span id="mentor_name_span_sucessful_assigned" style="font-weight:bold;">MentorName</span>.</p>
 		</div>
 		<footer class="my_modal-footer">
@@ -626,7 +626,7 @@
 <!--------------------modal for setting display ----------------------------------->
 <h4 style="display:none" id="getMargin">{{numberForEachTable[5]}}</h4>
 <div class="my_modal" data-modal="trigger-2" id="modal_for_setting_display">
-	<article class="my_content-wrapper">
+	<article class="my_content-wrapper" style="padding:100px;">
 		<header class="my_modal-header">
 			<h2><i id="settingIcon" style="margin-top: 0px; margin-bottom: 0px; margin-right: 10px;font-size: 100%;" class="large material-icons">settings</i>Setting</h2>
 		</header>
@@ -696,10 +696,17 @@ let mostRecentAssignedStudentEmail = "";
 if(window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
 	location.reload()
 }
-/* Redirect to mentoring_join page, with 2 parameters, student name and student email */
+/* Redirect to mentoring_join page with cookie to indicate to look for most recent entry */
 function redirect1() {
 	window.location.href = "/mentoring_joined";
+	document.cookie = "lookForMostRecentEntry=1"
 }
+
+function redirect2() {
+	window.location.href = "/mentoring_joined";
+	document.cookie = "lookForMostRecentEntry=0"
+}
+
 /* All the inputs onfocus functions */
 function studentInputOnFocusFunction() {
 	//document.getElementById("itemsInput-flexdatalist").value=''; 

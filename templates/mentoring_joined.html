@@ -684,6 +684,8 @@
     let fileName = ''
 	let most_recent_changes_json_string = decodeHtml('{{most_recent_changes_json_string}}');
 	let most_recent_changes_array = JSON.parse(most_recent_changes_json_string);
+	let maximumChangeHistoryEntry = 100;
+	let showallChangeHistoryEntry = true;
 
 
     function backToTop() {
@@ -975,7 +977,10 @@
 		tr.appendChild(table_action_td);
 
 		$('#change_history_table_id tbody')[0].appendChild(tr);
-		if(i == 99)break;
+
+		if(showallChangeHistoryEntry == false)
+			if(i == maximumChangeHistoryEntry)
+				break;
 	}
 
 	function changeModifyDateTimeFormat(){
@@ -1087,7 +1092,28 @@
 		}
 	}, 1000);
 
-	//$('.relative_datetime')[0].nextSibling.children[0].click()
+	function getCookie(cname) {
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for(var i = 0; i <ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+		c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+		return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+	}	
+
+	if(getCookie("lookForMostRecentEntry") == "1"){
+		$('.relative_datetime')[0].nextSibling.children[0].click()
+		document.cookie = "lookForMostRecentEntry=0"
+	}
+
+	
   </script>
 
 </html>

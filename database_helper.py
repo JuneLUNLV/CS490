@@ -471,12 +471,16 @@ def massAssign(connection,arr,professorName):
 	cursor = connection.cursor()
 	professorName = professorName.lower()
 	professorId = findProfessorIDByName(cursor,professorName,"")
+	currentDT = datetime.datetime.now()
+	assignDate = currentDT.strftime("%m/%d/%Y")
+	endDate = "null"
 	for i in arr:
-		assignFromRelationshipId(connection,i,professorId)
+		assignFromRelationshipId(connection,i,professorId,assignDate,endDate)
 
-def assignFromRelationshipId(connection,mentoringId,professorId):
-	sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '" WHERE ID = "' + str(mentoringId)  + '";'
+def assignFromRelationshipId(connection,mentoringId,professorId,assignDate,endDate):
+	sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '", dateAssigned = "' +  str(assignDate) + '" WHERE ID = "' + str(mentoringId)  + '";'
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	print(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		connection.cursor().execute(sql_command)
 	except Exception as e: 

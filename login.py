@@ -6,14 +6,16 @@ import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///C:\\Users\\Administrator\\Desktop\\CS490\\login.db"
-app.config['SECRET_KEY'] = 'thissecret'
-#app.config['USE_SESSION_FOR_NEXT'] = True
 
 #THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-#db_file = os.path.join(THIS_FOLDER, 'login.db')   
-#db_file = "sqlite:///" + db_file
-#print(db_file.replace('\\','\\\\'))
+THIS_FOLDER = os.path.abspath('')
+db_file = os.path.join(THIS_FOLDER, 'login.db')   
+db_file = "sqlite:///" + db_file
+fileStr = db_file.replace('\\','\\\\')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = fileStr
+app.config['SECRET_KEY'] = 'thissecret'
+#app.config['USE_SESSION_FOR_NEXT'] = True
 
 
 db = SQLAlchemy(app)
@@ -49,9 +51,7 @@ def index():
 
 @app.route('/login')
 def login():
-    #print (request.args.get('next'))
     session['next'] = request.args.get('next', "/home" )
-    #session['next'] = request.args.get('next')
     return render_template('login.html')
 
 def is_safe_url(target):
@@ -111,4 +111,4 @@ def signup(username,password):
     db.session.add(new_user)
     db.session.commit()
 
-app.run(debug=True)
+#app.run(debug=True)

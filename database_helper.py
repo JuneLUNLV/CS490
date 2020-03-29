@@ -8,7 +8,7 @@ import datetime
 import inspect
 import logging
 
-logging.basicConfig(filename='sql_commands.log',level=logging.DEBUG)
+#logging.basicConfig(filename='sql_commands.log',level=logging.DEBUG)
 
 #Caldwell,Ivan Alexander id 26 repeated
 #Robenalt, Evan id 605 repeated

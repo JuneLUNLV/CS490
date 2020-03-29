@@ -34,16 +34,16 @@
 						<div class="form-group input-group-md">
 							<input type="password" class="form-control" id="password" name="password" placeholder="Password">
 						</div>
-						<button class="btn btn-lg btn-block btn-primary mt-4" type="submit"> Login </button>
+						<div class="btn btn-lg btn-block btn-primary mt-4" onclick="login()"> Log In </div>
 						<a href="#" class="float-right mt-2">Forgot Password? </a>
 					</form>
 					{% with messages = get_flashed_messages() %}
 					{% if messages %}
-						<ul class="flashes">
 						{% for message in messages %}
-							<li>{{ message }}</li>
+							{% if "You need to login!" in message %}
+								<script>alert("You need to login to access this page")</script>
+							{% endif %}
 						{% endfor %}
-						</ul>
 					{% endif %}
 					{% endwith %}
 
@@ -56,17 +56,36 @@
 	</body>
 <script>
 function login(){
-	document.getElementById('username').value;
+	username = document.getElementById('username').value;
+	password = document.getElementById('password').value;
+	if(username.length < 1){
+		alert("Username cannot be empty")
+		return;
+	}
+
+	if(password.length < 1){
+		alert("Password cannot be empty")
+		return;
+	}
+
 	req = $.ajax({
 			url: '/login_request',
 			type: 'POST',
 			data: {
-				username: username
+				username: username,
+				password: password
 			}
 		});
 	// When request done, see if all the server side checks are valid, if not, error label is displayed
 	req.done(function(data) {
-		alert(data.RESULT);
+		console.log("data.RESULT: " + data.RESULT);
+		console.log("data.MSG: " + data.MSG);
+		if(data.RESULT == "SUCCESS"){
+			location.href = data.MSG
+		}
+		else{
+			alert(data.MSG)
+		}
 	});
 }
 </script>

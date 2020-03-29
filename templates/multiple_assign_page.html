@@ -15,7 +15,7 @@
 	.myhtml {
 		font-family: 'Ubuntu', sans-serif;
 		font-size: 100%;
-		background: #333;
+		background: rgb(255, 255, 255);
 		-webkit-font-smoothing: antialiased;
 		height: 100%;
 	}
@@ -31,6 +31,7 @@
 		border-radius: 5px;
 		padding-left: 30px;
 		position: relative;
+		margin-bottom: 100px;
 	}
 
 	.myh1 {
@@ -169,7 +170,7 @@
     display: inline-block;
     border-radius: 7px;
     width: 15%;
-    margin-left: 5%;
+    margin-left: 10%;
 	}
 	
 	.assign_button:hover{
@@ -192,7 +193,7 @@
 		display: inline-block;
 		border-radius: 7px;
 		width: 15%;
-		margin-left: 5%;
+		margin-left: 10%;
 	}
 	
 	
@@ -340,6 +341,7 @@
 	  overflow: hidden;
 	  z-index: 1;
 	  font-family: sans-serif;
+	  cursor:pointer;
 	  
 	}
 
@@ -438,7 +440,7 @@
 	
 	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
-		<li><a href="#!" class="drop_down_li_a">Log Out</a></li>
+		<li><a href="/logout" class="drop_down_li_a">Log Out</a></li>
 	</ul>
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
@@ -448,7 +450,7 @@
 				<li><a style="background-color: rgba(0,0,0,0.19);">Mass Assign</a></li>
 				<li><a onclick='window.location.href = "/mentoring_joined"'>Table</a></li>
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
-				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" id="drop_down_nav_id" data-target="dropdown1">John<i class="material-icons right">arrow_drop_down</i></a></li>
+				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" id="drop_down_nav_id" data-target="dropdown1">{{current_user_name}}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>
 	</nav>
@@ -567,7 +569,7 @@
           clearListGroup();
 		  hideListGroup();
           return;
-        }
+		}
         for(var i = 0; i < professorJsonDict.length; i++) {
           if(val == professorJsonDict[i].professorName) {
             for(var j = 0; j < studentCountElementArray.length; j++) studentCountElementArray[j].textContent = professorJsonDict[i].count;
@@ -601,7 +603,8 @@
         }
 		if(val == $('input.flexdatalist.second-flexdatalist').val())
 			$('input.flexdatalist.second-flexdatalist').val("")
-        repositionPageWrapper();
+		repositionPageWrapper();
+		showListGroup();
       }
 	  else if(this.name == "mentor_name_input_2")
 	  {
@@ -735,6 +738,7 @@
 		if(isNumeric(value) == false)
 			document.getElementsByClassName("numberInput")[0].value = previousNumberInput;
 		else{
+			showListGroup();
 			let numberOfItemsNeeded = parseInt(value);
 			let listGroupItems = $('.list-group-item');
 			if(numberOfItemsNeeded > maximumStudents){

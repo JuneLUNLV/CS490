@@ -422,7 +422,9 @@
 	.drop_down_li_a:hover{
 		text-decoration: none;
 	}
-	
+
+
+
 	
 	
 	</style>
@@ -438,10 +440,14 @@
 	<script src="{{url_for('static', filename='table2CSV.js')}}"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	
-	<ul id="dropdown1" class="dropdown-content">
+
+    <ul id="dropdown1" class="dropdown-content">
+		<li class="divider"></li>
+		<li><a href="#" class="drop_down_li_a">Change Password</a></li>
 		<li class="divider"></li>
 		<li><a href="/logout" class="drop_down_li_a">Log Out</a></li>
-	</ul>
+	  </ul>
+	
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
 			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative" class="brand-logo left">HOME</a>
@@ -450,7 +456,7 @@
 				<li><a style="background-color: rgba(0,0,0,0.19);">Mass Assign</a></li>
 				<li><a onclick='window.location.href = "/mentoring_joined"'>Table</a></li>
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
-				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" id="drop_down_nav_id" data-target="dropdown1">{{current_user_name}}<i class="material-icons right">arrow_drop_down</i></a></li>
+				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" id="drop_down_nav_id" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>
 	</nav>

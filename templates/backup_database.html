@@ -114,11 +114,12 @@
 
 	<body>
 
-  <ul id="dropdown1" class="dropdown-content">
-    <li class="divider"></li>
-    <li><a href="#!">Log Out</a></li>
-  </ul>
-
+    <ul id="dropdown1" class="dropdown-content">
+      <li class="divider"></li>
+      <li><a href="#">Change Password</a></li>
+      <li class="divider"></li>
+      <li><a href="/logout">Log Out</a></li>
+    </ul>
   <nav>
     <div class="nav-wrapper" style="background-color: #2b97d6;">
       <a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative" class="brand-logo left">HOME</a>
@@ -127,7 +128,7 @@
         <li><a onclick='window.location.href = "/multiple_assign_page";'>Mass Assign</a></li>
         <li><a onclick='window.location.href = "/mentoring_joined"'>Table</a></li>
         <li><a style="background-color: rgba(0,0,0,0.19);">Backup Database</a></li>
-         <li><a style = "position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">{{current_user_name}}<i class="material-icons right">arrow_drop_down</i></a></li>
+         <li><a style = "position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
       </ul>
     </div>
   </nav>   

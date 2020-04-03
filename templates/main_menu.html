@@ -615,8 +615,9 @@
 		<header class="my_modal-header">
 			<h2 style="font-size:1.5vw;">Assignment Successful<img style="height: 2.5vw; width: 3vw; margin-left: 1.5vw;position:absolute;bottom: 14px;" src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
 		</header>
-		<div class="my_content" style="margin-top: 40px;margin-bottom: 40px;">
+		<div class="my_content" style="margin-top: 40px;margin-bottom: 40px; display:block;">
 			<p>Student <span id="student_name_span_sucessful_assigned" style="font-weight:bold;">StudentName</span> is successfully assigned to mentor <span id="mentor_name_span_sucessful_assigned" style="font-weight:bold;">MentorName</span>.</p>
+			<p id="email_to_student_and_professor_id" style="font-size: 0.8vw;">An email has been send to the student and cc to the professor.</p>
 		</div>
 		<footer class="my_modal-footer">
 			<button class="my_action" onclick='location.reload()'>Assign More Student</button>
@@ -653,6 +654,7 @@
 //Function for range slider
 let margin = parseFloat('{{numberForEachTable[5]}}');
 let marginInPercentage = margin * 100;
+let email_option_checked = false;
 document.getElementById('rangeSliderInputId').value = marginInPercentage;
 document.getElementById('rangeValueLabel').style.marginLeft = marginInPercentage - 2.8 + '%';
 document.getElementById('rangeValueLabel').textContent = marginInPercentage + '%';
@@ -742,6 +744,12 @@ function closeConfirmationModalAndResetGloablVariables() {
 }
 /* This function is used by below by the confirmButtonFunction() */
 function openSuccessfulAssignmentModalAndCloseConfirmationModal() {
+
+	if(email_option_checked)
+		email_to_student_and_professor_id.style.display = "block";
+	else
+		email_to_student_and_professor_id.style.display = "none";
+
 	document.getElementById('modal_for_confirmation').classList.remove('my_open');
 	let button = document.getElementById("confirmButtonOnModal1");
 	const trigger = button.getAttribute('data-modal-trigger');
@@ -752,16 +760,29 @@ function openSuccessfulAssignmentModalAndCloseConfirmationModal() {
 }
 /* Function to called when the confirm button in the confirm modal is clicked */
 function confirmButtonFunction() {
+	email_option_checked = document.getElementById('checkBoxForEmail').checked;
 	if(switchStatus == false) {
 		req = $.ajax({
 			url: '/assign_mentor_existed_student',
+			data: {
+				email_option_checked:email_option_checked
+				},
 			type: 'POST'
+		});
+		req.done(function(data) {
+			console.log(data.EMAIL_SENT)
 		});
 		openSuccessfulAssignmentModalAndCloseConfirmationModal()
 	} else {
 		req = $.ajax({
 			url: '/assign_mentor_new_stduent',
+			data: {
+				email_option_checked:email_option_checked
+				},
 			type: 'POST'
+		});
+		req.done(function(data) {
+			console.log(data.EMAIL_SENT)
 		});
 		openSuccessfulAssignmentModalAndCloseConfirmationModal()
 	}
@@ -786,6 +807,7 @@ function assignButtonFunction() {
 	dateErrorLabel = document.getElementById("dateErrorLabel");
 	assignmentErrorLabel = document.getElementById("assignmentErrorLabel");
 	emailNotifyCheckBox = document.getElementById("checkBoxForEmail");
+	email_to_student_and_professor_id = document.getElementById("email_to_student_and_professor_id");
 	/* Second part of initialization are the elements from two modals */
 	button = document.getElementById("assign_button_id");
 	const trigger = button.getAttribute('data-modal-trigger');
@@ -801,12 +823,17 @@ function assignButtonFunction() {
 	assignmentErrorLabel.style.display = "none";
 	emailNotifyCheckBox.checked = true;
 	let boolSubmitSuccess = true;
+
+
 	/* Client side check - for if the mentor has too many students , if so error label is displayed*/
 	if(mentorNumberColor == "red") {
 		document.getElementById("mentorCountErrorLabel").textContent = "Current mentor has too many students, please assign another mentor for this student."
 		document.getElementById("mentorCountErrorLabel").style.display = "block";
 		boolSubmitSuccess = false;
 	}
+
+
+
 	/* getting values from two date inputs, set it to "null" if input empty */
 	let endDate = "";
 	let assignDate = "";
@@ -870,7 +897,7 @@ function assignButtonFunction() {
 				mentor_name_span.textContent = mentorName;
 				//			mentor_name_span2.textContent = mentorName;
 				student_name_span_sucessful_assigned.textContent = studentName;
-				mentor_name_span_sucessful_assigned.textContent = mentorName;
+				mentor_name_span_sucessful_assigned.textContent = mentorName;			
 				contentWrapper.addEventListener('click', e => e.stopPropagation());
 				modal.classList.toggle('my_open');
 				// Setting global variables so that they can be used as parameter when redirecting
@@ -896,11 +923,11 @@ function assignButtonFunction() {
 			studentRebelMailErrorLabel.style.display = "block";
 			return;
 		}
-		if(!studentRebelMailInput.value.includes("@unlv.nevada.edu")) {
+	/*	if(!studentRebelMailInput.value.includes("@unlv.nevada.edu")) {
 			studentRebelMailErrorLabel.textContent = "Student rebel mail does not contains @unlv.nevada.edu.";
 			studentRebelMailErrorLabel.style.display = "block";
 			boolSubmitSuccess = false;
-		}
+		}*/
 		if(boolSubmitSuccess == false) return;
 		/* Client side erorr checks done */
 		/* Seding POST request to flask for additional server side check using ajax. */
@@ -931,7 +958,7 @@ function assignButtonFunction() {
 				mentor_name_span.textContent = mentorName;
 				//			mentor_name_span2.textContent = mentorName;
 				student_name_span_sucessful_assigned.textContent = studentLastName + ", " + studentFirstName
-				mentor_name_span_sucessful_assigned.textContent = mentorName;
+				mentor_name_span_sucessful_assigned.textContent = mentorName;		
 				contentWrapper.addEventListener('click', e => e.stopPropagation());
 				modal.classList.toggle('my_open');
 				// Setting global variables for redirecting parameters

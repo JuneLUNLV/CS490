@@ -14,7 +14,7 @@ from flask_mail import Message
 app = Flask(__name__)
 app.config['MAIL_SERVER'] = "smtp.gmail.com"
 app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = "johnsnow20173@gmail.com"
+app.config['MAIL_USERNAME'] = "cs.sys.testing@gmail.com"
 app.config['MAIL_PASSWORD'] =  "a474561939"
 app.config['MAIL_USE_TLS'] = True
 mail = Mail(app)
@@ -25,7 +25,7 @@ def index():
     mentor_email = " evangelos.yfantis@unlv.edu"
     
     subject = "Mentor request"
-    sender = "johnsnow20173@gmail.com"
+    sender = "jcs.sys.testing@gmail.com"
     recipients = ["ykuovobdrvniuhjmyf@awdrt.org"]
     cc  = []
     body = "Hi,\nYour faculty mentor is " + mentor_name + ".  Please email him at"  + mentor_email + " to schedule an appointment.  Please note, before we can sign the advanced standing form, you will need to have completed your grad plan.  Thanks.\n\n-sys1"

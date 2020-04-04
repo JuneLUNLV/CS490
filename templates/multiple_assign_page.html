@@ -450,11 +450,12 @@
 	
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
-			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative" class="brand-logo left">HOME</a>
+			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative; cursor:pointer;" class="brand-logo left">HOME</a>
 			<ul id="nav-mobile" class="left hide-on-med-and-down">
 				<li><a onclick='window.location.href = "/main_menu"'>Individual Assign</a></li>
 				<li><a style="background-color: rgba(0,0,0,0.19);">Mass Assign</a></li>
 				<li><a onclick='window.location.href = "/mentoring_joined"'>Table</a></li>
+				<li><a onclick='window.location.href = "/manage_mentors"'>Manage Mentors</a></li>
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" id="drop_down_nav_id" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>

@@ -10,7 +10,7 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<style>
 	table thead tr {
-		background: #55b164;
+		background: #36e69d;
 	}
 
 	#main_table table tbody tr td:first-child{
@@ -551,6 +551,8 @@
 			transform: scaleY(0);
 		}
 	}
+
+
 	</style>
 </head>
 
@@ -572,11 +574,12 @@
 	
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
-			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative" class="brand-logo left">HOME</a>
+			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative; cursor:pointer;" class="brand-logo left">HOME</a>
 			<ul id="nav-mobile" class="left hide-on-med-and-down">
 				<li><a onclick='window.location.href = "/main_menu"'>Individual Assign</a></li>
 				<li><a onclick='window.location.href = "/multiple_assign_page";'>Mass Assign</a></li>
 				<li><a style="background-color: rgba(0,0,0,0.19);">Table</a></li>
+				<li><a onclick='window.location.href = "/manage_mentors"'>Manage Mentors</a></li>
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
@@ -689,7 +692,7 @@
 	let most_recent_changes_json_string = decodeHtml('{{most_recent_changes_json_string}}');
 	let most_recent_changes_array = JSON.parse(most_recent_changes_json_string);
 	let maximumChangeHistoryEntry = 100;
-	let showallChangeHistoryEntry = true;
+	let showallChangeHistoryEntry = false;
 
 
     function backToTop() {
@@ -1005,34 +1008,49 @@
 
 		result = interval(new Date(modify_date_object),new Date(now_object));
 		let outputStr = "";
-		if(result.years > 1)
-			outputStr += result.years + " years "
-		else if(result.years == 1)
-			outputStr += result.years + " year "
+		if(result.years >= 1){
+			if(result.years > 1)
+				outputStr += result.years + " years "
+			else
+				outputStr += result.years + " year "
+		}
 
-		if(result.months > 1)
-			outputStr += result.months + " months "
-		else if(result.months == 1)
-			outputStr += result.months + " month "
+		if(result.months >= 1){
+			if(result.months > 1)
+				outputStr += result.months + " months "
+			else
+				outputStr += result.months + " month "
+		}
 
-		if(result.days > 1)
-			outputStr += result.days + " days "
-		else if(result.days == 1)
-		result.outputStr += result.days + " day "
+		if(result.days >= 1){
+			if(result.days > 1)
+				outputStr += result.days + " days "
+			else
+				outputStr += result.days + " day "
+		}
 
-		if(result.hours > 1 && result.months < 1 && result.years < 1)
-			outputStr += result.hours + " hours "
-		else if(result.hours == 1 && result.months < 1 && result.years < 1)
-			result.outputStr += result.hours + " hour "
+		if(result.hours >= 1 && result.months < 1 && result.years < 1){
+			if(result.hours > 1)
+				outputStr += result.hours + " hours "
+			else
+				outputStr += result.hours + " hour "
+		}
 
-		if(result.minutes >= 1 && result.months < 1 && result.years < 1)
-			outputStr += result.minutes + " minutes "
 
-		if(result.seconds > 1 && result.days < 1 && result.months < 1 && result.years < 1)
-			outputStr += result.seconds + " seconds "
-		else if(result.seconds == 1 && result.days < 1 && result.months < 1 && result.years < 1)
-			result.outputStr += result.seconds + " second "			
+		if(result.minutes >= 1 && result.months < 1 && result.years < 1){
+			if(result.minutes > 1)
+				outputStr += result.minutes + " minutes "
+			else
+				outputStr += result.minutes + " minute "
+		}
 
+		if(result.seconds >= 1 && result.days < 1 && result.months < 1 && result.years < 1){
+			if(result.seconds > 1)
+				outputStr += result.seconds + " seconds "
+			else
+				outputStr += result.seconds + " second "
+		}
+	
 		outputStr += "ago";
 		return outputStr;
 	}

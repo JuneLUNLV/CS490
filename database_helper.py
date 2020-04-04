@@ -263,6 +263,7 @@ def findProfessorNameById(cursor,id):
 	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		return "null"
 	rows = cursor.fetchall()
 	   
 	if len(rows) == 0:
@@ -296,15 +297,16 @@ def getProfessorObjectById(cursor,id):
 	return professor
 	
 #   Delete a row in professor TABLE by student id, return true if success, else return false	
-def deleteProfessorById(cursor,id):
+def deleteProfessorById(connection,id):
 	sql_command = 'DELETE FROM professor WHERE ID = ' + str(id)  + ';'
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
-		cursor.execute(sql_command)
+		connection.cursor().execute(sql_command)
+		connection.commit();
 	except Exception as e: 
-		return False
+		return ("FAIL",str(e))
 
-	return True
+	return ("SUCCESS","")
 
 # Inserting professor table from csv file
 def insertToProfessorTableFromCSVFile(df,cursor):
@@ -327,6 +329,16 @@ def insertToProfessorTableFromCSVFile(df,cursor):
 			#print("professor [" + professorArr[i].lower() + "] is already in the professor table") 
 			pass
 
+def updateMentor(connection,mentor_id,new_mentor_name,new_mentor_email):
+	sql_command = 'UPDATE professor SET lastname = "' + str(new_mentor_name) + '", email = "' + str(new_mentor_email) + '" WHERE ID = "' + str(mentor_id)  + '";'
+	try:
+		connection.cursor().execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		return ("FAIL",str(e))
+	connection.commit()
+	return ("SUCCESS","")
 
 #===============================================================================================================================================
 
@@ -423,8 +435,9 @@ def getNumberOfStudentForMentorID(cursor,professor_id):
 #	}  
 def getProfessorAndStudentNumberInDicionary(cursor):
 	professorDictionary = {}
-	for i in range(1,numberOfCountInTable(cursor,'professor')+1):
-		professorDictionary.update({findProfessorNameById(cursor,i)[0] : getNumberOfStudentForMentorID(cursor,i)})
+	for i in range(1,maxIdOfTable(cursor,'professor')+1):
+		if findProfessorNameById(cursor,i) != "null":
+			professorDictionary.update({findProfessorNameById(cursor,i)[0] : getNumberOfStudentForMentorID(cursor,i)})
 	return professorDictionary
 
 #   Assign a student to mentor by UPDATE using mentor_id and student_id
@@ -683,7 +696,7 @@ def insertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id):
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 
-# ----------------------------------- Most_recent_mentoring_updates Table Related Code Area ----------------------------------------------------------------
+# ----------------------------------- Pandas DataBase Related Code Area ----------------------------------------------------------------
 ################################################################################################################################################
 ################################################################################################################################################
 
@@ -779,6 +792,24 @@ def numberOfCountInTable(cursor,tableName):
 	
 	for row in rows:
 		return row[0]
+
+def maxIdOfTable(cursor,tableName):   
+	sql_command = 'SELECT MAX(ID) FROM '+ tableName +';'
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+	rows = cursor.fetchall()
+	
+	if len(rows) == 0:
+		return "null"
+	
+	for row in rows:
+		return row[0]
+
+
 
 #   Return an array which contains: 
 #   [(0)number_of_rows_in_student_table,(1)number_of_rows_in_professor_table,(2)number_of_rows_in_mentoring_table,(3)average_student_per_mentor, (4)maximum_number_of_student_allowed_to_assign]

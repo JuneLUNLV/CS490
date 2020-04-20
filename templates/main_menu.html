@@ -518,12 +518,15 @@
 		window.parent.postMessage("resize", "*");
 	}
 	</script>
+
 	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
 		<li><a href="/change_password">Change Password</a></li>
+		<li><a style="color:#e74c3c" href="delete_account" >Delete This Account</a></li>
 		<li class="divider"></li>
-		<li><a href="/logout">Log Out</a></li>
+		<li><a  style="color:grey" href="/logout">Log Out</a></li>
 	</ul>
+
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
 			<a href="/login" style="margin-left: 20px;margin-right: 40px;position:relative; cursor:pointer;" class="brand-logo left">HOME</a>
@@ -533,6 +536,7 @@
 				<li><a onclick="redirect2()">Table</a></li>
 				<li><a onclick='window.location.href = "/manage_mentors"'>Manage Mentors</a></li>
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
+				<li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>

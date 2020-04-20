@@ -416,12 +416,15 @@
 
 	#drop_down_nav_id:hover{
 		color:white !important;
-		text-decoration: none;
+		text-decoration: none !important;
 	}
 
-	.drop_down_li_a:hover{
-		text-decoration: none;
+
+	nav ul a:hover{
+		text-decoration: none !important;
 	}
+
+
 
 
 
@@ -441,12 +444,13 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	
 
-    <ul id="dropdown1" class="dropdown-content">
+	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
-		<li><a href="/change_password" class="drop_down_li_a">Change Password</a></li>
+		<li><a href="/change_password">Change Password</a></li>
+		<li><a style="color:#e74c3c" href="delete_account" >Delete This Account</a></li>
 		<li class="divider"></li>
-		<li><a href="/logout" class="drop_down_li_a">Log Out</a></li>
-	  </ul>
+		<li><a  style="color:grey" href="/logout">Log Out</a></li>
+	</ul>
 	
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
@@ -457,6 +461,7 @@
 				<li><a onclick='window.location.href = "/mentoring_joined"'>Table</a></li>
 				<li><a onclick='window.location.href = "/manage_mentors"'>Manage Mentors</a></li>
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
+				<li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" id="drop_down_nav_id" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>

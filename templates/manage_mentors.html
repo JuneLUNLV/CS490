@@ -130,6 +130,11 @@
 		margin-left: 10%;
 	}
 
+	.myInput{
+		border-bottom: 1px solid #9e9e9e !important;
+		font-size: 25px !important;
+	}
+
 	.my_flexdatalist {
 		border-radius: 0px;
 		background-color: rgba(0, 0, 0, 0);
@@ -153,12 +158,9 @@
 	}
 
 	.myLabel {
-		display: none;
-		margin-top: 2em;
-		margin-bottom: 0.5em;
-		color: #000000;
-		font-size: 20px;
-		text-align: center;
+		display: block;
+		color: #999999;
+		font-size: 18px;
 	}
 
 	.errorLabel {
@@ -571,8 +573,9 @@
 	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
 		<li><a href="/change_password">Change Password</a></li>
+		<li><a style="color:#e74c3c" href="delete_account" >Delete This Account</a></li>
 		<li class="divider"></li>
-		<li><a href="/logout">Log Out</a></li>
+		<li><a  style="color:grey" href="/logout">Log Out</a></li>
 	</ul>
 	
 	<nav>
@@ -612,7 +615,7 @@
                             <ul id='dropdown_table{{i}}' class='dropdown-content' style="width:max-content !important;height:max-content !important;">
                                 <li><a onclick="editMentor(this)">Edit Mentor</a></li>
                                 <li class="divider"></li>
-                                <li><a onclick="deleteMentor(this)" style="color:red;">Delete Mentor</a></li>
+                                <li><a onclick="openUpDeleteMentorModal(this)" style="color:red;">Delete Mentor</a></li>
                             </ul>
                         </td>
                     </tr>
@@ -626,9 +629,43 @@
 		<a class="btn-floating btn-small blue" id="floatButtonA" onclick='addMentor()'><i id="floatButtonI" class="large material-icons">add</i></a>
 	</div>
 
+	<div class="my_modal" data-modal="trigger-2" id="modal_for_delete_confirmation">
+		<article class="my_content-wrapper">
+			<header class="my_modal-header">
+				<h2 style="font-size:1.5vw;">Delete Confirmation</h2>
+			</header>
+			<div class="my_content" style="margin-top: 40px;margin-bottom: 40px; display:block;">
+				<p>Are you sure you want to delete mentor <span id="mentor_name_in_modal_for_delete_confirmation" style="font-weight:bold;">MentorName</span>?</p>
+			</div>
+			<footer class="my_modal-footer">
+				<button class="my_action" onclick="deleteMentor(mostRecentDeleteItem)">Yes</button>
+				<button style="background-color:#fd6262;" class="my_action" onclick="document.getElementById('modal_for_delete_confirmation').classList.remove('my_open')">No</button>
+			</footer>
+		</article>
+	</div>
+
+	<div class="my_modal" data-modal="trigger-2" id="modal_for_adding_mentor">
+		<article class="my_content-wrapper">
+			<header class="my_modal-header">
+				<h2 style="font-size:1.5vw;">Adding A New Mentor</h2>
+			</header>
+			<div class="my_content" style="margin-top: 40px;margin-bottom: 40px; display:block;">
+				<label  for="default" class="myLabel" id="mentorNameInputLabel">Enter Mentor Name</label>
+				<input  class="myInput" type="text" id="mentorNameInputId" placeholder="Mentor Name" spellcheck="false" autocomplete="off"/>
+				<div style="height:3vh"></div>
+				<label  for="default" class="myLabel" id="mentorEmailInputLabel">Enter Mentor E-Mail</label>
+				<input  class="myInput" type="text" id="mentorEmailInputId" placeholder="mentor@unlv.nevada.edu" spellcheck="false" autocomplete="off"/>
+			</div>
+			<footer class="my_modal-footer">
+				<button class="my_action" onclick="addNewMentorRequest()">Add</button>
+				<button style="background-color:#fd6262;" class="my_action" onclick="document.getElementById('modal_for_adding_mentor').classList.remove('my_open')">Cancel</button>
+			</footer>
+		</article>
+	</div>
 
 </body>
   <script>
+	  	let mostRecentDeleteItem  = "";
         //nav bar drop down
         $(".dropdown-trigger").dropdown({
         belowOrigin: true
@@ -641,10 +678,43 @@
             });
         }
 
+		function addNewMentorRequest(){
+			let mentorName = document.getElementById("mentorNameInputId").value;
+			let mentorEmail = document.getElementById("mentorEmailInputId").value;
+			//console.log("adding new mentor " + mentorName + ". With email " + mentorEmail);
+            req = $.ajax({
+                    url: '/add_mentor',
+                    type: 'POST',
+                    data: {
+                        mentor_name: mentorName,
+						mentor_email: mentorEmail
+                    }
+                });
+
+            req.done(function(data) {
+                if(data.RESULT == "SUCCESS"){
+					location.reload();
+                    return;
+                }
+                else{
+                    alert(data.MSG);
+                    return;
+                }
+            });
+		}
 
         function addMentor(){
-            
+            document.getElementById("modal_for_adding_mentor").classList.add("my_open");
         }
+
+		function openUpDeleteMentorModal(element){
+			mostRecentDeleteItem = element;
+			let modal_for_delete_confirmation = document.getElementById('modal_for_delete_confirmation');
+			modal_for_delete_confirmation.classList.add('my_open');
+			let tr = element.parentElement.parentElement.parentElement.parentElement;
+			let mentorName = tr.children[1].textContent;
+			document.getElementById('mentor_name_in_modal_for_delete_confirmation').textContent = mentorName;
+		}
 
         function deleteMentor(element){
             let tr = element.parentElement.parentElement.parentElement.parentElement;
@@ -663,7 +733,7 @@
 
             req.done(function(data) {
                 if(data.RESULT == "SUCCESS"){
-                    tr.remove();
+					location.reload();
                     return;
                 }
                 else{

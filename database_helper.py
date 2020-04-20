@@ -302,7 +302,7 @@ def deleteProfessorById(connection,id):
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		connection.cursor().execute(sql_command)
-		connection.commit();
+		connection.commit()
 	except Exception as e: 
 		return ("FAIL",str(e))
 
@@ -337,6 +337,21 @@ def updateMentor(connection,mentor_id,new_mentor_name,new_mentor_email):
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		return ("FAIL",str(e))
+	connection.commit()
+	return ("SUCCESS","")
+
+
+def addMentor(connection,mentor_name,mentor_email):
+	professorFirstName = ""
+	sql_command = "INSERT INTO professor(lastname, firstname, email) VALUES "
+	sql_command += '("' + mentor_name + '", "' + professorFirstName +'", "' + mentor_email + '");' 
+
+	try:
+		connection.cursor().execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		return ("FAIL",str(e))	
 	connection.commit()
 	return ("SUCCESS","")
 

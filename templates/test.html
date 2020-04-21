@@ -1,40 +1,229 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Bootstrap-select Tests (Bootstrap 4)</title>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <link rel="apple-touch-icon" type="image/png" href="https://static.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
+      <meta name="apple-mobile-web-app-title" content="CodePen">
+      <link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+      <link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
+      <title>CodePen - File upload plugin</title>
+      <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+      <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+      <style>
+         #one
+         {
+         margin-top:50px;
+         box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+         }
+         .it .btn-orange
+         {
+         background-color: transparent;
+         border-color: #777!important;
+         color: #777;
+         text-align: left;
+         width:100%;
+         }
+         .it input.form-control
+         {
+         height: 54px;
+         border:none;
+         margin-bottom:0px;
+         border-radius: 0px;
+         border-bottom: 1px solid #ddd;
+         box-shadow: none;
+         }
+         .it .form-control:focus
+         {
+         border-color: #ff4d0d;
+         box-shadow: none;
+         outline: none;
+         }
+         .fileUpload {
+         position: relative;
+         overflow: hidden;
+         margin: 10px;
+         }
+         .fileUpload input.upload {
+         position: absolute;
+         top: 0;
+         right: 0;
+         margin: 0;
+         padding: 0;
+         font-size: 20px;
+         cursor: pointer;
+         opacity: 0;
+         filter: alpha(opacity=0);
+         }
+         .it .btn-new, .it .btn-next
+         {
+         margin: 30px 0px;
+         border-radius: 0px;
+         background-color: #333;
+         color: #f5f5f5;
+         font-size: 16px;
+         width: 155px;
+         }
+         .it .btn-next
+         {
+         background-color: #ff4d0d;
+         color: #fff;
+         }
+         .it .btn-check
+         {
+         cursor:pointer;
+         line-height:54px;
+         color:red;
+         }
+         .it .uploadDoc
+         {
+         margin-bottom: 20px;
+         }
+         .it .uploadDoc
+         {
+         margin-bottom: 20px;
+         }
+         .it .btn-orange img {
+         width: 30px;
+         }
+         p
+         {
+         font-size:16px;
+         text-align:center;
+         margin:30px 0px;
+         }
+         .it #uploader .docErr
+         {
+         position: absolute;
+         right:auto;
+         left: 10px;
+         top: -56px;
+         padding: 10px;
+         font-size: 15px;
+         background-color: #fff;
+         color: red;
+         box-shadow: 0px 0px 7px 2px rgba(0,0,0,0.2);
+         display: none;
+         }
+         .it #uploader .docErr:after
+         {
+         content: '\f0d7';
+         display: inline-block;
+         font-family: FontAwesome;
+         font-size: 50px;
+         color: #fff;
+         position: absolute;
+         left: 30px;
+         bottom: -40px;
+         text-shadow: 0px 3px 6px rgba(0,0,0,0.2);
+         }
+      </style>
+      <script>
+         window.console = window.console || function(t) {};
+      </script>
+      <script>
+         if (document.location.search.match(/type=embed/gi)) {
+           window.parent.postMessage("resize", "*");
+         }
+      </script>
+   </head>
+   <body translate="no">
+      <div class="container">
+         <div class="row it">
+            <div class="col-sm-offset-1 col-sm-10" id="one">
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="bootstrap-select.css">
-
-</head>
-<body>
-
-<div class="container">
-  <form>
-    <div class="form-group row">
-      <label class="col-lg-2 control-label" for="lunchBegins">searchStyle: 'begins'</label>
-      <div class="col-lg-10">
-        <select id="lunchBegins" class="selectpicker" data-live-search="true" data-live-search-style="begins" title="Please select a lunch ...">
-          <option>Hot Dog, Fries and a Soda</option>
-          <option>Burger, Shake and a Smile</option>
-          <option>Sugar, Spice and all things nice</option>
-          <option>Baby Back Ribs</option>
-          <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
-        </select>
+               <div id="uploader">
+                  <div class="row uploadDoc">
+                     <div class="col-sm-3">
+                        <div class="fileUpload btn btn-orange">
+                           <img src="https://image.flaticon.com/icons/svg/136/136549.svg" class="icon">
+                           <span class="upl" id="upload">Upload document</span>
+                           <input type="file" class="upload up" id="up" onchange="readURL(this);" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="text-center">
+                  <a class="btn btn-new"><i class="fa fa-plus"></i> Add new</a>
+                  <a class="btn btn-next"><i class="fa fa-paper-plane"></i> Submit</a>
+               </div>
+            </div>
+         </div>
       </div>
-    </div>
-  </form>
-</div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.bundle.min.js"></script>
-<script src="bootstrap-select.js"></script>
-
-<script>
-
-</script>
-</body>
+      <script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-157cd5b220a5c80d4ff8e0e70ac069bffd87a61252088146915e8726e5d9f147.js"></script>
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+      <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+      <script id="rendered-js">
+         var fileTypes = ['pdf', 'docx', 'rtf', 'jpg', 'jpeg', 'png', 'txt']; //acceptable file types
+         function readURL(input) {
+           if (input.files && input.files[0]) {
+             var extension = input.files[0].name.split('.').pop().toLowerCase(), //file extension from input file
+             isSuccess = fileTypes.indexOf(extension) > -1; //is extension in acceptable types
+         
+             if (isSuccess) {//yes
+               var reader = new FileReader();
+               reader.onload = function (e) {
+                 if (extension == 'pdf') {
+                   $(input).closest('.fileUpload').find(".icon").attr('src', 'https://image.flaticon.com/icons/svg/179/179483.svg');
+                 } else
+                 if (extension == 'docx') {
+                   $(input).closest('.fileUpload').find(".icon").attr('src', 'https://image.flaticon.com/icons/svg/281/281760.svg');
+                 } else
+                 if (extension == 'rtf') {
+                   $(input).closest('.fileUpload').find(".icon").attr('src', 'https://image.flaticon.com/icons/svg/136/136539.svg');
+                 } else
+                 if (extension == 'png') {$(input).closest('.fileUpload').find(".icon").attr('src', 'https://image.flaticon.com/icons/svg/136/136523.svg');
+                 } else
+                 if (extension == 'jpg' || extension == 'jpeg') {
+                   $(input).closest('.fileUpload').find(".icon").attr('src', 'https://image.flaticon.com/icons/svg/136/136524.svg');
+                 } else
+                 if (extension == 'txt') {
+                   $(input).closest('.fileUpload').find(".icon").attr('src', 'https://image.flaticon.com/icons/svg/136/136538.svg');
+                 } else
+                 {
+                   //console.log('here=>'+$(input).closest('.uploadDoc').length);
+                   $(input).closest('.uploadDoc').find(".docErr").slideUp('slow');
+                 }
+               };
+         
+               reader.readAsDataURL(input.files[0]);
+             } else
+             {
+               //console.log('here=>'+$(input).closest('.uploadDoc').find(".docErr").length);
+               $(input).closest('.uploadDoc').find(".docErr").fadeIn();
+               setTimeout(function () {
+                 $('.docErr').fadeOut('slow');
+               }, 9000);
+             }
+           }
+         }
+         $(document).ready(function () {
+         
+           $(document).on('change', '.up', function () {
+             var id = $(this).attr('id'); /* gets the filepath and filename from the input */
+             var profilePicValue = $(this).val();
+             var fileNameStart = profilePicValue.lastIndexOf('\\'); /* finds the end of the filepath */
+             profilePicValue = profilePicValue.substr(fileNameStart + 1).substring(0, 20); /* isolates the filename */
+             //var profilePicLabelText = $(".upl"); /* finds the label text */
+             if (profilePicValue != '') {
+               //console.log($(this).closest('.fileUpload').find('.upl').length);
+               $(this).closest('.fileUpload').find('.upl').html(profilePicValue); /* changes the label text */
+             }
+           });
+         
+           $(".btn-new").on('click', function () {
+             $("#uploader").append('<div class="row uploadDoc"><div class="col-sm-3"><div class="docErr">Please upload valid file</div><!--error--><div class="fileUpload btn btn-orange"> <img src="https://image.flaticon.com/icons/svg/136/136549.svg" class="icon"><span class="upl" id="upload">Upload document</span><input type="file" class="upload up" id="up" onchange="readURL(this);" /></div></div><div class="col-sm-8"><input type="text" class="form-control" name="" placeholder="Note"></div><div class="col-sm-1"><a class="btn-check"><i class="fa fa-times"></i></a></div></div>');
+           });
+         
+           $(document).on("click", "a.btn-check", function () {
+             if ($(".uploadDoc").length > 1) {
+               $(this).closest(".uploadDoc").remove();
+             } else {
+               alert("You have to upload at least one document.");
+             }
+           });
+         });
+         //# sourceURL=pen.js
+             
+      </script>
+   </body>
 </html>

@@ -738,18 +738,18 @@ def readDatabaseIntoDataframe(connection, withId = False):
 
 	df =  pd.read_sql_query(sql_command, connection)
 	df["Student"] =  df["student_lastname"].str.title().str.rstrip().str.lstrip() + ", " + df["student_firstname"].str.title().str.lstrip().str.lstrip()
-	df["Professor"] = df["professor_lastname"].str.title().str.lstrip().str.rstrip()
+	df["Mentor"] = df["professor_lastname"].str.title().str.lstrip().str.rstrip()
 	del df["student_firstname"]
 	del df["student_lastname"]
 	del df["professor_firstname"]
 	del df["professor_lastname"]
 	df.rename(columns={"email":"Student Rebel Email", "dateAssigned":"Date Assigned", "endDate": "End Date"}, inplace=True)
 	if withId == True:
-		col = ["id","Professor","Student","Student Rebel Email","Date Assigned","End Date"]
+		col = ["id","Mentor","Student","Student Rebel Email","Date Assigned","End Date"]
 	else:
-		col = ["Professor","Student","Student Rebel Email","Date Assigned","End Date"]
+		col = ["Mentor","Student","Student Rebel Email","Date Assigned","End Date"]
 	df = df[col]
-	df.sort_values(by=['Professor','Student'],inplace=True)
+	df.sort_values(by=['Mentor','Student'],inplace=True)
 	return df
 
 #   Simply read a table into Pandas dataframe
@@ -850,7 +850,7 @@ def getStudentsForProfessor(connection):
 	newString = ""
 	for i in range(len(professorNames)):	
 		professorName = professorNames[i].capitalize()
-		df1 = df[df['Professor'] == professorName].sort_values(by=['Student'])
+		df1 = df[df['Mentor'] == professorName].sort_values(by=['Student'])
 		df1.index = df1.index + 1 
 		df1.reset_index(drop=False,inplace=True)
 		studentArr = df1['Student'].array.to_numpy().tolist()

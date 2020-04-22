@@ -559,13 +559,25 @@
           $("input.flexdatalist-alias.flex0").trigger(e);
         }*/
     for(var i = 0; i < $('input.flexdatalist-alias').length; i++) {
-      $('input.flexdatalist-alias')[i].onclick = function inputOnclick() {
-        this.value = ""
-        var e = jQuery.Event("keyup");
-        e.which = 40; // it is down
-        $(this).trigger(e);
-		determineIfButtonIsAble()
-      }
+	  if(i==0){
+		$('input.flexdatalist-alias')[i].onclick = function inputOnclick() {
+			this.value = ""
+			$('input.flexdatalist-alias')[1].value = "";
+			var e = jQuery.Event("keyup");
+			e.which = 40; // it is down
+			$(this).trigger(e);
+			determineIfButtonIsAble()
+		}
+	  }
+	  else{
+		$('input.flexdatalist-alias')[i].onclick = function inputOnclick() {
+			this.value = ""
+			var e = jQuery.Event("keyup");
+			e.which = 40; // it is down
+			$(this).trigger(e);
+			determineIfButtonIsAble()
+		}		  
+	  }
     }
     $('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {
       $('input.flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);

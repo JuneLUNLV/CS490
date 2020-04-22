@@ -791,23 +791,26 @@
       } else if(checkArr[1].checked == true) {
 		$('body').css("cursor",'wait');
 		document.getElementById('modal_for_successful_assignment').classList.remove("my_open")
-        html2canvas(document.querySelector("#limiterId")).then(canvas => {
-          a = document.getElementById('download');
-          var link = canvas.toDataURL();
-          var temp_url = window.URL.createObjectURL(dataURLtoBlob(link));
-          a.href = temp_url;
-          a.style.display = "block"
-          if(valueArrayEmpty) {
-            fileName = 'UNLV_CS_mentor_table_no_filter.jpg'
-          } else {
-            fileName = "UNLV_CS_mentor_table_filterd_by_" + $('input.flexdatalist').val() + ".jpg"
-          }
-          a.download = fileName;
-          a.textContent = "Click Me to Download" + " " + fileName + "!"
-		});
-		$('#modal_for_successful_assignment').css("cursor", "default")
-		$('body').css("cursor",'default');
-		document.getElementById('modal_for_successful_assignment').classList.add("my_open")
+		setTimeout(function() {		
+			html2canvas(document.querySelector("#limiterId")).then(canvas => {
+			a = document.getElementById('download');
+			var link = canvas.toDataURL();
+			var temp_url = window.URL.createObjectURL(dataURLtoBlob(link));
+			a.href = temp_url;
+			a.style.display = "block"
+			if(valueArrayEmpty) {
+				fileName = 'UNLV_CS_mentor_table_no_filter.jpg'
+			} else {
+				fileName = "UNLV_CS_mentor_table_filterd_by_" + $('input.flexdatalist').val() + ".jpg"
+			}
+			a.download = fileName;
+			a.textContent = "Click Me to Download" + " " + fileName + "!"
+			});
+
+			$('#modal_for_successful_assignment').css("cursor", "default")
+			$('body').css("cursor",'default');
+			document.getElementById('modal_for_successful_assignment').classList.add("my_open")
+		}, 200); 
       } else {
         document.getElementById('modal_for_successful_assignment').style.cursor = "wait";
           var $table = $($('table')[0]);
@@ -1086,7 +1089,7 @@
 		}
 
 		if (result.minutes < 0){
-			result.hour--;
+			result.hours--;
 			result.minutes += 60;
 		}
 

@@ -716,6 +716,10 @@
 			document.getElementById('studentSearchInputId').value = getCookie("searchBarContent")
 			searchBarOnChange();
 		}
+		else
+		{
+			document.cookie = "searchBarContent=";
+		}
 		
 		
 

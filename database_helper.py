@@ -978,17 +978,17 @@ def getAllNumbers(cursor):
 
 
 def getStudentsForProfessor(connection):
-	df= readDatabaseIntoDataframe(connection)
+	df= readDatabaseIntoDataframe(connection,True)
 	cursor = connection.cursor()
 	professorNames = list(getProfessorAndStudentNumberInDicionary(cursor).keys())
+	professorNames
 	newString = ""
 	for i in range(len(professorNames)):	
 		professorName = professorNames[i].capitalize()
 		df1 = df[df['Mentor'] == professorName].sort_values(by=['Student'])
-		df1.index = df1.index + 1 
 		df1.reset_index(drop=False,inplace=True)
 		studentArr = df1['Student'].array.to_numpy().tolist()
-		relationshipIdArr = df1['index'].array.to_numpy().tolist()
+		relationshipIdArr = df1['id'].array.to_numpy().tolist()
 		nameAndIdDictArr = []
 		for j in range(len(studentArr)):
 			mydict = {
@@ -996,7 +996,7 @@ def getStudentsForProfessor(connection):
 				"relationshipId":relationshipIdArr[j]
 			}
 			nameAndIdDictArr.append(mydict)
-			
+
 		newString += (json.dumps({
 			"professorName":professorName,
 			"nameAndIdDictArr":nameAndIdDictArr,

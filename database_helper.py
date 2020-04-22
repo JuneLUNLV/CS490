@@ -131,16 +131,26 @@ def getStudentObjectById(cursor,id):
 		student.email = row[3]
 	return student
 
-#   Delete a row in student TABLE by student id, return true if success, else return false
-def deleteStudentById(cursor,id):
+#   Delete a row in student TABLE by student id, return "SUCESSS" or "FAIL"
+def deleteStudentById(connection,id):
 	sql_command = 'DELETE FROM student WHERE ID = ' + str(id)  + ';'
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
-	try:
-		cursor.execute(sql_command)
-	except Exception as e: 
-		return False
-		
-	return True
+
+	# Need to delete the mentoring entry first due to foreign key constraint
+	firstResult = deleteMentoringByStudentId(connection,id)
+	if firstResult[0] is "FAIL":
+		return firstResult
+	else:
+		try:
+			connection.cursor().execute(sql_command)
+			connection.commit()
+		except Exception as e: 
+			print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+			logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+			return ("FAIL",str(e))
+
+		return ("SUCCESS","")
+
 
 # Inserting student table from csv file
 def insertToStudentTableFromCSVFile(df,cursor):
@@ -176,6 +186,18 @@ def insertNewStudent(cursor,studentLastName,studentFirstName,studentEmail):
 	
 	student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)	  
 	return student_id
+
+def updateStudent(connection,student_id,new_student_last_name,new_student_first_name,new_student_email):
+	sql_command = 'UPDATE student SET lastname = "' + str(new_student_last_name) + '", firstname = "' + str(new_student_first_name) + '", email = "' + str(new_student_email) + '" WHERE ID = "' + str(student_id)  + '";'
+	try:
+		connection.cursor().execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		return ("FAIL",str(e))
+	connection.commit()
+	return ("SUCCESS","")
+
 
 #===============================================================================================================================================
 
@@ -296,14 +318,20 @@ def getProfessorObjectById(cursor,id):
 		professor.email = row[3]
 	return professor
 	
-#   Delete a row in professor TABLE by student id, return true if success, else return false	
+#   Delete a row in professor TABLE by professor id, return "SUCCESS" OR "FAIL"
 def deleteProfessorById(connection,id):
 	sql_command = 'DELETE FROM professor WHERE ID = ' + str(id)  + ';'
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	#result1 = deleteMentoringByProfessorId(connection,id)
+	#if result1[0] is "FAIL":
+	#	return result1
+	#else:
 	try:
 		connection.cursor().execute(sql_command)
 		connection.commit()
 	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		return ("FAIL",str(e))
 
 	return ("SUCCESS","")
@@ -579,6 +607,84 @@ def findProfessorByStudentId(cursor,id):
 	for row in rows:
 		return(row[0])
 
+def findMentoringIdsInArrayByStudentId(cursor, student_id):
+	sql_command = 'SELECT ID FROM mentoring where student_id = "' + str(student_id) + '";'
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+	rows = cursor.fetchall()
+	   
+	if len(rows) == 0:
+		return "null"
+	
+	return rows
+
+def findMentoringIdsInArrayByProfessorId(cursor, professor_id):
+	sql_command = 'SELECT ID FROM mentoring where professor_id = "' + str(professor_id) + '";'
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+	rows = cursor.fetchall()
+	   
+	if len(rows) == 0:
+		return "null"
+	
+	return rows	
+
+
+
+#   Delete a row in mentoring TABLE by student id, return "SUCESSS" or "FAIL"
+def deleteMentoringByStudentId(connection,student_id):
+	temp_cursor = connection.cursor()
+	mentoring_id_array = findMentoringIdsInArrayByStudentId(temp_cursor,student_id)
+	if mentoring_id_array is "null":
+		return ("FAIL","Unable to locate student.")
+	for i in mentoring_id_array:
+		temp_result = deleteMost_recent_mentoring_updatesByMentoringId(connection,i[0])
+		if temp_result[0] is 'FAIL':
+			return temp_result
+
+	sql_command = 'DELETE FROM mentoring WHERE student_id = ' + str(student_id)  + ';'
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	
+	try:
+		connection.cursor().execute(sql_command)
+		connection.commit()
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		return ("FAIL",str(e))
+
+	return ("SUCCESS","")
+
+def deleteMentoringByProfessorId(connection,professor_id):
+	temp_cursor = connection.cursor()
+	mentoring_id_array = findMentoringIdsInArrayByProfessorId(temp_cursor,professor_id)
+	if mentoring_id_array is "null":
+		return ("FAIL","Unable to locate professor.")
+	for i in mentoring_id_array:
+		temp_result = deleteMost_recent_mentoring_updatesByMentoringId(connection,i[0])
+		if temp_result[0] is 'FAIL':
+			return temp_result
+
+	sql_command = 'DELETE FROM mentoring WHERE professor_id = ' + str(id)  + ';'
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		connection.cursor().execute(sql_command)
+		connection.commit()
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		return ("FAIL",str(e))
+
+	return ("SUCCESS","")
+
 
 #===============================================================================================================================================
 
@@ -721,8 +827,23 @@ def insertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id):
 	else:
 		return
 	if checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,currentDTString) == False:
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + "checkDataToMost_recent_mentoring_updatesTable return false!")
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + "checkDataToMost_recent_mentoring_updatesTable return false!")
+
+def deleteMost_recent_mentoring_updatesByMentoringId(connection,mentoring_id):
+	sql_command = 'DELETE FROM most_recent_mentoring_updates  WHERE mentoring_id = ' + str(mentoring_id)  + ';'
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		connection.cursor().execute(sql_command)
+		connection.commit()
+	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		return ("FAIL",str(e))
+
+	return ("SUCCESS","")
+
+
 
 # ----------------------------------- Pandas DataBase Related Code Area ----------------------------------------------------------------
 ################################################################################################################################################

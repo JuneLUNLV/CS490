@@ -531,42 +531,42 @@
             </div>
             <div class="page-content">
                <p class="lead" style="font-size: 19px;text-align:center">Choose either .csv or .db file you want to restore the database from</p>
-               <div id="selectAndUploadDiv">
-                  <form style="margin-top: 3px;" method="post" enctype="multipart/form-data" id="upload_file_form">
-                     <div class="file-field input-field" style="width: fit-content;/* height: 0px; */">
-                        <div class="btn blue">
-                           <span>Choose File</span>
-                           <input id="file_input_id" type="file">
-                        </div>
-                        <div class="file-path-wrapper" >
-                           <input class="file-path validate" type="text">
-						</div>
-						<div class="btn green" onclick="restore_database_request()" id="upload_submit_id">Upload</div>
+               <form style="margin-top: 3px;margin-left: 27%;" method="post" enctype="multipart/form-data" id="upload_file_form">
+                  <div class="file-field input-field" style="width: 100%;/* height: 0px; */">
+                     <div class="btn blue" style="margin-right: 10px;">
+                        <span>Choose File</span>
+                        <input id="file_input_id" type="file"  accept=".csv, .db">
                      </div>
-                  </form>
-               </div>
+                     <div class="file-path-wrapper" style="width: 50%;margin-left: 0px;margin-right: 0px;">
+                     <input class="file-path validate" type="text" style="box-shadow: 0 1px 0 0 #000000;">
+                     </div>
+                  </div>
+               </form>
+               <div class="btn green" onclick="popUpAlertModal()" id="upload_submit_id" style="margin-top: 10px;">Upload</div>
             </div>
          </div>
       </div>
-      <div class="my_modal" data-modal="trigger-2" id="modal_for_delete_confirmation">
+      <div class="my_modal" data-modal="trigger-2" id="modal_for_warning_restore_database">
          <article class="my_content-wrapper">
             <header class="my_modal-header">
-               <h2 style="font-size:1.5vw;">Delete Confirmation</h2>
+               <h2 style="font-size:1.5vw;color:red">Warning!</h2>
             </header>
             <div class="my_content" style="margin-top: 40px;margin-bottom: 40px; display:block;">
-               <p>Are you sure you want to delete mentor <span id="mentor_name_in_modal_for_delete_confirmation" style="font-weight:bold;">MentorName</span>?</p>
+               <p>The file [<span id="upload_file_name">file name</span>] you uploaded will <span style="color:red">overwrite</span> the whole database in the server, please make sure you backup the database before you continue this action!</p> 
             </div>
+            <p style="font-size: 15px;">The process will take a few minutes, please be patient in the mean time.</p>
             <footer class="my_modal-footer">
-               <button class="my_action" onclick="deleteMentor(mostRecentDeleteItem)">Yes</button>
-               <button style="background-color:#fd6262;" class="my_action" onclick="document.getElementById('modal_for_delete_confirmation').classList.remove('my_open')">No</button>
+               <button class="my_action blue" onclick="restore_database_request()">Confirm Restore Database</button>
+               <button style="background-color:#fd6262;" class="my_action" onclick="document.getElementById('modal_for_warning_restore_database').classList.remove('my_open')">Cencel Action</button>
             </footer>
          </article>
       </div>
+      
    </body>
    <script>
       //nav bar drop down
       $(".dropdown-trigger").dropdown({
-      belowOrigin: true
+         belowOrigin: true
       });
     
       
@@ -576,57 +576,43 @@
           });
       }
       
+      function popUpAlertModal(){
+         if(document.querySelector("#file_input_id").files.length < 1)
+         {
+            alert("No file selected.");
+            return;
+         }
+         document.getElementById('upload_file_name').textContent = document.querySelector("#file_input_id").files[0].name;
+         document.getElementById('modal_for_warning_restore_database').classList.add('my_open');
+      }
+
+
 	  function restore_database_request(){
-			console.log("hello");
-			var form_data = new FormData($('#upload-file')[0]);/*
-			$.ajax({
+         $('body')[0].style.cursor = "wait";
+         var form_data = new FormData();
+         form_data.append('file', document.querySelector("#file_input_id").files[0]);
+			
+			req = $.ajax({
 				type: 'POST',
 				url: '/restore_database_request',
 				data: form_data,
 				contentType: false,
 				cache: false,
 				processData: false,
-				success: function(data) {
-					console.log('Success!');
-				},
-			});*/
-			console.log(form_data);
-	  }
-
-
-
-      function addNewMentorRequest(){
-      let mentorName = document.getElementById("mentorNameInputId").value;
-      let mentorEmail = document.getElementById("mentorEmailInputId").value;
-      //console.log("adding new mentor " + mentorName + ". With email " + mentorEmail);
-          req = $.ajax({
-                  url: '/add_mentor',
-                  type: 'POST',
-                  data: {
-                      mentor_name: mentorName,
-      mentor_email: mentorEmail
-                  }
-              });
-      
-          req.done(function(data) {
+         });
+         
+         req.done(function(data) {
+              $('body')[0].style.cursor = "default";
               if(data.RESULT == "SUCCESS"){
-      location.reload();
-                  return;
+                  alert(data.MSG)
               }
               else{
                   alert(data.MSG);
-                  return;
               }
+              location.reload();
+              return;
           });
-      }
+	  }
 
-
-      
-      
-      
-      
-      
-      
-      
    </script>
 </html>

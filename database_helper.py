@@ -398,16 +398,26 @@ def createMentoringTable(cursor):
 
 
 #  Inserting mentoring table from csv file
-def insertToMentoringTableFromCSVFile(df,cursor):
+def insertToMentoringTableFromCSVFile(df,cursor,isThereEndDate=False):
 	for i in range(df.shape[0]):
 		studentName = str(df.iloc[i].get("Student"))
 		professorName = str(df.iloc[i].get("Professor"))
+
 		dateAssigned = str(df.iloc[i].get("Assigned_Date")).strip() 
 		try:
 			dateTimeObj = parse(dateAssigned)
 			dateAssigned = dateTimeObj.strftime("%m/%d/%Y")
 		except Exception as e: 
 			dateAssigned = "null"
+
+		endDate = ""
+		try:
+			endDate = str(df.iloc[i].get("End_Date")).strip()
+			dateTimeObj = parse(endDate)
+			endDate = dateTimeObj.strftime("%m/%d/%Y")	
+		except Exception as e:
+			endDate = "null"
+
 		if(len(studentName.split(',')) > 1):
 			student_id = findStudentIDByName(cursor,studentName.split(',')[0].lstrip().rstrip().lower(),studentName.split(',')[1].lstrip().rstrip().lower())
 		else:
@@ -418,7 +428,10 @@ def insertToMentoringTableFromCSVFile(df,cursor):
 			professor_id = findProfessorIDByName(cursor,professorName.strip(),"")
 		
 		sql_command = "INSERT INTO mentoring(professor_id, student_id, dateAssigned, endDate) VALUES "
-		sql_command += '("' + str(professor_id) + '", "' + str(student_id) +'", "'+ dateAssigned + '", "null");' 
+		if isThereEndDate == False:
+			sql_command += '("' + str(professor_id) + '", "' + str(student_id) +'", "'+ dateAssigned + '", "null");' 
+		else:
+			sql_command += '("' + str(professor_id) + '", "' + str(student_id) +'", "'+ dateAssigned + '", "' + endDate + '");'  
 		#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 		try:
 			cursor.execute(sql_command)

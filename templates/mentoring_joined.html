@@ -789,7 +789,8 @@
           exportErrorLabel.style.display = "none";
         }, 3000);
       } else if(checkArr[1].checked == true) {
-        document.getElementById('modal_for_successful_assignment').style.cursor = "wait";
+		$('body').css("cursor",'wait');
+		document.getElementById('modal_for_successful_assignment').classList.remove("my_open")
         html2canvas(document.querySelector("#limiterId")).then(canvas => {
           a = document.getElementById('download');
           var link = canvas.toDataURL();
@@ -803,16 +804,18 @@
           }
           a.download = fileName;
           a.textContent = "Click Me to Download" + " " + fileName + "!"
-          $('#modal_for_successful_assignment').css("cursor", "default")
-        });
+		});
+		$('#modal_for_successful_assignment').css("cursor", "default")
+		$('body').css("cursor",'default');
+		document.getElementById('modal_for_successful_assignment').classList.add("my_open")
       } else {
         document.getElementById('modal_for_successful_assignment').style.cursor = "wait";
-        $('table').each(function() {
-          var $table = $(this);
+          var $table = $($('table')[0]);
           a = document.getElementById('download');
           var csv = $table.table2CSV({
             delivery: 'value'
-          });
+		  });
+		  csv = csv.replace(/.*/, "").substr(1);
           a.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(csv);
           a.style.display = "block"
           if(valueArrayEmpty) {
@@ -821,10 +824,10 @@
             fileName = "UNLV_CS_mentor_table_filterd_by_" + $('input.flexdatalist').val() + ".csv"
           }
           a.download = fileName;
-          a.textContent = "Click Me to Download" + " " + fileName + "!"
+		  a.textContent = "Click Me to Download" + " " + fileName + "!"
           $('#modal_for_successful_assignment').css("cursor", "default")
-        });
-      }
+	  }
+	  
     }
 
 	function changeHistoryModalOpen(){

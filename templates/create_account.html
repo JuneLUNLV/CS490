@@ -104,6 +104,7 @@ function create_account_request() {
 			confirm_password: confirm_password
 		}
 	});
+	
 	// When request done, see if all the server side checks are valid, if not, error label is displayed
 	req.done(function(data) {
 		console.log("data.RESULT: " + data.RESULT);
@@ -116,6 +117,7 @@ function create_account_request() {
 		}
 	});
 }
+
 document.getElementById('mybody').addEventListener("keyup", function(event) {
 	// Number 13 is the "Enter" key on the keyboard
 	if(event.keyCode === 13) {

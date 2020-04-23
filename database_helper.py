@@ -14,7 +14,7 @@ import logging
 #Robenalt, Evan id 605 repeated
 #Chua,Andreana id 144 repeated
 
-# df(Pandas):					 ['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date'] 
+# df(Pandas):					['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date'] 
 # student(mysqlite_table):		['ID'(PRIMARY KEY,AUTOINCREMENT), 'lastname'(lowercase), 'firstname(lowercase)', 'email'] UNIQUE(lastname,firstname,email)
 # professor(mysqlite_table):	['ID'(PRIMARY KEY, AUTOINCREMENT), 'lastname'(lowercase), 'firstname'(lowercase), 'email'] UNIQUE(lastname,firstname,email)
 # mentoring(mysqlite_table):	['ID'(PRIMARY, AUTOINCREMENT), 'professor_id'(FOREIGN), 'student_id'(FOREIGN), 'dateAssigned'(NULLABLE), 'endDate'(NULLABLE)] UNIQUE(professor_id,student_id)
@@ -491,7 +491,11 @@ def getNumberOfStudentForMentorID(cursor,professor_id):
 #	}  
 def getProfessorAndStudentNumberInDicionary(cursor):
 	professorDictionary = {}
-	for i in range(1,maxIdOfTable(cursor,'professor')+1):
+	maxIdForProfessorTable = maxIdOfTable(cursor,'professor')
+	if(maxIdForProfessorTable == "null"):
+		return professorDictionary
+	
+	for i in range(1,maxIdForProfessorTable+1):
 		if findProfessorNameById(cursor,i) != "null":
 			professorDictionary.update({findProfessorNameById(cursor,i)[0] : getNumberOfStudentForMentorID(cursor,i)})
 	return professorDictionary
@@ -889,8 +893,20 @@ def readDatabaseIntoDataframe(connection, withId = False):
 #   Simply read a table into Pandas dataframe
 def readTableIntoDataFrame(connection,tableName):
 	sql_command = "SELECT * from " + tableName
-	df =  pd.read_sql_query(sql_command, connection)
-	return df
+	try:
+		df =  pd.read_sql_query(sql_command, connection)
+		return df
+	except:
+		df_empty = pd.DataFrame({'ID' : [], 'empty':[]})
+		if tableName is "student" or tableName is "professor":
+			df_empty = pd.DataFrame({'ID' : [], 'lastname':[], 'firstname':[], 'email':[]})
+		elif tableName is "mentoring":
+			df_empty = pd.DataFrame({'ID' : [], 'professor_id':[], 'student_id':[], 'dateAssigned':[],'endDate':[]})
+		elif tableName is "most_recent_mentoring_updates":
+			df_empty = pd.DataFrame({'ID' : [], 'mentoring_id':[], 'modify_date':[]})
+		elif tableName is "offline_data":
+			df_empty = pd.DataFrame({'ID' : [], 'data_name':[], 'data_value':[]})
+		return df_empty
 
 
 # Using pandas to extract the csv file

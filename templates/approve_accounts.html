@@ -10,7 +10,6 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<style>
-	
 	</style>
 </head>
 
@@ -21,15 +20,13 @@
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='jquery.flexdatalist.min.css') }}">
 	<script type="text/javascript" src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 	<script src="{{url_for('static', filename='jquery.flexdatalist.min.js')}}"></script>
-
 	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
 		<li><a href="/change_password">Change Password</a></li>
-		<li><a style="color:#e74c3c" href="delete_account" >Delete This Account</a></li>
+		<li><a style="color:#e74c3c" href="delete_account">Delete This Account</a></li>
 		<li class="divider"></li>
-		<li><a  style="color:grey" href="/logout">Log Out</a></li>
+		<li><a style="color:grey" href="/logout">Log Out</a></li>
 	</ul>
-	
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
 			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative; cursor:pointer;" class="brand-logo left">HOME</a>
@@ -39,52 +36,39 @@
 				<li><a onclick='window.location.href = "/mentoring_joined"'>Table</a></li>
 				<li><a>Manage Mentors</a></li>
 				<li><a onclick='window.location.href = "/manage_students"'>Manage Students</a></li>
-				<li><a onclick='window.location.href = "/backup_database"' >Backup Database</a></li>
-                <li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
-                <li><a style="background-color: rgba(0,0,0,0.19);">Account Approval</a></li>
+				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
+				<li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
+				<li><a style="background-color: rgba(0,0,0,0.19);">Account Approval</a></li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>
 	</nav>
-
-    <div class="limiter" id="limiterId">
+	<div class="limiter" id="limiterId">
 		<div class="wrap-table100">
-			<div class="table100" id="main_table"> 
-                <table style="    border-bottom: 1px #7d7d7d5e solid; margin-bottom: 200px;">
-                    <tr style="background-color: #2ecc71;">
-                        <th style="display:none;">Approve Acount Id </th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th id="absolute_apply_date_time_th_id" onclick="showOrHideRelativeOrAbsoluteTime()">Apply Date Time</th>
-                        <th id="relative_apply_date_time_th_id" onclick="showOrHideRelativeOrAbsoluteTime()">Relative Apply Date Time</th>
-                        <th>Actions</th>
-                    </tr>
-                    {% for i in range(approve_account_2d_array|length)%}
-                    <tr>
-                        {% for j in range(approve_account_2d_array[i]|length)%}
-                            {% if j == ((approve_account_2d_array[i]|length)-1) %}
-                                <td class="absolute_apply_date_time_td_id">{{approve_account_2d_array[i][j]}}</td>
-                                <td class="relative_apply_date_time_td_id">Relative Time</td>
-                            {%else%}
-                                <td>{{approve_account_2d_array[i][j]}}</td>
-                            {%endif%}
-                        {%endfor%}
-                        <!---<td class="table_option"><i id="floatButtonI" class="large material-icons">list</i></td>-->
-                        <td style="user-select: none !important;">
-                            <button class="table_action approve_button" onclick="approveAccount(this)">Approve</button>
-                            <button class="table_action disapprove_button"  onclick="disapproveAccount(this)">Disapprove</button>
-                        </td>
-                    </tr>
-                    {%endfor%}
-                </table>
-            </div>
+			<div class="table100" id="main_table">
+				<table style="    border-bottom: 1px #7d7d7d5e solid; margin-bottom: 200px;">
+					<tr style="background-color: #2ecc71;">
+						<th style="display:none;">Approve Acount Id </th>
+						<th>Username</th>
+						<th>Email</th>
+						<th id="absolute_apply_date_time_th_id" onclick="showOrHideRelativeOrAbsoluteTime()">Apply Date Time</th>
+						<th id="relative_apply_date_time_th_id" onclick="showOrHideRelativeOrAbsoluteTime()">Relative Apply Date Time</th>
+						<th>Actions</th>
+					</tr> {% for i in range(approve_account_2d_array|length)%} <tr> {% for j in range(approve_account_2d_array[i]|length)%} {% if j == ((approve_account_2d_array[i]|length)-1) %} <td class="absolute_apply_date_time_td_id">{{approve_account_2d_array[i][j]}}</td>
+						<td class="relative_apply_date_time_td_id">Relative Time</td> {%else%} <td>{{approve_account_2d_array[i][j]}}</td> {%endif%} {%endfor%}
+						<!---<td class="table_option"><i id="floatButtonI" class="large material-icons">list</i></td>-->
+						<td style="user-select: none !important;">
+							<button class="table_action approve_button" onclick="approveAccount(this)">Approve</button>
+							<button class="table_action disapprove_button" onclick="disapproveAccount(this)">Disapprove</button>
+						</td>
+					</tr> {%endfor%}
+				</table>
+			</div>
 		</div>
 	</div>
-
-    <!---<div class="fixed-action-btn" id="floatButtonDiv">
+	<!---<div class="fixed-action-btn" id="floatButtonDiv">
 		<a class="btn-floating btn-small blue" id="floatButtonA" onclick='addMentor()'><i id="floatButtonI" class="large material-icons">add</i></a>
 	</div>--->
-
 	<div class="my_modal" data-modal="trigger-2" id="modal_for_delete_confirmation">
 		<article class="my_content-wrapper">
 			<header class="my_modal-header">
@@ -99,208 +83,167 @@
 			</footer>
 		</article>
 	</div>
-
-
 </body>
-  <script>
-        //nav bar drop down
-        $(".dropdown-trigger").dropdown({
-            belowOrigin: true
-        });
+<script>
+//nav bar drop down
+$(".dropdown-trigger").dropdown({
+	belowOrigin: true
+});
+var modify_date_updater = setInterval(function() {
+	if($('#relative_apply_date_time_th_id').css('display') == "table-cell") {
+		setRelativeTime();
+	}
+}, 1000);
 
-   
+function approveAccount(element) {
+	let tr = element.parentElement.parentElement;
+	let approve_account_id = tr.children[0].textContent;
+	req = $.ajax({
+		url: '/approve_account_request',
+		type: 'POST',
+		data: {
+			approve_account_id: approve_account_id,
+		}
+	});
+	req.done(function(data) {
+		if(data.RESULT == "SUCCESS") {
+			alert(data.MSG);
+			location.reload();
+		} else {
+			alert(data.MSG);
+			return;
+		}
+	});
+}
 
-        var modify_date_updater = setInterval(function() {
-            if($('#relative_apply_date_time_th_id').css('display') == "table-cell")
-            {
-                setRelativeTime();
-            }
-	    }, 1000);
+function disapproveAccount(element) {
+	let tr = element.parentElement.parentElement;
+	let approve_account_id = tr.children[0].textContent;
+	req = $.ajax({
+		url: '/disapprove_account_request',
+		type: 'POST',
+		data: {
+			approve_account_id: approve_account_id,
+		}
+	});
+	req.done(function(data) {
+		if(data.RESULT == "SUCCESS") {
+			alert(data.MSG);
+			location.reload();
+		} else {
+			alert(data.MSG);
+			return;
+		}
+	});
+}
 
+function showOrHideRelativeOrAbsoluteTime() {
+	if($('#relative_apply_date_time_th_id').css('display') == "table-cell") {
+		$('#relative_apply_date_time_th_id').css('display', 'none');
+		$('.relative_apply_date_time_td_id').css('display', 'none');
+		$('#absolute_apply_date_time_th_id').css('display', 'table-cell');
+		$('.absolute_apply_date_time_td_id').css('display', 'table-cell');
+	} else {
+		$('#absolute_apply_date_time_th_id').css('display', 'none');
+		$('.absolute_apply_date_time_td_id').css('display', 'none');
+		$('#relative_apply_date_time_th_id').css('display', 'table-cell');
+		$('.relative_apply_date_time_td_id').css('display', 'table-cell');
+	}
+}
 
-        function approveAccount(element){
-            let tr = element.parentElement.parentElement;
-            let approve_account_id = tr.children[0].textContent;
-            req = $.ajax({
-                url: '/approve_account_request',
-                type: 'POST',
-                data: {
-                    approve_account_id: approve_account_id,
-                }
-            });
+function setRelativeTime() {
+	let relative_datetime_arrays = $('.relative_apply_date_time_td_id');
+	for(let i = 0; i < relative_datetime_arrays.length; i++) {
+		relative_datetime_arrays[i].textContent = time_difference(relative_datetime_arrays[i].previousElementSibling.textContent);
+		//console.log(relative_datetime_arrays[i].previousElementSibling.textContent);
+	}
+}
 
-            req.done(function(data) {
-                if(data.RESULT == "SUCCESS"){
-                    alert(data.MSG);
-                    location.reload();
-                }
-                else{
-                    alert(data.MSG);
-                    return;
-                }
-            });
-        }
+function decodeHtml(str) {
+	return str.replace(/&#(\d+);/g, function(match, dec) {
+		return String.fromCharCode(dec);
+	});
+}
 
-     
-        function disapproveAccount(element){
-            let tr = element.parentElement.parentElement;
-            let approve_account_id = tr.children[0].textContent;
-            req = $.ajax({
-                url: '/disapprove_account_request',
-                type: 'POST',
-                data: {
-                    approve_account_id: approve_account_id,
-                }
-            });
+function time_difference(modify_date) {
+	let modify_date_object = Date.parse(modify_date)
+	let now_object = Date.now();
+	let Difference_In_Time = now_object - modify_date_object;
+	result = interval(new Date(modify_date_object), new Date(now_object));
+	let outputStr = "";
+	if(result.years >= 1) {
+		if(result.years > 1) outputStr += result.years + " years "
+		else outputStr += result.years + " year "
+	}
+	if(result.months >= 1) {
+		if(result.months > 1) outputStr += result.months + " months "
+		else outputStr += result.months + " month "
+	}
+	if(result.days >= 1) {
+		if(result.days > 1) outputStr += result.days + " days "
+		else outputStr += result.days + " day "
+	}
+	if(result.hours >= 1 && result.months < 1 && result.years < 1) {
+		if(result.hours > 1) outputStr += result.hours + " hours "
+		else outputStr += result.hours + " hour "
+	}
+	if(result.minutes >= 1 && result.months < 1 && result.years < 1) {
+		if(result.minutes > 1) outputStr += result.minutes + " minutes "
+		else outputStr += result.minutes + " minute "
+	}
+	if(result.seconds >= 1 && result.days < 1 && result.months < 1 && result.years < 1) {
+		if(result.seconds > 1) outputStr += result.seconds + " seconds "
+		else outputStr += result.seconds + " second "
+	}
+	outputStr += "ago";
+	return outputStr;
+}
 
-            req.done(function(data) {
-                if(data.RESULT == "SUCCESS"){
-                    alert(data.MSG);
-                    location.reload();
-                }
-                else{
-                    alert(data.MSG);
-                    return;
-                }
-            });
-            
-        }
-
-        function showOrHideRelativeOrAbsoluteTime(){
-            if($('#relative_apply_date_time_th_id').css('display') == "table-cell"){
-                $('#relative_apply_date_time_th_id').css('display','none');
-                $('.relative_apply_date_time_td_id').css('display','none');
-                $('#absolute_apply_date_time_th_id').css('display','table-cell');
-                $('.absolute_apply_date_time_td_id').css('display','table-cell');
-            }
-            else{
-                $('#absolute_apply_date_time_th_id').css('display','none');
-                $('.absolute_apply_date_time_td_id').css('display','none');
-                $('#relative_apply_date_time_th_id').css('display','table-cell');
-                $('.relative_apply_date_time_td_id').css('display','table-cell');
-            }
-
-        }
-
-
-        function setRelativeTime(){
-            let relative_datetime_arrays = $('.relative_apply_date_time_td_id');
-            for(let i = 0; i < relative_datetime_arrays.length; i++){
-                relative_datetime_arrays[i].textContent = time_difference(relative_datetime_arrays[i].previousElementSibling.textContent);
-                //console.log(relative_datetime_arrays[i].previousElementSibling.textContent);
-            }          
-        }
-
-        function decodeHtml(str) {
-            return str.replace(/&#(\d+);/g, function(match, dec) {
-                return String.fromCharCode(dec);
-            });
-        }
-
-        function time_difference(modify_date){
-            let modify_date_object = Date.parse(modify_date)
-            let now_object = Date.now();
-            let Difference_In_Time = now_object - modify_date_object; 
-
-            result = interval(new Date(modify_date_object),new Date(now_object));
-            let outputStr = "";
-            if(result.years >= 1){
-                if(result.years > 1)
-                    outputStr += result.years + " years "
-                else
-                    outputStr += result.years + " year "
-            }
-
-            if(result.months >= 1){
-                if(result.months > 1)
-                    outputStr += result.months + " months "
-                else
-                    outputStr += result.months + " month "
-            }
-
-            if(result.days >= 1){
-                if(result.days > 1)
-                    outputStr += result.days + " days "
-                else
-                    outputStr += result.days + " day "
-            }
-
-            if(result.hours >= 1 && result.months < 1 && result.years < 1){
-                if(result.hours > 1)
-                    outputStr += result.hours + " hours "
-                else
-                    outputStr += result.hours + " hour "
-            }
-
-
-            if(result.minutes >= 1 && result.months < 1 && result.years < 1){
-                if(result.minutes > 1)
-                    outputStr += result.minutes + " minutes "
-                else
-                    outputStr += result.minutes + " minute "
-            }
-
-            if(result.seconds >= 1 && result.days < 1 && result.months < 1 && result.years < 1){
-                if(result.seconds > 1)
-                    outputStr += result.seconds + " seconds "
-                else
-                    outputStr += result.seconds + " second "
-            }
-        
-            outputStr += "ago";
-            return outputStr;
-        }
-
-        function interval(date1, date2) {
-            if (date1 > date2) { // swap
-                var result = interval(date2, date1);
-                result.years  = -result.years;
-                result.months = -result.months;
-                result.days   = -result.days;
-                result.hours  = -result.hours;
-                result.minutes = -result.minutes;
-                result.seconds = -result.seconds;
-                return result;
-            }
-            result = {
-                years:  date2.getYear()  - date1.getYear(),
-                months: date2.getMonth() - date1.getMonth(),
-                days:   date2.getDate()  - date1.getDate(),
-                hours:  date2.getHours() - date1.getHours(),
-                minutes: date2.getMinutes() - date1.getMinutes(),
-                seconds: date2.getSeconds() - date1.getSeconds()
-            };
-            if (result.seconds < 0){
-                result.minutes--;
-                result.seconds += 60;
-            }
-
-            if (result.minutes < 0){
-                result.hours--;
-                result.minutes += 60;
-            }
-
-            if (result.hours < 0) {
-                result.days--;
-                result.hours += 24;
-            }
-            if (result.days < 0) {
-                result.months--;
-                // days = days left in date1's month, 
-                //   plus days that have passed in date2's month
-                var copy1 = new Date(date1.getTime());
-                copy1.setDate(32);
-                result.days = 32-date1.getDate()-copy1.getDate()+date2.getDate();
-            }
-            if (result.months < 0) {
-                result.years--;
-                result.months+=12;
-            }
-        return result;
-        }
-
-
-
-  </script>
+function interval(date1, date2) {
+	if(date1 > date2) { // swap
+		var result = interval(date2, date1);
+		result.years = -result.years;
+		result.months = -result.months;
+		result.days = -result.days;
+		result.hours = -result.hours;
+		result.minutes = -result.minutes;
+		result.seconds = -result.seconds;
+		return result;
+	}
+	result = {
+		years: date2.getYear() - date1.getYear(),
+		months: date2.getMonth() - date1.getMonth(),
+		days: date2.getDate() - date1.getDate(),
+		hours: date2.getHours() - date1.getHours(),
+		minutes: date2.getMinutes() - date1.getMinutes(),
+		seconds: date2.getSeconds() - date1.getSeconds()
+	};
+	if(result.seconds < 0) {
+		result.minutes--;
+		result.seconds += 60;
+	}
+	if(result.minutes < 0) {
+		result.hours--;
+		result.minutes += 60;
+	}
+	if(result.hours < 0) {
+		result.days--;
+		result.hours += 24;
+	}
+	if(result.days < 0) {
+		result.months--;
+		// days = days left in date1's month, 
+		//   plus days that have passed in date2's month
+		var copy1 = new Date(date1.getTime());
+		copy1.setDate(32);
+		result.days = 32 - date1.getDate() - copy1.getDate() + date2.getDate();
+	}
+	if(result.months < 0) {
+		result.years--;
+		result.months += 12;
+	}
+	return result;
+}
+</script>
 
 </html>

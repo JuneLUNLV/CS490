@@ -10,7 +10,6 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<style>
-
 	</style>
 </head>
 
@@ -22,15 +21,13 @@
 	<script type="text/javascript" src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 	<script src="{{url_for('static', filename='jquery.flexdatalist.min.js')}}"></script>
 	<script src="{{url_for('static', filename='table2CSV.js')}}"></script>
-
 	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
 		<li><a href="/change_password">Change Password</a></li>
-		<li><a style="color:#e74c3c" href="delete_account" >Delete This Account</a></li>
+		<li><a style="color:#e74c3c" href="delete_account">Delete This Account</a></li>
 		<li class="divider"></li>
-		<li><a  style="color:grey" href="/logout">Log Out</a></li>
+		<li><a style="color:grey" href="/logout">Log Out</a></li>
 	</ul>
-	
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
 			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative; cursor:pointer;" class="brand-logo left">HOME</a>
@@ -43,20 +40,12 @@
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
 				<li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
 				<li>
-					<a onclick='window.location.href = "/approve_accounts"'>Account Approval
-						{% if new_approve_accounts > 0 %}
-							<span class="new badge my_badge">{{new_approve_accounts}}</span>
-						{% endif %}
-					</a>
+					<a onclick='window.location.href = "/approve_accounts"'>Account Approval {% if new_approve_accounts > 0 %} <span class="new badge my_badge">{{new_approve_accounts}}</span> {% endif %} </a>
 				</li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>
 	</nav>
-
-
-
-
 	<div id="filterDiv">
 		<input type='text' placeholder='Filter table by mentor(s)' class='flexdatalist' data-search-in='professorName' data-visible-properties='["professorName","count"]' data-selection-required='true' data-value-property='id' data-text-property='{professorName}, {count}' data-min-length='0' multiple='multiple' name='country_id_multiple'>
 	</div>
@@ -80,7 +69,6 @@
 		<a class="btn-floating btn-small red" id="floatButtonC" onclick='changeHistoryModalOpen()'><i id="floatButtonIII" class="large material-icons">assignment</i></a>
 	</div>
 	<!-------------------- end floating button for redirecting to export modal ----------------------------------->
-
 	<!-------------------------------------- epxort modal --------------------------------------------------------------------->
 	<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_assignment">
 		<article class="my_content-wrapper">
@@ -122,7 +110,6 @@
 		</article>
 	</div>
 	<!-------------------------------------- end epxort modal --------------------------------------------------------------------->
-
 	<!-------------------------------------- change history modal --------------------------------------------------------------------->
 	<div class="my_modal" data-modal="trigger-2" id="modal_for_change_history">
 		<article class="my_content-wrapper">
@@ -133,14 +120,14 @@
 				<div id="change_history_div_id" style="max-height:40vh;overflow:auto;">
 					<table id="change_history_table_id">
 						<tr style="background-color: #2ecc71;">
-						<th>Highlight Entry</th>
-						<th>Professor</th>
-						<th>Student</th>
-						<th>Rebel Mail</th>
-						<th>Date Assigned</th>
-						<th>End Date</th>
-						<th class="clickableTh" onclick="changeModifyDateTimeFormat()">Modify Datetime</th>
-						<th></th>
+							<th>Highlight Entry</th>
+							<th>Professor</th>
+							<th>Student</th>
+							<th>Rebel Mail</th>
+							<th>Date Assigned</th>
+							<th>End Date</th>
+							<th class="clickableTh" onclick="changeModifyDateTimeFormat()">Modify Datetime</th>
+							<th></th>
 						</tr>
 					</table>
 				</div>
@@ -151,465 +138,411 @@
 		</article>
 	</div>
 	<!-------------------------------------- end change history modal --------------------------------------------------------------------->
-
 </body>
-  <script>
-   //studentName = '{{studentName}}';
-    let valueArrayEmpty = true;
-    let fileName = ''
-	let most_recent_changes_json_string = decodeHtml('{{most_recent_changes_json_string}}');
-	let most_recent_changes_array = JSON.parse(most_recent_changes_json_string);
-	let maximumChangeHistoryEntry = 100;
-	let showallChangeHistoryEntry = false;
+<script>
+//studentName = '{{studentName}}';
+let valueArrayEmpty = true;
+let fileName = ''
+let most_recent_changes_json_string = decodeHtml('{{most_recent_changes_json_string}}');
+let most_recent_changes_array = JSON.parse(most_recent_changes_json_string);
+let maximumChangeHistoryEntry = 100;
+let showallChangeHistoryEntry = false;
 
+function backToTop() {
+	document.body.scrollTop = 0;
+	document.documentElement.scrollTop = 0;
+}
+//nav bar drop down
+$(".dropdown-trigger").dropdown();
 
-    function backToTop() {
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
-    }
-    //nav bar drop down
-    $(".dropdown-trigger").dropdown();
-
-    function decodeHtml(str) {
-      return str.replace(/&#(\d+);/g, function(match, dec) {
-        return String.fromCharCode(dec);
-      });
-    }
-    let jsonData = decodeHtml('{{professorJson}}');
-    $('.flexdatalist').flexdatalist({
-      minLength: 1,
-      valueProperty: 'professorName',
-      selectionRequired: true,
-      visibleProperties: ["professorName", "count"],
-      searchIn: 'professorName',
-      data: JSON.parse(jsonData)
-    });
-    $('ul.flexdatalist-multiple.flex0').css("borderWidth", "1px")
-    $('ul.flexdatalist-multiple.flex0').css("borderRadius", "8px")
-    $('ul.flexdatalist-multiple.flex0').css("borderStyle", "solid")
-    $('ul.flexdatalist-multiple.flex0').css("borderColor", "black")
-    $('ul.flexdatalist-multiple.flex0').css("width", "100%")
-    $('ul.flexdatalist-multiple.flex0').css("margin-right", "7px")
-    $('ul.flexdatalist-multiple.flex0').css("padding-top", "5px")
-    $('ul.flexdatalist-multiple.flex0').css("padding-left", "7px")
-    $('ul.flexdatalist-multiple.flex0').css("outline", "none")
-    let originalDataArray = $('input.flexdatalist').data().flexdatalist.data.slice(0);
-    let trs = $('tr')
-    $('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {
-      let valueArray = $('input.flexdatalist').val().split(',')
-      valueArrayEmpty = true;
-      $('input.flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);
-      if(valueArray.length == 1) {
-        if(valueArray[0].length == 0) {
-          for(var i = 1; i < trs.length; i++) trs[i].style.display = "table-row";
-          return;
-        } else valueArrayEmpty = false;
-      } else {
-        valueArrayEmpty = false;
-      }
-      if(valueArrayEmpty == false) {
-        /* changing datalist opotions based on input values */
-        $('input.flexdatalist').data().flexdatalist.data;
-        for(var i = 0; i < $('input.flexdatalist').data().flexdatalist.data.length; i++) {
-          for(var j = 0; j < valueArray.length; j++) {
-            if($('input.flexdatalist').data().flexdatalist.data[i].professorName.includes(valueArray[j])) $('input.flexdatalist').data().flexdatalist.data.splice(i, 1);
-          }
-        }
-        /* end changing datalist opotions based on input values */
-        let dirtyBitArray = []
-        dirtyBitArray.length = trs.length
-        dirtyBitArray.fill(0, 0, dirtyBitArray.length - 1)
-        for(var i = 1; i < trs.length; i++) {
-          for(var j = 0; j < valueArray.length; j++) {
-            if(dirtyBitArray[i] == 1) break;
-            if(trs[i].children[1].textContent.includes(valueArray[j])) {
-              trs[i].style.display = "table-row"
-              dirtyBitArray[i] = 1;
-            } else {
-              trs[i].style.display = "none"
-            }
-          }
-        }
-      }
-    });
-
-    function ExportTableAs() {
-      const modal = document.getElementById("modal_for_successful_assignment");
-      const contentWrapper = modal.querySelector('.my_content-wrapper');
-      contentWrapper.addEventListener('click', e => e.stopPropagation());
-      modal.classList.add('my_open');
-	  modal.children[0].addEventListener('click', e => e.stopPropagation());
-	  modal.onclick = function() {
-		  modal.classList.remove('my_open');
-	  }
-    }
-
-    function confirmExport() {
-      checkArr = $('.select-box__input')
-      exportErrorLabel = document.getElementById('exportErrorLabel');
-      if(checkArr[2].checked == true) {
-        exportErrorLabel.textContent = "Please select a file type to export the table";
-        exportErrorLabel.style.display = "block";
-        setTimeout(function() {
-          exportErrorLabel.style.display = "none";
-        }, 3000);
-      } else if(checkArr[1].checked == true) {
-		$('body').css("cursor",'wait');
-		document.getElementById('modal_for_successful_assignment').classList.remove("my_open")
-		setTimeout(function() {		
-			html2canvas(document.querySelector("#limiterId")).then(canvas => {
-			a = document.getElementById('download');
-			var link = canvas.toDataURL();
-			var temp_url = window.URL.createObjectURL(dataURLtoBlob(link));
-			a.href = temp_url;
-			a.style.display = "block"
-			if(valueArrayEmpty) {
-				fileName = 'UNLV_CS_mentor_table_no_filter.jpg'
-			} else {
-				fileName = "UNLV_CS_mentor_table_filterd_by_" + $('input.flexdatalist').val() + ".jpg"
-			}
-			a.download = fileName;
-			a.textContent = "Click Me to Download" + " " + fileName + "!"
-			});
-
-			$('#modal_for_successful_assignment').css("cursor", "default")
-			$('body').css("cursor",'default');
-			document.getElementById('modal_for_successful_assignment').classList.add("my_open")
-		}, 200); 
-      } else {
-        document.getElementById('modal_for_successful_assignment').style.cursor = "wait";
-          var $table = $($('table')[0]);
-          a = document.getElementById('download');
-          var csv = $table.table2CSV({
-            delivery: 'value'
-		  });
-		  csv = csv.replace(/.*/, "").substr(1);
-          a.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(csv);
-          a.style.display = "block"
-          if(valueArrayEmpty) {
-            fileName = 'UNLV_CS_mentor_table_no_filter.csv'
-          } else {
-            fileName = "UNLV_CS_mentor_table_filterd_by_" + $('input.flexdatalist').val() + ".csv"
-          }
-          a.download = fileName;
-		  a.textContent = "Click Me to Download" + " " + fileName + "!"
-          $('#modal_for_successful_assignment').css("cursor", "default")
-	  }
-	  
-    }
-
-	function changeHistoryModalOpen(){
-		document.getElementById('modal_for_change_history').classList.add('my_open');
-		document.getElementById('modal_for_change_history').children[0].addEventListener('click', e => e.stopPropagation());
-		document.getElementById('modal_for_change_history').onclick = function (){
-			document.getElementById('modal_for_change_history').classList.remove('my_open');
-		}
+function decodeHtml(str) {
+	return str.replace(/&#(\d+);/g, function(match, dec) {
+		return String.fromCharCode(dec);
+	});
+}
+let jsonData = decodeHtml('{{professorJson}}');
+$('.flexdatalist').flexdatalist({
+	minLength: 1,
+	valueProperty: 'professorName',
+	selectionRequired: true,
+	visibleProperties: ["professorName", "count"],
+	searchIn: 'professorName',
+	data: JSON.parse(jsonData)
+});
+$('ul.flexdatalist-multiple.flex0').css("borderWidth", "1px")
+$('ul.flexdatalist-multiple.flex0').css("borderRadius", "8px")
+$('ul.flexdatalist-multiple.flex0').css("borderStyle", "solid")
+$('ul.flexdatalist-multiple.flex0').css("borderColor", "black")
+$('ul.flexdatalist-multiple.flex0').css("width", "100%")
+$('ul.flexdatalist-multiple.flex0').css("margin-right", "7px")
+$('ul.flexdatalist-multiple.flex0').css("padding-top", "5px")
+$('ul.flexdatalist-multiple.flex0').css("padding-left", "7px")
+$('ul.flexdatalist-multiple.flex0').css("outline", "none")
+let originalDataArray = $('input.flexdatalist').data().flexdatalist.data.slice(0);
+let trs = $('tr')
+$('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {
+	let valueArray = $('input.flexdatalist').val().split(',')
+	valueArrayEmpty = true;
+	$('input.flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);
+	if(valueArray.length == 1) {
+		if(valueArray[0].length == 0) {
+			for(var i = 1; i < trs.length; i++) trs[i].style.display = "table-row";
+			return;
+		} else valueArrayEmpty = false;
+	} else {
+		valueArrayEmpty = false;
 	}
-
-	let main_table_trs = $('#main_table table tbody tr')
-
-	function locateMainTableRowWithRelationshipId(relationship_id){
-		for(let i = 0; i < main_table_trs.length; i++){
-			let tr = main_table_trs[i];
-			if(tr.children[0].textContent == relationship_id){
-				return tr;
+	if(valueArrayEmpty == false) {
+		/* changing datalist opotions based on input values */
+		$('input.flexdatalist').data().flexdatalist.data;
+		for(var i = 0; i < $('input.flexdatalist').data().flexdatalist.data.length; i++) {
+			for(var j = 0; j < valueArray.length; j++) {
+				if($('input.flexdatalist').data().flexdatalist.data[i].professorName.includes(valueArray[j])) $('input.flexdatalist').data().flexdatalist.data.splice(i, 1);
+			}
+		}
+		/* end changing datalist opotions based on input values */
+		let dirtyBitArray = []
+		dirtyBitArray.length = trs.length
+		dirtyBitArray.fill(0, 0, dirtyBitArray.length - 1)
+		for(var i = 1; i < trs.length; i++) {
+			for(var j = 0; j < valueArray.length; j++) {
+				if(dirtyBitArray[i] == 1) break;
+				if(trs[i].children[1].textContent.includes(valueArray[j])) {
+					trs[i].style.display = "table-row"
+					dirtyBitArray[i] = 1;
+				} else {
+					trs[i].style.display = "none"
+				}
 			}
 		}
 	}
+});
 
-	function changeTableRowBackgroundColorTemporarily(tr){
-		tr.classList.add('temprorary_background_color');
+function ExportTableAs() {
+	const modal = document.getElementById("modal_for_successful_assignment");
+	const contentWrapper = modal.querySelector('.my_content-wrapper');
+	contentWrapper.addEventListener('click', e => e.stopPropagation());
+	modal.classList.add('my_open');
+	modal.children[0].addEventListener('click', e => e.stopPropagation());
+	modal.onclick = function() {
+		modal.classList.remove('my_open');
+	}
+}
+
+function confirmExport() {
+	checkArr = $('.select-box__input')
+	exportErrorLabel = document.getElementById('exportErrorLabel');
+	if(checkArr[2].checked == true) {
+		exportErrorLabel.textContent = "Please select a file type to export the table";
+		exportErrorLabel.style.display = "block";
 		setTimeout(function() {
-			tr.classList.remove('temprorary_background_color');
-		}, 5000); // waiting 8 second
-	}
-
-	function changeTableRowBackgroundColorPermanently(tr){
-		tr.classList.add('permanent_background_color');
-	}
-
-	function findElementFromChangedHistoryTable(element){
-		let relationship_id = findRelationshipIdFromChangedHistoryTable(element);
-		document.getElementById('modal_for_change_history').classList.remove('my_open')
-		let tr = locateMainTableRowWithRelationshipId(relationship_id);
-		tr.scrollIntoView({
-			block: 'center'
+			exportErrorLabel.style.display = "none";
+		}, 3000);
+	} else if(checkArr[1].checked == true) {
+		$('body').css("cursor", 'wait');
+		document.getElementById('modal_for_successful_assignment').classList.remove("my_open")
+		setTimeout(function() {
+			html2canvas(document.querySelector("#limiterId")).then(canvas => {
+				a = document.getElementById('download');
+				var link = canvas.toDataURL();
+				var temp_url = window.URL.createObjectURL(dataURLtoBlob(link));
+				a.href = temp_url;
+				a.style.display = "block"
+				if(valueArrayEmpty) {
+					fileName = 'UNLV_CS_mentor_table_no_filter.jpg'
+				} else {
+					fileName = "UNLV_CS_mentor_table_filterd_by_" + $('input.flexdatalist').val() + ".jpg"
+				}
+				a.download = fileName;
+				a.textContent = "Click Me to Download" + " " + fileName + "!"
+			});
+			$('#modal_for_successful_assignment').css("cursor", "default")
+			$('body').css("cursor", 'default');
+			document.getElementById('modal_for_successful_assignment').classList.add("my_open")
+		}, 200);
+	} else {
+		document.getElementById('modal_for_successful_assignment').style.cursor = "wait";
+		var $table = $($('table')[0]);
+		a = document.getElementById('download');
+		var csv = $table.table2CSV({
+			delivery: 'value'
 		});
-		changeTableRowBackgroundColorTemporarily(tr)
-		return;
+		csv = csv.replace(/.*/, "").substr(1);
+		a.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(csv);
+		a.style.display = "block"
+		if(valueArrayEmpty) {
+			fileName = 'UNLV_CS_mentor_table_no_filter.csv'
+		} else {
+			fileName = "UNLV_CS_mentor_table_filterd_by_" + $('input.flexdatalist').val() + ".csv"
+		}
+		a.download = fileName;
+		a.textContent = "Click Me to Download" + " " + fileName + "!"
+		$('#modal_for_successful_assignment').css("cursor", "default")
 	}
+}
 
-	function highlightCheckBoxClicked(element){
-		let relationship_id  = findRelationshipIdFromChangedHistoryTable(element);
-		let tr = locateMainTableRowWithRelationshipId(relationship_id);
-		if(element.checked == true){
-			changeTableRowBackgroundColorPermanently(tr);
-			element.nextSibling.classList.add('custom_checkmark')
-		}
-		else{
-			tr.classList.remove('temprorary_background_color','permanent_background_color');
-			element.nextSibling.classList.remove('custom_checkmark')
+function changeHistoryModalOpen() {
+	document.getElementById('modal_for_change_history').classList.add('my_open');
+	document.getElementById('modal_for_change_history').children[0].addEventListener('click', e => e.stopPropagation());
+	document.getElementById('modal_for_change_history').onclick = function() {
+		document.getElementById('modal_for_change_history').classList.remove('my_open');
+	}
+}
+let main_table_trs = $('#main_table table tbody tr')
+
+function locateMainTableRowWithRelationshipId(relationship_id) {
+	for(let i = 0; i < main_table_trs.length; i++) {
+		let tr = main_table_trs[i];
+		if(tr.children[0].textContent == relationship_id) {
+			return tr;
 		}
 	}
+}
 
-	function findRelationshipIdFromChangedHistoryTable(element){
-		while(element.tagName != "TR")
-			element = element.parentElement;
-		let relationship_id =  element.getAttribute('data-relationship-id');
-		return relationship_id;
+function changeTableRowBackgroundColorTemporarily(tr) {
+	tr.classList.add('temprorary_background_color');
+	setTimeout(function() {
+		tr.classList.remove('temprorary_background_color');
+	}, 5000); // waiting 8 second
+}
+
+function changeTableRowBackgroundColorPermanently(tr) {
+	tr.classList.add('permanent_background_color');
+}
+
+function findElementFromChangedHistoryTable(element) {
+	let relationship_id = findRelationshipIdFromChangedHistoryTable(element);
+	document.getElementById('modal_for_change_history').classList.remove('my_open')
+	let tr = locateMainTableRowWithRelationshipId(relationship_id);
+	tr.scrollIntoView({
+		block: 'center'
+	});
+	changeTableRowBackgroundColorTemporarily(tr)
+	return;
+}
+
+function highlightCheckBoxClicked(element) {
+	let relationship_id = findRelationshipIdFromChangedHistoryTable(element);
+	let tr = locateMainTableRowWithRelationshipId(relationship_id);
+	if(element.checked == true) {
+		changeTableRowBackgroundColorPermanently(tr);
+		element.nextSibling.classList.add('custom_checkmark')
+	} else {
+		tr.classList.remove('temprorary_background_color', 'permanent_background_color');
+		element.nextSibling.classList.remove('custom_checkmark')
 	}
+}
 
-    function dataURLtoBlob(dataurl) {
-      var arr = dataurl.split(','),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
-      while(n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new Blob([u8arr], {
-        type: mime
-      });
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.fixed-action-btn');
-      var instances = M.FloatingActionButton.init(elems, {});
-    });
+function findRelationshipIdFromChangedHistoryTable(element) {
+	while(element.tagName != "TR") element = element.parentElement;
+	let relationship_id = element.getAttribute('data-relationship-id');
+	return relationship_id;
+}
 
-	function decodeHtml(str) {
-      return str.replace(/&#(\d+);/g, function(match, dec) {
-        return String.fromCharCode(dec);
-      });
-    }
-
-	/* Filling up the recent changes table */
-	change_history_table_id = document.getElementById('change_history_table_id');
-	for(var i = 0; i < most_recent_changes_array.length; i++){
-		let id = most_recent_changes_array[i][0];
-		let mentorName = most_recent_changes_array[i][1];
-		let studentName = most_recent_changes_array[i][2];
-		let rebelMail = most_recent_changes_array[i][3];
-		let assignDate = most_recent_changes_array[i][4];
-		let endDate = most_recent_changes_array[i][5];
-		let modifyDatetime = most_recent_changes_array[i][6];
-
-		let tr = document.createElement('tr');
-		tr.setAttribute('data-relationship-id',id)
-		
-		let checkbox_td = document.createElement('td');
-		checkbox_td.classList.add('checkbox_td');
-
-		let checkbox_label = document.createElement('label')
-		
-		let checkbox_input = document.createElement('input');
-		checkbox_input.classList.add('checkbox_class');
-		checkbox_input.type = "checkbox";
-		checkbox_input.onclick = function(){
-			highlightCheckBoxClicked(checkbox_input);
-		}
-
-		let checkbox_span =document.createElement('span');
-		
-		checkbox_label.appendChild(checkbox_input);
-		checkbox_label.appendChild(checkbox_span);
-		checkbox_td.appendChild(checkbox_label);
-		tr.appendChild(checkbox_td);
-
-		let mentor_td = document.createElement('td');
-		mentor_td.textContent = mentorName;
-		tr.appendChild(mentor_td);
-
-		let student_td = document.createElement('td');
-		student_td.textContent = studentName;
-		tr.appendChild(student_td);
-
-		let rebelMail_td = document.createElement('td');
-		rebelMail_td.textContent = rebelMail;
-		tr.appendChild(rebelMail_td);
-
-		let assignDate_td = document.createElement('td');
-		assignDate_td.textContent = assignDate;
-		tr.appendChild(assignDate_td);
-
-		let endDate_td = document.createElement('td');
-		endDate_td.textContent = endDate;
-		tr.appendChild(endDate_td);
-
-		let absolute_modify_datetime_td = document.createElement('td');
-		absolute_modify_datetime_td.textContent = modifyDatetime;
-		absolute_modify_datetime_td.classList.add('absolute_datetime');
-		tr.appendChild(absolute_modify_datetime_td);
-
-		let relative_modify_datetime_td = document.createElement('td');
-		relative_modify_datetime_td.textContent = time_difference(modifyDatetime);
-		relative_modify_datetime_td.classList.add('relative_datetime');
-		tr.appendChild(relative_modify_datetime_td);
-
-		let table_action_td = document.createElement('td');
-		let table_action_button = document.createElement('button');
-		table_action_button.classList.add('table_action');
-		table_action_button.textContent = "Find";
-		table_action_button.onclick = function (){
-			findElementFromChangedHistoryTable(table_action_button);
-		}
-
-		table_action_td.appendChild(table_action_button);
-		tr.appendChild(table_action_td);
-
-		$('#change_history_table_id tbody')[0].appendChild(tr);
-
-		if(showallChangeHistoryEntry == false)
-			if(i == maximumChangeHistoryEntry)
-				break;
+function dataURLtoBlob(dataurl) {
+	var arr = dataurl.split(','),
+		mime = arr[0].match(/:(.*?);/)[1],
+		bstr = atob(arr[1]),
+		n = bstr.length,
+		u8arr = new Uint8Array(n);
+	while(n--) {
+		u8arr[n] = bstr.charCodeAt(n);
 	}
+	return new Blob([u8arr], {
+		type: mime
+	});
+}
+document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.fixed-action-btn');
+	var instances = M.FloatingActionButton.init(elems, {});
+});
 
-	function changeModifyDateTimeFormat(){
-		if($('.absolute_datetime').css('display') == "table-cell"){
-			$('.absolute_datetime').css('display','none')
-			$('.relative_datetime').css('display','table-cell')
-		}
-		else{
-			$('.absolute_datetime').css('display','table-cell')
-			$('.relative_datetime').css('display','none')			
-		}
-
+function decodeHtml(str) {
+	return str.replace(/&#(\d+);/g, function(match, dec) {
+		return String.fromCharCode(dec);
+	});
+}
+/* Filling up the recent changes table */
+change_history_table_id = document.getElementById('change_history_table_id');
+for(var i = 0; i < most_recent_changes_array.length; i++) {
+	let id = most_recent_changes_array[i][0];
+	let mentorName = most_recent_changes_array[i][1];
+	let studentName = most_recent_changes_array[i][2];
+	let rebelMail = most_recent_changes_array[i][3];
+	let assignDate = most_recent_changes_array[i][4];
+	let endDate = most_recent_changes_array[i][5];
+	let modifyDatetime = most_recent_changes_array[i][6];
+	let tr = document.createElement('tr');
+	tr.setAttribute('data-relationship-id', id)
+	let checkbox_td = document.createElement('td');
+	checkbox_td.classList.add('checkbox_td');
+	let checkbox_label = document.createElement('label')
+	let checkbox_input = document.createElement('input');
+	checkbox_input.classList.add('checkbox_class');
+	checkbox_input.type = "checkbox";
+	checkbox_input.onclick = function() {
+		highlightCheckBoxClicked(checkbox_input);
 	}
-	function time_difference(modify_date){
-		let modify_date_object = Date.parse(modify_date)
-		let now_object = Date.now();
-		let Difference_In_Time = now_object - modify_date_object; 
-
-		result = interval(new Date(modify_date_object),new Date(now_object));
-		let outputStr = "";
-		if(result.years >= 1){
-			if(result.years > 1)
-				outputStr += result.years + " years "
-			else
-				outputStr += result.years + " year "
-		}
-
-		if(result.months >= 1){
-			if(result.months > 1)
-				outputStr += result.months + " months "
-			else
-				outputStr += result.months + " month "
-		}
-
-		if(result.days >= 1){
-			if(result.days > 1)
-				outputStr += result.days + " days "
-			else
-				outputStr += result.days + " day "
-		}
-
-		if(result.hours >= 1 && result.months < 1 && result.years < 1){
-			if(result.hours > 1)
-				outputStr += result.hours + " hours "
-			else
-				outputStr += result.hours + " hour "
-		}
-
-
-		if(result.minutes >= 1 && result.months < 1 && result.years < 1){
-			if(result.minutes > 1)
-				outputStr += result.minutes + " minutes "
-			else
-				outputStr += result.minutes + " minute "
-		}
-
-		if(result.seconds >= 1 && result.days < 1 && result.months < 1 && result.years < 1){
-			if(result.seconds > 1)
-				outputStr += result.seconds + " seconds "
-			else
-				outputStr += result.seconds + " second "
-		}
-	
-		outputStr += "ago";
-		return outputStr;
+	let checkbox_span = document.createElement('span');
+	checkbox_label.appendChild(checkbox_input);
+	checkbox_label.appendChild(checkbox_span);
+	checkbox_td.appendChild(checkbox_label);
+	tr.appendChild(checkbox_td);
+	let mentor_td = document.createElement('td');
+	mentor_td.textContent = mentorName;
+	tr.appendChild(mentor_td);
+	let student_td = document.createElement('td');
+	student_td.textContent = studentName;
+	tr.appendChild(student_td);
+	let rebelMail_td = document.createElement('td');
+	rebelMail_td.textContent = rebelMail;
+	tr.appendChild(rebelMail_td);
+	let assignDate_td = document.createElement('td');
+	assignDate_td.textContent = assignDate;
+	tr.appendChild(assignDate_td);
+	let endDate_td = document.createElement('td');
+	endDate_td.textContent = endDate;
+	tr.appendChild(endDate_td);
+	let absolute_modify_datetime_td = document.createElement('td');
+	absolute_modify_datetime_td.textContent = modifyDatetime;
+	absolute_modify_datetime_td.classList.add('absolute_datetime');
+	tr.appendChild(absolute_modify_datetime_td);
+	let relative_modify_datetime_td = document.createElement('td');
+	relative_modify_datetime_td.textContent = time_difference(modifyDatetime);
+	relative_modify_datetime_td.classList.add('relative_datetime');
+	tr.appendChild(relative_modify_datetime_td);
+	let table_action_td = document.createElement('td');
+	let table_action_button = document.createElement('button');
+	table_action_button.classList.add('table_action');
+	table_action_button.textContent = "Find";
+	table_action_button.onclick = function() {
+		findElementFromChangedHistoryTable(table_action_button);
 	}
+	table_action_td.appendChild(table_action_button);
+	tr.appendChild(table_action_td);
+	$('#change_history_table_id tbody')[0].appendChild(tr);
+	if(showallChangeHistoryEntry == false)
+		if(i == maximumChangeHistoryEntry) break;
+}
 
-	function interval(date1, date2) {
-		if (date1 > date2) { // swap
-			var result = interval(date2, date1);
-			result.years  = -result.years;
-			result.months = -result.months;
-			result.days   = -result.days;
-			result.hours  = -result.hours;
-			result.minutes = -result.minutes;
-			result.seconds = -result.seconds;
-			return result;
-		}
-		result = {
-			years:  date2.getYear()  - date1.getYear(),
-			months: date2.getMonth() - date1.getMonth(),
-			days:   date2.getDate()  - date1.getDate(),
-			hours:  date2.getHours() - date1.getHours(),
-			minutes: date2.getMinutes() - date1.getMinutes(),
-			seconds: date2.getSeconds() - date1.getSeconds()
-		};
-		if (result.seconds < 0){
-			result.minutes--;
-			result.seconds += 60;
-		}
-
-		if (result.minutes < 0){
-			result.hours--;
-			result.minutes += 60;
-		}
-
-		if (result.hours < 0) {
-			result.days--;
-			result.hours += 24;
-		}
-		if (result.days < 0) {
-			result.months--;
-			// days = days left in date1's month, 
-			//   plus days that have passed in date2's month
-			var copy1 = new Date(date1.getTime());
-			copy1.setDate(32);
-			result.days = 32-date1.getDate()-copy1.getDate()+date2.getDate();
-		}
-		if (result.months < 0) {
-			result.years--;
-			result.months+=12;
-		}
-    return result;
+function changeModifyDateTimeFormat() {
+	if($('.absolute_datetime').css('display') == "table-cell") {
+		$('.absolute_datetime').css('display', 'none')
+		$('.relative_datetime').css('display', 'table-cell')
+	} else {
+		$('.absolute_datetime').css('display', 'table-cell')
+		$('.relative_datetime').css('display', 'none')
 	}
+}
 
-	var modify_date_updater = setInterval(function() {
-		if($('.relative_datetime').css('display') == "table-cell" && $('#modal_for_change_history')[0].classList.contains("my_open"))
-		{
-			let relative_datetime_arrays = $('.relative_datetime');
-			for(let i = 0; i < relative_datetime_arrays.length; i++){
-				relative_datetime_arrays[i].textContent = time_difference(relative_datetime_arrays[i].previousSibling.textContent);
-				//console.log(relative_datetime_arrays[i].previousSibling.textContent);
-			}
+function time_difference(modify_date) {
+	let modify_date_object = Date.parse(modify_date)
+	let now_object = Date.now();
+	let Difference_In_Time = now_object - modify_date_object;
+	result = interval(new Date(modify_date_object), new Date(now_object));
+	let outputStr = "";
+	if(result.years >= 1) {
+		if(result.years > 1) outputStr += result.years + " years "
+		else outputStr += result.years + " year "
+	}
+	if(result.months >= 1) {
+		if(result.months > 1) outputStr += result.months + " months "
+		else outputStr += result.months + " month "
+	}
+	if(result.days >= 1) {
+		if(result.days > 1) outputStr += result.days + " days "
+		else outputStr += result.days + " day "
+	}
+	if(result.hours >= 1 && result.months < 1 && result.years < 1) {
+		if(result.hours > 1) outputStr += result.hours + " hours "
+		else outputStr += result.hours + " hour "
+	}
+	if(result.minutes >= 1 && result.months < 1 && result.years < 1) {
+		if(result.minutes > 1) outputStr += result.minutes + " minutes "
+		else outputStr += result.minutes + " minute "
+	}
+	if(result.seconds >= 1 && result.days < 1 && result.months < 1 && result.years < 1) {
+		if(result.seconds > 1) outputStr += result.seconds + " seconds "
+		else outputStr += result.seconds + " second "
+	}
+	outputStr += "ago";
+	return outputStr;
+}
+
+function interval(date1, date2) {
+	if(date1 > date2) { // swap
+		var result = interval(date2, date1);
+		result.years = -result.years;
+		result.months = -result.months;
+		result.days = -result.days;
+		result.hours = -result.hours;
+		result.minutes = -result.minutes;
+		result.seconds = -result.seconds;
+		return result;
+	}
+	result = {
+		years: date2.getYear() - date1.getYear(),
+		months: date2.getMonth() - date1.getMonth(),
+		days: date2.getDate() - date1.getDate(),
+		hours: date2.getHours() - date1.getHours(),
+		minutes: date2.getMinutes() - date1.getMinutes(),
+		seconds: date2.getSeconds() - date1.getSeconds()
+	};
+	if(result.seconds < 0) {
+		result.minutes--;
+		result.seconds += 60;
+	}
+	if(result.minutes < 0) {
+		result.hours--;
+		result.minutes += 60;
+	}
+	if(result.hours < 0) {
+		result.days--;
+		result.hours += 24;
+	}
+	if(result.days < 0) {
+		result.months--;
+		// days = days left in date1's month, 
+		//   plus days that have passed in date2's month
+		var copy1 = new Date(date1.getTime());
+		copy1.setDate(32);
+		result.days = 32 - date1.getDate() - copy1.getDate() + date2.getDate();
+	}
+	if(result.months < 0) {
+		result.years--;
+		result.months += 12;
+	}
+	return result;
+}
+var modify_date_updater = setInterval(function() {
+	if($('.relative_datetime').css('display') == "table-cell" && $('#modal_for_change_history')[0].classList.contains("my_open")) {
+		let relative_datetime_arrays = $('.relative_datetime');
+		for(let i = 0; i < relative_datetime_arrays.length; i++) {
+			relative_datetime_arrays[i].textContent = time_difference(relative_datetime_arrays[i].previousSibling.textContent);
+			//console.log(relative_datetime_arrays[i].previousSibling.textContent);
 		}
-	}, 1000);
+	}
+}, 1000);
 
-	function getCookie(cname) {
+function getCookie(cname) {
 	var name = cname + "=";
 	var decodedCookie = decodeURIComponent(document.cookie);
 	var ca = decodedCookie.split(';');
-	for(var i = 0; i <ca.length; i++) {
+	for(var i = 0; i < ca.length; i++) {
 		var c = ca[i];
-		while (c.charAt(0) == ' ') {
-		c = c.substring(1);
+		while(c.charAt(0) == ' ') {
+			c = c.substring(1);
 		}
-		if (c.indexOf(name) == 0) {
-		return c.substring(name.length, c.length);
+		if(c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
 		}
 	}
 	return "";
-	}	
-
-	if(getCookie("lookForMostRecentEntry") == "1"){
-		$('.relative_datetime')[0].nextSibling.children[0].click()
-		document.cookie = "lookForMostRecentEntry=0"
-	}
-
-	
-  </script>
+}
+if(getCookie("lookForMostRecentEntry") == "1") {
+	$('.relative_datetime')[0].nextSibling.children[0].click()
+	document.cookie = "lookForMostRecentEntry=0"
+}
+</script>
 
 </html>

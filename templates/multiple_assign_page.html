@@ -9,7 +9,6 @@
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/multiple_assign_page.css')}}">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<style>
-	
 	</style>
 </head>
 
@@ -22,16 +21,13 @@
 	<script src="{{url_for('static', filename='jquery.flexdatalist.min.js')}}"></script>
 	<script src="{{url_for('static', filename='table2CSV.js')}}"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	
-
 	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
 		<li><a href="/change_password">Change Password</a></li>
-		<li><a style="color:#e74c3c" href="delete_account" >Delete This Account</a></li>
+		<li><a style="color:#e74c3c" href="delete_account">Delete This Account</a></li>
 		<li class="divider"></li>
-		<li><a  style="color:grey" href="/logout">Log Out</a></li>
+		<li><a style="color:grey" href="/logout">Log Out</a></li>
 	</ul>
-	
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
 			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative; cursor:pointer;" class="brand-logo left">HOME</a>
@@ -44,109 +40,100 @@
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
 				<li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
 				<li>
-					<a onclick='window.location.href = "/approve_accounts"'>Account Approval
-						{% if new_approve_accounts > 0 %}
-							<span class="new badge my_badge">{{new_approve_accounts}}</span>
-						{% endif %}
-					</a>
+					<a onclick='window.location.href = "/approve_accounts"'>Account Approval {% if new_approve_accounts > 0 %} <span class="new badge my_badge">{{new_approve_accounts}}</span> {% endif %} </a>
 				</li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" id="drop_down_nav_id" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>
 	</nav>
-
 	<div id="page-wrapper">
 		<div class="contentWrapper">
 			<p class="myp">From professor</p>
 			<input type='text' placeholder='Name' class='flexdatalist first-flexdatalist' data-search-in='professorName' data-visible-properties='["professorName"]' data-selection-required='true' data-value-property='id' data-text-property='{professorName}' data-min-length='0' name='mentor_name_input_1'>
-			<p class="myp">assign</p><input onchange="numberInputValueChange(this.value)" class="numberInput"><p class="myp">students to professor</p>
+			<p class="myp">assign</p><input onchange="numberInputValueChange(this.value)" class="numberInput">
+			<p class="myp">students to professor</p>
 			<input type='text' placeholder='Name' class='flexdatalist second-flexdatalist' data-search-in='professorName' data-visible-properties='["professorName"]' data-selection-required='true' data-value-property='id' data-text-property='{professorName}' data-min-length='0' name='mentor_name_input_2'>
-			<input class="assign_button" style="outline: none;" onclick="assignButtonFunction()" id="assign_button_id" type = "submit" value = "Assign Students" />
+			<input class="assign_button" style="outline: none;" onclick="assignButtonFunction()" id="assign_button_id" type="submit" value="Assign Students" />
 		</div>
 		<p style="width:fit-content" class="myp" id="showOrHideListGroupId" onclick="showOrHideListGroupFunction()">show all <span class="studentCount">0</span> students</p>
 		<div class="list-group" style="opacity: 0;display: none;width: 95%; flex-direction: row;border: 2px solid #6c87d3b3;padding-top: 15px;border-radius: 0.3125rem;padding-left: 50px;margin-top: 0px;margin-bottom: 30px;margin-left: 1.5%;transition: opacity 2s ease-out 1s;">
-	</div>
-	
-	<!---------------------- Assignment sucessful modal ---------------------->
-	<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_multi_assignment">
-		<article class="my_content-wrapper">
-			<header class="my_modal-header">
-				<h2 style="font-size:1.5vw;">Multiple Assignments Successful<img style="height: 2.5vw; width: 3vw; margin-left: 1.5vw;position:absolute;bottom: 14px;"src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
-			</header>	
-			<div class="my_content">
-				<p>All of the following <span id="student_count_modal" style="font-weight:bold;">0</span> students have been successfully assigned to mentor <span id="mentor_name_span_sucessful_assigned" style="font-weight:bold;">MentorName</span>.</p>	
-			</div>
-			<ul class="modal_ul">
-			</ul>
-			<footer class="my_modal-footer">
-				<button class="my_action" onclick='location.reload()'>Assign More Student</button>
-				<button style="background-color:#57BEF5;" class="my_action" onclick='window.location.href = "/mentoring_joined"'>Check Table</button>
-			</footer>			
-	
-		</article>
-	</div>
-	<!---------------------- End Assignment sucessful modal ---------------------->
-	
+		</div>
+		<!---------------------- Assignment sucessful modal ---------------------->
+		<div class="my_modal" data-modal="trigger-2" id="modal_for_successful_multi_assignment">
+			<article class="my_content-wrapper">
+				<header class="my_modal-header">
+					<h2 style="font-size:1.5vw;">Multiple Assignments Successful<img style="height: 2.5vw; width: 3vw; margin-left: 1.5vw;position:absolute;bottom: 14px;" src="{{url_for('static', filename='images/icons/success_icon.png')}}"></img></h2>
+				</header>
+				<div class="my_content">
+					<p>All of the following <span id="student_count_modal" style="font-weight:bold;">0</span> students have been successfully assigned to mentor <span id="mentor_name_span_sucessful_assigned" style="font-weight:bold;">MentorName</span>.</p>
+				</div>
+				<ul class="modal_ul">
+				</ul>
+				<footer class="my_modal-footer">
+					<button class="my_action" onclick='location.reload()'>Assign More Student</button>
+					<button style="background-color:#57BEF5;" class="my_action" onclick='window.location.href = "/mentoring_joined"'>Check Table</button>
+				</footer>
+			</article>
+		</div>
+		<!---------------------- End Assignment sucessful modal ---------------------->
 </body>
-  <script>
-    let jsonData = decodeHtml('{{professorJson}}');
-    let jsonData2 = decodeHtml('{{studentForProfessorsJson}}');
-    let studentAndProfessorJsonDict = JSON.parse(jsonData2);
-    let professorJsonDict = JSON.parse(jsonData);
-    let activeStudent = 0;
-    let originalMarginTop = marginTop = parseInt($('#page-wrapper').css('marginTop'));
-    let itemPerRow = 4;
-	let previousNumberInput = 0;
-	let maximumStudents = 0;
-	let assignButtonStatus = false;
-	disbaleAssignButton();
-    $('.flexdatalist.first-flexdatalist').flexdatalist({
-      minLength: 1,
-      valueProperty: 'professorName',
-      selectionRequired: true,
-      visibleProperties: ["professorName"],
-      searchIn: 'professorName',
-      data: JSON.parse(jsonData)
-    });
-    $('.flexdatalist.second-flexdatalist').flexdatalist({
-      minLength: 1,
-      valueProperty: 'professorName',
-      selectionRequired: true,
-      visibleProperties: ["professorName"],
-      searchIn: 'professorName',
-      data: JSON.parse(jsonData)
-    });
-    let originalDataArray = $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data.slice(0);
-	$('.second-flexdatalist').attr('id',"flex1")
-	
-    //nav bar drop down
-    $(".dropdown-trigger").dropdown({
-      belowOrigin: true
-    });
+<script>
+let jsonData = decodeHtml('{{professorJson}}');
+let jsonData2 = decodeHtml('{{studentForProfessorsJson}}');
+let studentAndProfessorJsonDict = JSON.parse(jsonData2);
+let professorJsonDict = JSON.parse(jsonData);
+let activeStudent = 0;
+let originalMarginTop = marginTop = parseInt($('#page-wrapper').css('marginTop'));
+let itemPerRow = 4;
+let previousNumberInput = 0;
+let maximumStudents = 0;
+let assignButtonStatus = false;
+disbaleAssignButton();
+$('.flexdatalist.first-flexdatalist').flexdatalist({
+	minLength: 1,
+	valueProperty: 'professorName',
+	selectionRequired: true,
+	visibleProperties: ["professorName"],
+	searchIn: 'professorName',
+	data: JSON.parse(jsonData)
+});
+$('.flexdatalist.second-flexdatalist').flexdatalist({
+	minLength: 1,
+	valueProperty: 'professorName',
+	selectionRequired: true,
+	visibleProperties: ["professorName"],
+	searchIn: 'professorName',
+	data: JSON.parse(jsonData)
+});
+let originalDataArray = $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data.slice(0);
+$('.second-flexdatalist').attr('id', "flex1")
+//nav bar drop down
+$(".dropdown-trigger").dropdown({
+	belowOrigin: true
+});
 
-    function decodeHtml(str) {
-      return str.replace(/&#(\d+);/g, function(match, dec) {
-        return String.fromCharCode(dec);
-      });
-    }
-    $('input.flexdatalist-alias').css("border-color", "black")
-    $('input.flexdatalist-alias').css("width", "10%")
-    $('input.flexdatalist-alias').css("margin-right", "7px")
-    $('input.flexdatalist-alias').css("border-right", "0px")
-    $('input.flexdatalist-alias').css("outline", "none")
-    $('input.flexdatalist-alias').css("margin-left", "20px")
-    $('input.flexdatalist-alias').css("font-size", "25px")
-	
-    $('input.flexdatalist-alias')[0].classList.toggle('flexdatalist_border');
-    /*    function inputOnclick(){
-          input = $('input.flexdatalist-alias.flex0')[0]
-          input.value = ""
-          var e = jQuery.Event("keyup");
-          e.which = 40; // it is down
-          $("input.flexdatalist-alias.flex0").trigger(e);
-        }*/
-    for(var i = 0; i < $('input.flexdatalist-alias').length; i++) {
-	  if(i==0){
+function decodeHtml(str) {
+	return str.replace(/&#(\d+);/g, function(match, dec) {
+		return String.fromCharCode(dec);
+	});
+}
+$('input.flexdatalist-alias').css("border-color", "black")
+$('input.flexdatalist-alias').css("width", "10%")
+$('input.flexdatalist-alias').css("margin-right", "7px")
+$('input.flexdatalist-alias').css("border-right", "0px")
+$('input.flexdatalist-alias').css("outline", "none")
+$('input.flexdatalist-alias').css("margin-left", "20px")
+$('input.flexdatalist-alias').css("font-size", "25px")
+$('input.flexdatalist-alias')[0].classList.toggle('flexdatalist_border');
+/*    function inputOnclick(){
+      input = $('input.flexdatalist-alias.flex0')[0]
+      input.value = ""
+      var e = jQuery.Event("keyup");
+      e.which = 40; // it is down
+      $("input.flexdatalist-alias.flex0").trigger(e);
+    }*/
+for(var i = 0; i < $('input.flexdatalist-alias').length; i++) {
+	if(i == 0) {
 		$('input.flexdatalist-alias')[i].onclick = function inputOnclick() {
 			this.value = ""
 			$('input.flexdatalist-alias')[1].value = "";
@@ -155,323 +142,305 @@
 			$(this).trigger(e);
 			determineIfButtonIsAble()
 		}
-	  }
-	  else{
+	} else {
 		$('input.flexdatalist-alias')[i].onclick = function inputOnclick() {
 			this.value = ""
 			var e = jQuery.Event("keyup");
 			e.which = 40; // it is down
 			$(this).trigger(e);
 			determineIfButtonIsAble()
-		}		  
-	  }
-    }
-    $('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {
-      $('input.flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);
-      $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);
-      if(this.name == "mentor_name_input_1"){
-        var val = set.text;
-        studentCountElementArray = document.getElementsByClassName("studentCount")
-        if(val.length == 0) {
-          for(var j = 0; j < studentCountElementArray.length; j++) studentCountElementArray[j].textContent = "0";
-		  maximumStudents = 0;
-		  document.getElementsByClassName("numberInput")[0].value = "0";
-		  previousNumberInput = 0;
-          activeStudent = 0;
-          clearListGroup();
-		  hideListGroup();
-          return;
 		}
-        for(var i = 0; i < professorJsonDict.length; i++) {
-          if(val == professorJsonDict[i].professorName) {
-            for(var j = 0; j < studentCountElementArray.length; j++) studentCountElementArray[j].textContent = professorJsonDict[i].count;
-			maximumStudents = professorJsonDict[i].count;
-			document.getElementsByClassName("numberInput")[0].value = professorJsonDict[i].count;
-			previousNumberInput = professorJsonDict[i].count;;
-            activeStudent = professorJsonDict[i].count;
-			break;
-          }
-        }
-        var professorId;
-        for(professorId = 0; professorId < studentAndProfessorJsonDict.length; professorId++) {
-          if(studentAndProfessorJsonDict[professorId].professorName == val) break;
-        }
-        for(var studentIndex = 0; studentIndex < studentAndProfessorJsonDict[professorId].nameAndIdDictArr.length; studentIndex++) {
-          var currentRow;
-          if(studentIndex % itemPerRow == 0) {
-            currentRow = createGroupListItemRow()
-          }
-          let child1 = currentRow.children[studentIndex % itemPerRow].childNodes[0]
-          let child2 = currentRow.children[studentIndex % itemPerRow].childNodes[1]
-          currentRow.children[studentIndex % itemPerRow].textContent = studentAndProfessorJsonDict[professorId].nameAndIdDictArr[studentIndex].studentName;
-          currentRow.children[studentIndex % itemPerRow].classList.remove('empty-list-group-item');
-          currentRow.children[studentIndex % itemPerRow].appendChild(child1)
-          currentRow.children[studentIndex % itemPerRow].appendChild(child2)
-          currentRow.children[studentIndex % itemPerRow].setAttribute('data-relationship-id', studentAndProfessorJsonDict[professorId].nameAndIdDictArr[studentIndex].relationshipId);
-        }
-        //$('input.flexdatalist').data().flexdatalist.data;
-        for(var i = 0; i < $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data.length; i++) {
-          if($('input.flexdatalist.second-flexdatalist').data().flexdatalist.data[i].professorName.includes(val)) $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data.splice(i, 1);
-        }
-		if(val == $('input.flexdatalist.second-flexdatalist').val())
-			$('input.flexdatalist.second-flexdatalist').val("")
+	}
+}
+$('input.flexdatalist').on('change:flexdatalist', function(event, set, options) {
+	$('input.flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);
+	$('input.flexdatalist.second-flexdatalist').data().flexdatalist.data = originalDataArray.slice(0);
+	if(this.name == "mentor_name_input_1") {
+		var val = set.text;
+		studentCountElementArray = document.getElementsByClassName("studentCount")
+		if(val.length == 0) {
+			for(var j = 0; j < studentCountElementArray.length; j++) studentCountElementArray[j].textContent = "0";
+			maximumStudents = 0;
+			document.getElementsByClassName("numberInput")[0].value = "0";
+			previousNumberInput = 0;
+			activeStudent = 0;
+			clearListGroup();
+			hideListGroup();
+			return;
+		}
+		for(var i = 0; i < professorJsonDict.length; i++) {
+			if(val == professorJsonDict[i].professorName) {
+				for(var j = 0; j < studentCountElementArray.length; j++) studentCountElementArray[j].textContent = professorJsonDict[i].count;
+				maximumStudents = professorJsonDict[i].count;
+				document.getElementsByClassName("numberInput")[0].value = professorJsonDict[i].count;
+				previousNumberInput = professorJsonDict[i].count;;
+				activeStudent = professorJsonDict[i].count;
+				break;
+			}
+		}
+		var professorId;
+		for(professorId = 0; professorId < studentAndProfessorJsonDict.length; professorId++) {
+			if(studentAndProfessorJsonDict[professorId].professorName == val) break;
+		}
+		for(var studentIndex = 0; studentIndex < studentAndProfessorJsonDict[professorId].nameAndIdDictArr.length; studentIndex++) {
+			var currentRow;
+			if(studentIndex % itemPerRow == 0) {
+				currentRow = createGroupListItemRow()
+			}
+			let child1 = currentRow.children[studentIndex % itemPerRow].childNodes[0]
+			let child2 = currentRow.children[studentIndex % itemPerRow].childNodes[1]
+			currentRow.children[studentIndex % itemPerRow].textContent = studentAndProfessorJsonDict[professorId].nameAndIdDictArr[studentIndex].studentName;
+			currentRow.children[studentIndex % itemPerRow].classList.remove('empty-list-group-item');
+			currentRow.children[studentIndex % itemPerRow].appendChild(child1)
+			currentRow.children[studentIndex % itemPerRow].appendChild(child2)
+			currentRow.children[studentIndex % itemPerRow].setAttribute('data-relationship-id', studentAndProfessorJsonDict[professorId].nameAndIdDictArr[studentIndex].relationshipId);
+		}
+		//$('input.flexdatalist').data().flexdatalist.data;
+		for(var i = 0; i < $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data.length; i++) {
+			if($('input.flexdatalist.second-flexdatalist').data().flexdatalist.data[i].professorName.includes(val)) $('input.flexdatalist.second-flexdatalist').data().flexdatalist.data.splice(i, 1);
+		}
+		if(val == $('input.flexdatalist.second-flexdatalist').val()) $('input.flexdatalist.second-flexdatalist').val("")
 		repositionPageWrapper();
 		showListGroup();
-      }
-	  else if(this.name == "mentor_name_input_2")
-	  {
+	} else if(this.name == "mentor_name_input_2") {
 		val = set.text;
-        for(var i = 0; i < $('input.flexdatalist.first-flexdatalist').data().flexdatalist.data.length; i++) {
-          if($('input.flexdatalist.first-flexdatalist').data().flexdatalist.data[i].professorName.includes(val)) $('input.flexdatalist.first-flexdatalist').data().flexdatalist.data.splice(i, 1);
-        }
-		if(val == $('input.flexdatalist.first-flexdatalist').val())
-			$('input.flexdatalist.first-flexdatalist').val("")
-	  }
-      determineIfButtonIsAble()
-    });
-
-    function showOrHideListGroupFunction() {
-      if($('.list-group').css('opacity') == "0") {
-        showListGroup();
-      } else {
-        hideListGroup();
-      }
-      repositionPageWrapper();
-    }
-
-    function repositionPageWrapper() {
-      let offset = $('nav')[0].offsetHeight + $('#page-wrapper')[0].offsetHeight + parseInt($('#page-wrapper').css('marginTop')) - parseInt($('body')[0].offsetHeight * 0.89)
-      marginTop = parseInt($('#page-wrapper').css('marginTop'));
-      if(offset > 0) {
-        if(marginTop - offset > 0)
-          $('#page-wrapper').css('marginTop', marginTop - offset)
-        else
-          $('#page-wrapper').css('marginTop', "5px")
-      }
-      else $('#page-wrapper').css('marginTop', originalMarginTop)
-    }
-
-    function hideListGroup() {
-      $('.list-group').css('opacity', '0');
-      $('.list-group').css('display', 'none');
-    }
-
-    function showListGroup() {
-      if(maximumStudents == 0) return;
-      $('.list-group').css('opacity', '1');
-      $('.list-group').css('display', 'grid');
-    }
-
-    function clearListGroup() {
-      const myNode = document.getElementsByClassName('list-group')[0]
-      while(myNode.lastElementChild) {
-        myNode.removeChild(myNode.lastElementChild);
-      }
-    }
-    $('.list-group-item.list-group-item-action').css('border-radius', '10px');
-    $('.list-group-item.list-group-item-action').css('margin-right', '50px');
-    $('.list-group-item.list-group-item-action').css('cursor', 'default');
-    $('.list-group-item.list-group-item-action').css('padding-left', '35px');
-
-    function createGroupListItemRow() {
-      let listItemGroupDiv = document.createElement('div')
-      listItemGroupDiv.setAttribute('class', 'studentNameGroupOfFiveDiv')
-      for(var i = 0; i < itemPerRow; i++) {
-        let listGroupItem = document.createElement('a')
-        listGroupItem.setAttribute('class', 'list-group-item')
-        listGroupItem.classList.add('list-group-item-action')
-        listGroupItem.style.height = '51px';
-        listGroupItem.style.borderRadius = "10px";
-        listGroupItem.style.marginRight = "50px";
-        listGroupItem.style.cursor = "default";
-        listGroupItem.style.paddingLeft = "20px";
-        listGroupItem.style.fontSize = "0.8vw";
-        listGroupItem.classList.add('empty-list-group-item')
-        listGroupItem.setAttribute('data-relationship-id', "0")
-        listGroupItem.setAttribute('data-active', 'true');
-        let closeButton = document.createElement('button');
-        closeButton.setAttribute('class', 'my_close');
-        closeButton.onclick = function disbaleStudentListGroupItem() {
-          listGroupItem.style.cursor = 'not-allowed';
-          listGroupItem.style.backgroundColor = '#919191c2';
-          listGroupItem.style.color = 'white';
-          closeButton.style.visibility = "hidden"
-          listGroupItem.setAttribute('data-active', 'false');
-		  activeStudent = getActiveStudent()
-          document.getElementsByClassName("numberInput")[0].value = activeStudent;
-		  previousNumberInput = activeStudent;
-		  determineIfButtonIsAble();
-          setTimeout(function() {
-            restoreButton.style.visibility = "visible"
-          }, 300);
-        }
-        let restoreButton = document.createElement('i');
-        restoreButton.setAttribute('class', 'small');
-        restoreButton.classList.add('material-icons');
-        restoreButton.classList.add('my_restore');
-        restoreButton.textContent = "replay";
-        restoreButton.style.visibility = "hidden"
-        restoreButton.onclick = function ableStudentListGroupItem() {
-          listGroupItem.style.cursor = 'default';
-          listGroupItem.style.backgroundColor = 'white';
-          listGroupItem.style.color = 'black';
-          restoreButton.style.visibility = "hidden"
-          listGroupItem.setAttribute('data-active', 'true');
-		  activeStudent = getActiveStudent()
-		  document.getElementsByClassName("numberInput")[0].value = activeStudent;
-		  previousNumberInput = activeStudent;
-		  determineIfButtonIsAble();
-          setTimeout(function() {
-            closeButton.style.visibility = "visible";
-          }, 300);
-        }
-        listGroupItem.appendChild(closeButton);
-        listGroupItem.appendChild(restoreButton);
-        listItemGroupDiv.appendChild(listGroupItem);
-      }
-      $('.list-group')[0].appendChild(listItemGroupDiv);
-      return listItemGroupDiv;
-    }
-	
-	function getActiveStudent(){
-		let listGroupItems = $('.list-group-item')
-		let count = 0;
-		for(var i = 0; i < listGroupItems.length; i++)
-		{
-			let $this = $(listGroupItems[i]);
-			if($this.attr('data-active') == "true" && $this.hasClass('empty-list-group-item') == false){
-				count += 1
-			}
-		}		
-		return count;
+		for(var i = 0; i < $('input.flexdatalist.first-flexdatalist').data().flexdatalist.data.length; i++) {
+			if($('input.flexdatalist.first-flexdatalist').data().flexdatalist.data[i].professorName.includes(val)) $('input.flexdatalist.first-flexdatalist').data().flexdatalist.data.splice(i, 1);
+		}
+		if(val == $('input.flexdatalist.first-flexdatalist').val()) $('input.flexdatalist.first-flexdatalist').val("")
 	}
-	
-	function numberInputValueChange(value){
-		if(isNumeric(value) == false)
-			document.getElementsByClassName("numberInput")[0].value = previousNumberInput;
-		else{
-			showListGroup();
-			let numberOfItemsNeeded = parseInt(value);
-			let listGroupItems = $('.list-group-item');
-			if(numberOfItemsNeeded > maximumStudents){
-				numberOfItemsNeeded = maximumStudents;
-				document.getElementsByClassName("numberInput")[0].value = maximumStudents;
-			}
-			let j = 0;
-			for(var i = 0; i < listGroupItems.length; i++){
-				if(j < numberOfItemsNeeded){
-					if(listGroupItems[i].getAttribute('data-active') == "false"){
-						func = listGroupItems[i].children[1].onclick;
-						func();
-					}
-				}
-				else
-				{
-					if(listGroupItems[i].getAttribute('data-active') == "true"){
-						func = listGroupItems[i].children[0].onclick;
-						func();					
-					}
-				}
-				j += 1;
-			}
-			determineIfButtonIsAble()
-		
+	determineIfButtonIsAble()
+});
+
+function showOrHideListGroupFunction() {
+	if($('.list-group').css('opacity') == "0") {
+		showListGroup();
+	} else {
+		hideListGroup();
+	}
+	repositionPageWrapper();
+}
+
+function repositionPageWrapper() {
+	let offset = $('nav')[0].offsetHeight + $('#page-wrapper')[0].offsetHeight + parseInt($('#page-wrapper').css('marginTop')) - parseInt($('body')[0].offsetHeight * 0.89)
+	marginTop = parseInt($('#page-wrapper').css('marginTop'));
+	if(offset > 0) {
+		if(marginTop - offset > 0) $('#page-wrapper').css('marginTop', marginTop - offset)
+		else $('#page-wrapper').css('marginTop', "5px")
+	} else $('#page-wrapper').css('marginTop', originalMarginTop)
+}
+
+function hideListGroup() {
+	$('.list-group').css('opacity', '0');
+	$('.list-group').css('display', 'none');
+}
+
+function showListGroup() {
+	if(maximumStudents == 0) return;
+	$('.list-group').css('opacity', '1');
+	$('.list-group').css('display', 'grid');
+}
+
+function clearListGroup() {
+	const myNode = document.getElementsByClassName('list-group')[0]
+	while(myNode.lastElementChild) {
+		myNode.removeChild(myNode.lastElementChild);
+	}
+}
+$('.list-group-item.list-group-item-action').css('border-radius', '10px');
+$('.list-group-item.list-group-item-action').css('margin-right', '50px');
+$('.list-group-item.list-group-item-action').css('cursor', 'default');
+$('.list-group-item.list-group-item-action').css('padding-left', '35px');
+
+function createGroupListItemRow() {
+	let listItemGroupDiv = document.createElement('div')
+	listItemGroupDiv.setAttribute('class', 'studentNameGroupOfFiveDiv')
+	for(var i = 0; i < itemPerRow; i++) {
+		let listGroupItem = document.createElement('a')
+		listGroupItem.setAttribute('class', 'list-group-item')
+		listGroupItem.classList.add('list-group-item-action')
+		listGroupItem.style.height = '51px';
+		listGroupItem.style.borderRadius = "10px";
+		listGroupItem.style.marginRight = "50px";
+		listGroupItem.style.cursor = "default";
+		listGroupItem.style.paddingLeft = "20px";
+		listGroupItem.style.fontSize = "0.8vw";
+		listGroupItem.classList.add('empty-list-group-item')
+		listGroupItem.setAttribute('data-relationship-id', "0")
+		listGroupItem.setAttribute('data-active', 'true');
+		let closeButton = document.createElement('button');
+		closeButton.setAttribute('class', 'my_close');
+		closeButton.onclick = function disbaleStudentListGroupItem() {
+			listGroupItem.style.cursor = 'not-allowed';
+			listGroupItem.style.backgroundColor = '#919191c2';
+			listGroupItem.style.color = 'white';
+			closeButton.style.visibility = "hidden"
+			listGroupItem.setAttribute('data-active', 'false');
+			activeStudent = getActiveStudent()
+			document.getElementsByClassName("numberInput")[0].value = activeStudent;
+			previousNumberInput = activeStudent;
+			determineIfButtonIsAble();
+			setTimeout(function() {
+				restoreButton.style.visibility = "visible"
+			}, 300);
+		}
+		let restoreButton = document.createElement('i');
+		restoreButton.setAttribute('class', 'small');
+		restoreButton.classList.add('material-icons');
+		restoreButton.classList.add('my_restore');
+		restoreButton.textContent = "replay";
+		restoreButton.style.visibility = "hidden"
+		restoreButton.onclick = function ableStudentListGroupItem() {
+			listGroupItem.style.cursor = 'default';
+			listGroupItem.style.backgroundColor = 'white';
+			listGroupItem.style.color = 'black';
+			restoreButton.style.visibility = "hidden"
+			listGroupItem.setAttribute('data-active', 'true');
+			activeStudent = getActiveStudent()
+			document.getElementsByClassName("numberInput")[0].value = activeStudent;
+			previousNumberInput = activeStudent;
+			determineIfButtonIsAble();
+			setTimeout(function() {
+				closeButton.style.visibility = "visible";
+			}, 300);
+		}
+		listGroupItem.appendChild(closeButton);
+		listGroupItem.appendChild(restoreButton);
+		listItemGroupDiv.appendChild(listGroupItem);
+	}
+	$('.list-group')[0].appendChild(listItemGroupDiv);
+	return listItemGroupDiv;
+}
+
+function getActiveStudent() {
+	let listGroupItems = $('.list-group-item')
+	let count = 0;
+	for(var i = 0; i < listGroupItems.length; i++) {
+		let $this = $(listGroupItems[i]);
+		if($this.attr('data-active') == "true" && $this.hasClass('empty-list-group-item') == false) {
+			count += 1
 		}
 	}
-	
-	function isNumeric(value) {
-		return /^-{0,1}\d+$/.test(value);
-	}
-	
-	function assignActiveStudentArray(){
-		let returnArr = []
-		let listGroupItems = $('.list-group-item')
-		for(var i = 0; i < listGroupItems.length;i++){
-			let $this = $(listGroupItems[i]);
-			if($this.attr('data-active') == "true" && $this.hasClass('empty-list-group-item') == false){
-				returnArr.push(parseInt($this.attr('data-relationship-id')))
-			}
+	return count;
+}
+
+function numberInputValueChange(value) {
+	if(isNumeric(value) == false) document.getElementsByClassName("numberInput")[0].value = previousNumberInput;
+	else {
+		showListGroup();
+		let numberOfItemsNeeded = parseInt(value);
+		let listGroupItems = $('.list-group-item');
+		if(numberOfItemsNeeded > maximumStudents) {
+			numberOfItemsNeeded = maximumStudents;
+			document.getElementsByClassName("numberInput")[0].value = maximumStudents;
 		}
-		return returnArr;
+		let j = 0;
+		for(var i = 0; i < listGroupItems.length; i++) {
+			if(j < numberOfItemsNeeded) {
+				if(listGroupItems[i].getAttribute('data-active') == "false") {
+					func = listGroupItems[i].children[1].onclick;
+					func();
+				}
+			} else {
+				if(listGroupItems[i].getAttribute('data-active') == "true") {
+					func = listGroupItems[i].children[0].onclick;
+					func();
+				}
+			}
+			j += 1;
+		}
+		determineIfButtonIsAble()
 	}
-	
-	function disbaleAssignButton(){
+}
+
+function isNumeric(value) {
+	return /^-{0,1}\d+$/.test(value);
+}
+
+function assignActiveStudentArray() {
+	let returnArr = []
+	let listGroupItems = $('.list-group-item')
+	for(var i = 0; i < listGroupItems.length; i++) {
+		let $this = $(listGroupItems[i]);
+		if($this.attr('data-active') == "true" && $this.hasClass('empty-list-group-item') == false) {
+			returnArr.push(parseInt($this.attr('data-relationship-id')))
+		}
+	}
+	return returnArr;
+}
+
+function disbaleAssignButton() {
+	assignButtonStatus = false;
+	$('.assign_button')[0].classList.add('button_not_allowed')
+}
+
+function enableAssignButton() {
+	assignButtonStatus = true;
+	$('.assign_button')[0].classList.remove('button_not_allowed')
+}
+
+function determineIfButtonIsAble() {
+	if($('#flex0').val().length > 0 && $('#flex1').val().length > 0 && $('.numberInput').val() != 0) enableAssignButton();
+	else disbaleAssignButton();
+}
+
+function assignButtonFunction() {
+	if(assignButtonStatus == false) return;
+	else {
+		var relationshipIdArray = assignActiveStudentArray();
+		var teacherName = $('input.flexdatalist.second-flexdatalist').val();
+		//console.log("array is: " + relationshipIdArray);
+		//console.log("teacher name is: " + teacherName);
+		req = $.ajax({
+			url: '/multiple_assign_request',
+			type: 'POST',
+			data: {
+				teacherName: teacherName,
+				relationshipIdArray: relationshipIdArray
+			}
+		});
+		$('body').css('cursor', 'wait');
 		assignButtonStatus = false;
-		$('.assign_button')[0].classList.add('button_not_allowed')
-	}
-	
-	function enableAssignButton(){
-		assignButtonStatus = true;
-		$('.assign_button')[0].classList.remove('button_not_allowed')	
-	}
-	
-	function determineIfButtonIsAble(){
-	  if($('#flex0').val().length > 0 && $('#flex1').val().length > 0 && $('.numberInput').val() != 0)
-		enableAssignButton();
-	  else
-		disbaleAssignButton();
-	}
-	
-	function assignButtonFunction(){
-		if(assignButtonStatus == false)
-			return;
-		else
-		{
-			var relationshipIdArray = assignActiveStudentArray();
-			var teacherName = $('input.flexdatalist.second-flexdatalist').val();
-			//console.log("array is: " + relationshipIdArray);
-			//console.log("teacher name is: " + teacherName);
-			req = $.ajax({
-				url: '/multiple_assign_request',
-				type:'POST',
-				data: {teacherName:teacherName,relationshipIdArray:relationshipIdArray}
-			});
-			$('body').css('cursor','wait');
-			assignButtonStatus = false;
-			
-			req.done(function(data){
-				if(data.RESULT == "SUCCESS"){
-					$('body').css('cursor','default');
-					assignButtonStatus = true;
-					$('#modal_for_successful_multi_assignment')[0].classList.toggle("my_open");
-					document.getElementById('student_count_modal').textContent = relationshipIdArray.length;
-					document.getElementById('mentor_name_span_sucessful_assigned').textContent = teacherName;
-					activeStudentNameArray = assignActiveStudentNameArray()
-					for(var i = 0; i < activeStudentNameArray.length; i++){
-						addItemToModalUl(activeStudentNameArray[i])
-					}
-					adjustModalUlHeight();
+		req.done(function(data) {
+			if(data.RESULT == "SUCCESS") {
+				$('body').css('cursor', 'default');
+				assignButtonStatus = true;
+				$('#modal_for_successful_multi_assignment')[0].classList.toggle("my_open");
+				document.getElementById('student_count_modal').textContent = relationshipIdArray.length;
+				document.getElementById('mentor_name_span_sucessful_assigned').textContent = teacherName;
+				activeStudentNameArray = assignActiveStudentNameArray()
+				for(var i = 0; i < activeStudentNameArray.length; i++) {
+					addItemToModalUl(activeStudentNameArray[i])
 				}
-			});
-		}
-	}
-	function adjustModalUlHeight(){
-		if($('.modal_ul').height() > 400)
-			$('.modal_ul').height(400)
-		else
-			$('.modal_ul').height('auto')
-	}
-	
-	function addItemToModalUl(studentName){
-		var newLi = document.createElement('li');
-		newLi.setAttribute('class','modal_li');
-		newLi.textContent = studentName;
-		$('.modal_ul')[0].appendChild(newLi);
-	}
-	
-	function assignActiveStudentNameArray(){
-		let returnArr = []
-		let listGroupItems = $('.list-group-item')
-		for(var i = 0; i < listGroupItems.length;i++){
-			let $this = $(listGroupItems[i]);
-			if($this.attr('data-active') == "true" && $this.hasClass('empty-list-group-item') == false){
-				returnArr.push($this.text())
+				adjustModalUlHeight();
 			}
-		}
-		return returnArr;
+		});
 	}
+}
 
+function adjustModalUlHeight() {
+	if($('.modal_ul').height() > 400) $('.modal_ul').height(400)
+	else $('.modal_ul').height('auto')
+}
 
-  </script>
+function addItemToModalUl(studentName) {
+	var newLi = document.createElement('li');
+	newLi.setAttribute('class', 'modal_li');
+	newLi.textContent = studentName;
+	$('.modal_ul')[0].appendChild(newLi);
+}
+
+function assignActiveStudentNameArray() {
+	let returnArr = []
+	let listGroupItems = $('.list-group-item')
+	for(var i = 0; i < listGroupItems.length; i++) {
+		let $this = $(listGroupItems[i]);
+		if($this.attr('data-active') == "true" && $this.hasClass('empty-list-group-item') == false) {
+			returnArr.push($this.text())
+		}
+	}
+	return returnArr;
+}
+</script>
 
 </html>

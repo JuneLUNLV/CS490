@@ -27,7 +27,7 @@
 				<div class="pt-5 pb-5">
 					<img class="rounded mx-auto d-block" src="https://www.unlv.edu/sites/default/files/assets/style-guide/images/logos/apple-touch-icon-180x180-precomposed.png" alt="" width=70px height=70px>
 					<p class="text-center text-uppercase mt-3">Create Account</p>
-					<form class="form text-center"  method="POST">
+					<form class="form text-center" method="POST">
 						<div class="form-group input-group-md">
 							<input type="text" class="form-control" id="username" name="username" placeholder="Create Username">
 						</div>
@@ -44,101 +44,87 @@
 						<!-- <a href="#" class="float-right mt-2">Forgot Password? </a> -->
 					</form>
 				</div>
-					<a style="margin-bottom: 30px" href="/login" class="text-center d-block mt-2">Login instead?</a>
-					<p>You can log in with this account after one of the administrators approved it.</p>
+				<a style="margin-bottom: 30px" href="/login" class="text-center d-block mt-2">Login instead?</a>
+				<p>You can log in with this account after one of the administrators approved it.</p>
 			</div>
 		</div>
 	</div>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
-	</body>
+</body>
 <script>
-	
-	$(document).keypress(
-	function(event){
-		if (event.which == '13') {
+$(document).keypress(function(event) {
+	if(event.which == '13') {
 		event.preventDefault();
+	}
+});
+
+function ValidateEmail(mail) {
+	if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+		return (true)
+	}
+	return (false)
+}
+
+function create_account_request() {
+	username = document.getElementById('username').value;
+	email = document.getElementById('email').value;
+	password = document.getElementById('password').value;
+	confirm_password = document.getElementById('confirm_password').value;
+	if(username.length < 1) {
+		alert("Username cannot be empty.")
+		return;
+	}
+	if(password.length < 1) {
+		alert("Password cannot be empty.")
+		return;
+	}
+	if(email.length > 0) {
+		if(ValidateEmail(email) == false) {
+			alert("Please enter a valid email.")
+			return;
+		}
+	} else {
+		email = "null"
+	}
+	if(confirm_password.length < 1) {
+		alert("confirm password cannot be empty.")
+		return;
+	}
+	if(confirm_password != password) {
+		alert("Password and confirm password is not the same.")
+		return;
+	}
+	req = $.ajax({
+		url: '/create_account_request',
+		type: 'POST',
+		data: {
+			username: username,
+			email: email,
+			password: password,
+			confirm_password: confirm_password
 		}
 	});
-
-	function ValidateEmail(mail) 
-	{
-		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
-		{
-			return (true)
+	// When request done, see if all the server side checks are valid, if not, error label is displayed
+	req.done(function(data) {
+		console.log("data.RESULT: " + data.RESULT);
+		console.log("data.MSG: " + data.MSG);
+		if(data.RESULT == "SUCCESS") {
+			alert("Thank you for registering. Please wait for account approval from the administrators.")
+			location.href = data.MSG;
+		} else {
+			alert(data.MSG);
 		}
-
-		return (false)
+	});
+}
+document.getElementById('mybody').addEventListener("keyup", function(event) {
+	// Number 13 is the "Enter" key on the keyboard
+	if(event.keyCode === 13) {
+		// Cancel the default action, if needed
+		event.preventDefault();
+		// Trigger the button element with a click
+		document.getElementById("create_account_request_id").click();
 	}
-
-	function create_account_request(){
-		username = document.getElementById('username').value;
-		email = document.getElementById('email').value;
-		password = document.getElementById('password').value;
-		confirm_password = document.getElementById('confirm_password').value;
-		if(username.length < 1){
-			alert("Username cannot be empty.")
-			return;
-		}
-
-		if(password.length < 1){
-			alert("Password cannot be empty.")
-			return;
-		}
-
-		if(email.length > 0){
-			if(ValidateEmail(email) == false){
-				alert("Please enter a valid email.")
-				return;
-			}
-		}	
-		else{
-			email = "null"
-		}
-
-		if(confirm_password.length < 1){
-			alert("confirm password cannot be empty.")
-			return;
-		}	
-
-		if(confirm_password != password){
-			alert("Password and confirm password is not the same.")
-			return;			
-		}
-
-		req = $.ajax({
-				url: '/create_account_request',
-				type: 'POST',
-				data: {
-					username: username,
-					email:email,
-					password: password,
-					confirm_password:confirm_password
-				}
-			});
-		// When request done, see if all the server side checks are valid, if not, error label is displayed
-		req.done(function(data) {
-			console.log("data.RESULT: " + data.RESULT);
-			console.log("data.MSG: " + data.MSG);
-			if(data.RESULT == "SUCCESS"){
-				alert("Thank you for registering. Please wait for account approval from the administrators.")
-				location.href = data.MSG;
-
-			}
-			else{
-				alert(data.MSG);
-			}
-		});
-	}
-
-	document.getElementById('mybody').addEventListener("keyup", function(event) {
-		// Number 13 is the "Enter" key on the keyboard
-		if (event.keyCode === 13) {
-			// Cancel the default action, if needed
-			event.preventDefault();
-			// Trigger the button element with a click
-			document.getElementById("create_account_request_id").click();
-		}
-	});	
-
+});
 </script>
+
 </html>

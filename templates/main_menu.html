@@ -7,7 +7,6 @@
 	<link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/main_menu.css')}}">
 	<style>
-
 	</style>
 </head>
 
@@ -24,15 +23,13 @@
 		window.parent.postMessage("resize", "*");
 	}
 	</script>
-
 	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
 		<li><a href="/change_password">Change Password</a></li>
-		<li><a style="color:#e74c3c" href="delete_account" >Delete This Account</a></li>
+		<li><a style="color:#e74c3c" href="delete_account">Delete This Account</a></li>
 		<li class="divider"></li>
-		<li><a  style="color:grey" href="/logout">Log Out</a></li>
+		<li><a style="color:grey" href="/logout">Log Out</a></li>
 	</ul>
-
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
 			<a href="/login" style="margin-left: 20px;margin-right: 40px;position:relative; cursor:pointer;" class="brand-logo left">HOME</a>
@@ -44,12 +41,8 @@
 				<li><a onclick='window.location.href = "/manage_students"'>Manage Students</a></li>
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
 				<li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
-								<li>
-					<a onclick='window.location.href = "/approve_accounts"'>Account Approval
-						{% if new_approve_accounts > 0 %}
-							<span class="new badge my_badge">{{new_approve_accounts}}</span>
-						{% endif %}
-					</a>
+				<li>
+					<a onclick='window.location.href = "/approve_accounts"'>Account Approval {% if new_approve_accounts > 0 %} <span class="new badge my_badge">{{new_approve_accounts}}</span> {% endif %} </a>
 				</li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
@@ -229,7 +222,6 @@ function redirect2() {
 	window.location.href = "/mentoring_joined";
 	document.cookie = "lookForMostRecentEntry=0"
 }
-
 /* All the inputs onfocus functions */
 function studentInputOnFocusFunction() {
 	//document.getElementById("itemsInput-flexdatalist").value=''; 
@@ -263,12 +255,8 @@ function closeConfirmationModalAndResetGloablVariables() {
 }
 /* This function is used by below by the confirmButtonFunction() */
 function openSuccessfulAssignmentModalAndCloseConfirmationModal() {
-
-	if(email_option_checked)
-		email_to_student_and_professor_id.style.display = "block";
-	else
-		email_to_student_and_professor_id.style.display = "none";
-
+	if(email_option_checked) email_to_student_and_professor_id.style.display = "block";
+	else email_to_student_and_professor_id.style.display = "none";
 	document.getElementById('modal_for_confirmation').classList.remove('my_open');
 	let button = document.getElementById("confirmButtonOnModal1");
 	const trigger = button.getAttribute('data-modal-trigger');
@@ -284,8 +272,8 @@ function confirmButtonFunction() {
 		req = $.ajax({
 			url: '/assign_mentor_existed_student',
 			data: {
-				email_option_checked:email_option_checked
-				},
+				email_option_checked: email_option_checked
+			},
 			type: 'POST'
 		});
 		req.done(function(data) {
@@ -296,8 +284,8 @@ function confirmButtonFunction() {
 		req = $.ajax({
 			url: '/assign_mentor_new_stduent',
 			data: {
-				email_option_checked:email_option_checked
-				},
+				email_option_checked: email_option_checked
+			},
 			type: 'POST'
 		});
 		req.done(function(data) {
@@ -342,17 +330,12 @@ function assignButtonFunction() {
 	assignmentErrorLabel.style.display = "none";
 	emailNotifyCheckBox.checked = true;
 	let boolSubmitSuccess = true;
-
-
 	/* Client side check - for if the mentor has too many students , if so error label is displayed*/
 	if(mentorNumberColor == "red") {
 		document.getElementById("mentorCountErrorLabel").textContent = "Current mentor has too many students, please assign another mentor for this student."
 		document.getElementById("mentorCountErrorLabel").style.display = "block";
 		boolSubmitSuccess = false;
 	}
-
-
-
 	/* getting values from two date inputs, set it to "null" if input empty */
 	let endDate = "";
 	let assignDate = "";
@@ -416,7 +399,7 @@ function assignButtonFunction() {
 				mentor_name_span.textContent = mentorName;
 				//			mentor_name_span2.textContent = mentorName;
 				student_name_span_sucessful_assigned.textContent = studentName;
-				mentor_name_span_sucessful_assigned.textContent = mentorName;			
+				mentor_name_span_sucessful_assigned.textContent = mentorName;
 				contentWrapper.addEventListener('click', e => e.stopPropagation());
 				modal.classList.toggle('my_open');
 				// Setting global variables so that they can be used as parameter when redirecting
@@ -442,11 +425,11 @@ function assignButtonFunction() {
 			studentRebelMailErrorLabel.style.display = "block";
 			return;
 		}
-	/*	if(!studentRebelMailInput.value.includes("@unlv.nevada.edu")) {
-			studentRebelMailErrorLabel.textContent = "Student rebel mail does not contains @unlv.nevada.edu.";
-			studentRebelMailErrorLabel.style.display = "block";
-			boolSubmitSuccess = false;
-		}*/
+		/*	if(!studentRebelMailInput.value.includes("@unlv.nevada.edu")) {
+				studentRebelMailErrorLabel.textContent = "Student rebel mail does not contains @unlv.nevada.edu.";
+				studentRebelMailErrorLabel.style.display = "block";
+				boolSubmitSuccess = false;
+			}*/
 		if(boolSubmitSuccess == false) return;
 		/* Client side erorr checks done */
 		/* Seding POST request to flask for additional server side check using ajax. */
@@ -477,7 +460,7 @@ function assignButtonFunction() {
 				mentor_name_span.textContent = mentorName;
 				//			mentor_name_span2.textContent = mentorName;
 				student_name_span_sucessful_assigned.textContent = studentLastName + ", " + studentFirstName
-				mentor_name_span_sucessful_assigned.textContent = mentorName;		
+				mentor_name_span_sucessful_assigned.textContent = mentorName;
 				contentWrapper.addEventListener('click', e => e.stopPropagation());
 				modal.classList.toggle('my_open');
 				// Setting global variables for redirecting parameters

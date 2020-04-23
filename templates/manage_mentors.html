@@ -10,7 +10,6 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<style>
-	
 	</style>
 </head>
 
@@ -21,15 +20,13 @@
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='jquery.flexdatalist.min.css') }}">
 	<script type="text/javascript" src="http://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 	<script src="{{url_for('static', filename='jquery.flexdatalist.min.js')}}"></script>
-
 	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
 		<li><a href="/change_password">Change Password</a></li>
-		<li><a style="color:#e74c3c" href="delete_account" >Delete This Account</a></li>
+		<li><a style="color:#e74c3c" href="delete_account">Delete This Account</a></li>
 		<li class="divider"></li>
-		<li><a  style="color:grey" href="/logout">Log Out</a></li>
+		<li><a style="color:grey" href="/logout">Log Out</a></li>
 	</ul>
-	
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
 			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative; cursor:pointer;" class="brand-logo left">HOME</a>
@@ -39,57 +36,44 @@
 				<li><a onclick='window.location.href = "/mentoring_joined"'>Table</a></li>
 				<li><a style="background-color: rgba(0,0,0,0.19);">Manage Mentors</a></li>
 				<li><a onclick='window.location.href = "/manage_students"'>Manage Students</a></li>
-				<li><a onclick='window.location.href = "/backup_database"' >Backup Database</a></li>
+				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
 				<li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
 				<li>
-					<a onclick='window.location.href = "/approve_accounts"'>Account Approval
-						{% if new_approve_accounts > 0 %}
-							<span class="new badge my_badge">{{new_approve_accounts}}</span>
-						{% endif %}
-					</a>
+					<a onclick='window.location.href = "/approve_accounts"'>Account Approval {% if new_approve_accounts > 0 %} <span class="new badge my_badge">{{new_approve_accounts}}</span> {% endif %} </a>
 				</li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>
 	</nav>
-
-    <div class="limiter" id="limiterId">
+	<div class="limiter" id="limiterId">
 		<div class="wrap-table100">
-			<div class="table100" id="main_table"> 
-                <table style="    border-bottom: 1px #7d7d7d5e solid; margin-bottom: 200px;">
-                    <tr style="background-color: #2ecc71;">
-                        <th style="display:none;">Professor Id </th>
-                        <th>Professor Name</th>
-                        <th>Professor Mail</th>
-                        <th>Professor Student Count</th>
-                        <th></th>
-                    </tr>
-                    {% for i in range(mentor_2d_array|length)%}
-                    <tr>
-                        {% for j in range(mentor_2d_array[i]|length)%}
-                        <td>{{mentor_2d_array[i][j]}}</td>
-                        {%endfor%}
-                        <!---<td class="table_option"><i id="floatButtonI" class="large material-icons">list</i></td>-->
-                        <td style="user-select: none !important;">
-                            <a class='dropdown-trigger' data-target='dropdown_table{{i}}'><i id="floatButtonI" class="large material-icons">list</i></a>
-                            <!-- Dropdown Structure -->
-                            <ul id='dropdown_table{{i}}' class='dropdown-content' style="width:max-content !important;height:max-content !important;">
-                                <li><a onclick="editMentor(this)">Edit Mentor</a></li>
-                                <li class="divider"></li>
-                                <li><a onclick="openUpDeleteMentorModal(this)" style="color:red;">Delete Mentor</a></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    {%endfor%}
-                </table>
-            </div>
+			<div class="table100" id="main_table">
+				<table style="    border-bottom: 1px #7d7d7d5e solid; margin-bottom: 200px;">
+					<tr style="background-color: #2ecc71;">
+						<th style="display:none;">Professor Id </th>
+						<th>Professor Name</th>
+						<th>Professor Mail</th>
+						<th>Professor Student Count</th>
+						<th></th>
+					</tr> {% for i in range(mentor_2d_array|length)%} <tr> {% for j in range(mentor_2d_array[i]|length)%} <td>{{mentor_2d_array[i][j]}}</td> {%endfor%}
+						<!---<td class="table_option"><i id="floatButtonI" class="large material-icons">list</i></td>-->
+						<td style="user-select: none !important;">
+							<a class='dropdown-trigger' data-target='dropdown_table{{i}}'><i id="floatButtonI" class="large material-icons">list</i></a>
+							<!-- Dropdown Structure -->
+							<ul id='dropdown_table{{i}}' class='dropdown-content' style="width:max-content !important;height:max-content !important;">
+								<li><a onclick="editMentor(this)">Edit Mentor</a></li>
+								<li class="divider"></li>
+								<li><a onclick="openUpDeleteMentorModal(this)" style="color:red;">Delete Mentor</a></li>
+							</ul>
+						</td>
+					</tr> {%endfor%}
+				</table>
+			</div>
 		</div>
 	</div>
-
-    <div class="fixed-action-btn" id="floatButtonDiv">
+	<div class="fixed-action-btn" id="floatButtonDiv">
 		<a class="btn-floating btn-small blue" id="floatButtonA" onclick='addMentor()'><i id="floatButtonI" class="large material-icons">add</i></a>
 	</div>
-
 	<div class="my_modal" data-modal="trigger-2" id="modal_for_delete_confirmation">
 		<article class="my_content-wrapper">
 			<header class="my_modal-header">
@@ -104,18 +88,17 @@
 			</footer>
 		</article>
 	</div>
-
 	<div class="my_modal" data-modal="trigger-2" id="modal_for_adding_mentor">
 		<article class="my_content-wrapper">
 			<header class="my_modal-header">
 				<h2 style="font-size:1.5vw;">Adding A New Mentor</h2>
 			</header>
 			<div class="my_content" style="margin-top: 40px;margin-bottom: 40px; display:block;">
-				<label  for="default" class="myLabel" id="mentorNameInputLabel">Enter Mentor Name</label>
-				<input  class="myInput" type="text" id="mentorNameInputId" placeholder="Mentor Name" spellcheck="false" autocomplete="off"/>
+				<label for="default" class="myLabel" id="mentorNameInputLabel">Enter Mentor Name</label>
+				<input class="myInput" type="text" id="mentorNameInputId" placeholder="Mentor Name" spellcheck="false" autocomplete="off" />
 				<div style="height:3vh"></div>
-				<label  for="default" class="myLabel" id="mentorEmailInputLabel">Enter Mentor E-Mail</label>
-				<input  class="myInput" type="text" id="mentorEmailInputId" placeholder="mentor@unlv.nevada.edu" spellcheck="false" autocomplete="off"/>
+				<label for="default" class="myLabel" id="mentorEmailInputLabel">Enter Mentor E-Mail</label>
+				<input class="myInput" type="text" id="mentorEmailInputId" placeholder="mentor@unlv.nevada.edu" spellcheck="false" autocomplete="off" />
 			</div>
 			<footer class="my_modal-footer">
 				<button class="my_action" onclick="addNewMentorRequest()">Add</button>
@@ -123,179 +106,148 @@
 			</footer>
 		</article>
 	</div>
-
 </body>
-  <script>
-	  	let mostRecentDeleteItem  = "";
-        //nav bar drop down
-        $(".dropdown-trigger").dropdown({
-        belowOrigin: true
-        });
+<script>
+let mostRecentDeleteItem = "";
+//nav bar drop down
+$(".dropdown-trigger").dropdown({
+	belowOrigin: true
+});
 
+function decodeHtml(str) {
+	return str.replace(/&#(\d+);/g, function(match, dec) {
+		return String.fromCharCode(dec);
+	});
+}
 
-        function decodeHtml(str) {
-            return str.replace(/&#(\d+);/g, function(match, dec) {
-                return String.fromCharCode(dec);
-            });
-        }
-
-		function addNewMentorRequest(){
-			let mentorName = document.getElementById("mentorNameInputId").value;
-			let mentorEmail = document.getElementById("mentorEmailInputId").value;
-			//console.log("adding new mentor " + mentorName + ". With email " + mentorEmail);
-            req = $.ajax({
-                    url: '/add_mentor',
-                    type: 'POST',
-                    data: {
-                        mentor_name: mentorName,
-						mentor_email: mentorEmail
-                    }
-                });
-
-            req.done(function(data) {
-                if(data.RESULT == "SUCCESS"){
-					alert("Mentor " + mentorName + " Added.")
-					location.reload();
-                    return;
-                }
-                else{
-                    alert(data.MSG);
-                    return;
-                }
-            });
+function addNewMentorRequest() {
+	let mentorName = document.getElementById("mentorNameInputId").value;
+	let mentorEmail = document.getElementById("mentorEmailInputId").value;
+	//console.log("adding new mentor " + mentorName + ". With email " + mentorEmail);
+	req = $.ajax({
+		url: '/add_mentor',
+		type: 'POST',
+		data: {
+			mentor_name: mentorName,
+			mentor_email: mentorEmail
 		}
-
-        function addMentor(){
-            document.getElementById("modal_for_adding_mentor").classList.add("my_open");
-        }
-
-		function openUpDeleteMentorModal(element){
-			mostRecentDeleteItem = element;
-			let modal_for_delete_confirmation = document.getElementById('modal_for_delete_confirmation');
-			modal_for_delete_confirmation.classList.add('my_open');
-			let tr = element.parentElement.parentElement.parentElement.parentElement;
-			let mentorName = tr.children[1].textContent;
-			document.getElementById('mentor_name_in_modal_for_delete_confirmation').textContent = mentorName;
+	});
+	req.done(function(data) {
+		if(data.RESULT == "SUCCESS") {
+			alert("Mentor " + mentorName + " Added.")
+			location.reload();
+			return;
+		} else {
+			alert(data.MSG);
+			return;
 		}
+	});
+}
 
-        function deleteMentor(element){
-            let tr = element.parentElement.parentElement.parentElement.parentElement;
-            let professorId = tr.children[0].textContent;
-			let professorName = tr.children[1].textContent;
-            if(parseInt(tr.children[3].textContent) > 0){
-                alert('please make sure this mentor has no students before deleting this mentor.')
-                return;
-            }
-            req = $.ajax({
-                    url: '/delete_mentor',
-                    type: 'POST',
-                    data: {
-                        mentor_id: professorId
-                    }
-                });
+function addMentor() {
+	document.getElementById("modal_for_adding_mentor").classList.add("my_open");
+}
 
-            req.done(function(data) {
-                if(data.RESULT == "SUCCESS"){
-					alert("Mentor " + professorName + " has been deleted.")
-					location.reload();
-                    return;
-                }
-                else{
-                    alert(data.MSG);
-                    return;
-                }
-            });
-        }
+function openUpDeleteMentorModal(element) {
+	mostRecentDeleteItem = element;
+	let modal_for_delete_confirmation = document.getElementById('modal_for_delete_confirmation');
+	modal_for_delete_confirmation.classList.add('my_open');
+	let tr = element.parentElement.parentElement.parentElement.parentElement;
+	let mentorName = tr.children[1].textContent;
+	document.getElementById('mentor_name_in_modal_for_delete_confirmation').textContent = mentorName;
+}
 
-        function editMentor(element){
-            let tr = element.parentElement.parentElement.parentElement.parentElement;
-            let originalInnerHtml = tr.innerHTML;
-            let trChildrenOriginalTextContent = [];
-            for(let i = 1; i <= 2;i++)
-                trChildrenOriginalTextContent.push(tr.children[i].textContent);
+function deleteMentor(element) {
+	let tr = element.parentElement.parentElement.parentElement.parentElement;
+	let professorId = tr.children[0].textContent;
+	let professorName = tr.children[1].textContent;
+	if(parseInt(tr.children[3].textContent) > 0) {
+		alert('please make sure this mentor has no students before deleting this mentor.')
+		return;
+	}
+	req = $.ajax({
+		url: '/delete_mentor',
+		type: 'POST',
+		data: {
+			mentor_id: professorId
+		}
+	});
+	req.done(function(data) {
+		if(data.RESULT == "SUCCESS") {
+			alert("Mentor " + professorName + " has been deleted.")
+			location.reload();
+			return;
+		} else {
+			alert(data.MSG);
+			return;
+		}
+	});
+}
 
+function editMentor(element) {
+	let tr = element.parentElement.parentElement.parentElement.parentElement;
+	let originalInnerHtml = tr.innerHTML;
+	let trChildrenOriginalTextContent = [];
+	for(let i = 1; i <= 2; i++) trChildrenOriginalTextContent.push(tr.children[i].textContent);
+	tr.children[1].innerHTML = "<input class='table_edit_input' spellcheck='false' value='" + trChildrenOriginalTextContent[0] + "'>";
+	tr.children[2].innerHTML = "<input class='table_edit_input' spellcheck='false' value='" + trChildrenOriginalTextContent[1] + "'>";
+	tr.children[4].innerHTML = "<button class='table_action'>Confirm</button><button style='background-color:#ff4a37;' class='table_action'>Cancel</button>";
+	let input1 = tr.children[1].firstElementChild;
+	input1.focus()
+	var val = input1.value;
+	input1.value = '';
+	input1.value = val;
+	tr.children[4].children[0].onclick = function confirmChangeRow() {
+		let newProfessorName = tr.children[1].firstElementChild.value.trim();
+		let newProfessorEmail = tr.children[2].firstElementChild.value.trim();
+		let professorId = tr.children[0].textContent;
+		if(ValidateEmail(newProfessorEmail) == false) {
+			alert("please enter a valid email addersss.")
+			return;
+		}
+		req = $.ajax({
+			url: '/update_mentor',
+			type: 'POST',
+			data: {
+				mentor_id: professorId,
+				new_mentor_name: newProfessorName,
+				new_mentor_email: newProfessorEmail
+			}
+		});
+		req.done(function(data) {
+			if(data.RESULT == "SUCCESS") {
+				var tempTr = document.createElement('tr');
+				tempTr.innerHTML = originalInnerHtml;
+				tempTr.children[1].textContent = newProfessorName;
+				tempTr.children[2].textContent = newProfessorEmail;
+				tempTr.children[4].children[1].style.display = "none";
+				tr.innerHTML = tempTr.innerHTML;
+				$(".dropdown-trigger").dropdown({
+					belowOrigin: true
+				});
+			} else {
+				alert(data.MSG);
+				return;
+			}
+		});
+	}
+	tr.children[4].children[1].onclick = function cancelChangeRow() {
+		var tempTr = document.createElement('tr');
+		tempTr.innerHTML = originalInnerHtml;
+		tempTr.children[4].children[1].style.display = "none";
+		tr.innerHTML = tempTr.innerHTML;
+		$(".dropdown-trigger").dropdown({
+			belowOrigin: true
+		});
+	}
+}
 
-            tr.children[1].innerHTML = "<input class='table_edit_input' spellcheck='false' value='" + trChildrenOriginalTextContent[0] +"'>";
-            tr.children[2].innerHTML = "<input class='table_edit_input' spellcheck='false' value='" + trChildrenOriginalTextContent[1] +"'>";
-
-            tr.children[4].innerHTML = "<button class='table_action'>Confirm</button><button style='background-color:#ff4a37;' class='table_action'>Cancel</button>";
-
-            let input1 = tr.children[1].firstElementChild;
-            input1.focus()
-            var val = input1.value; 
-            input1.value = ''; 
-            input1.value = val;  
-
-
-            tr.children[4].children[0].onclick =  function confirmChangeRow(){
-                let newProfessorName = tr.children[1].firstElementChild.value.trim();
-                let newProfessorEmail = tr.children[2].firstElementChild.value.trim();
-                let professorId = tr.children[0].textContent;
-
-                if(ValidateEmail(newProfessorEmail) == false){
-                    alert("please enter a valid email addersss.")
-                    return;
-                }
-
-
-                req = $.ajax({
-                        url: '/update_mentor',
-                        type: 'POST',
-                        data: {
-                            mentor_id: professorId,
-                            new_mentor_name: newProfessorName,
-                            new_mentor_email: newProfessorEmail
-                        }
-                    });
-
-                req.done(function(data) {
-                    if(data.RESULT == "SUCCESS"){
-                        var tempTr = document.createElement('tr');
-                        tempTr.innerHTML = originalInnerHtml;
-                        
-                        tempTr.children[1].textContent = newProfessorName;
-                        tempTr.children[2].textContent = newProfessorEmail;
-                        tempTr.children[4].children[1].style.display = "none";
-
-                        tr.innerHTML = tempTr.innerHTML;
-                        $(".dropdown-trigger").dropdown({
-                            belowOrigin: true
-                        });
-                    }
-                    else{
-                        alert(data.MSG);
-                        return;
-                    }
-                });
-            }
-
-            tr.children[4].children[1].onclick = function cancelChangeRow(){
-                var tempTr = document.createElement('tr');
-                tempTr.innerHTML = originalInnerHtml;
-                tempTr.children[4].children[1].style.display = "none";
-                tr.innerHTML = tempTr.innerHTML;
-                $(".dropdown-trigger").dropdown({
-                    belowOrigin: true
-                });
-            }
-
-
-        }
-
-        function ValidateEmail(mail) 
-        {
-            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
-            {
-                return (true)
-            }
-
-            return (false)
-        }
-    
-
-
-
-
-  </script>
+function ValidateEmail(mail) {
+	if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+		return (true)
+	}
+	return (false)
+}
+</script>
 
 </html>

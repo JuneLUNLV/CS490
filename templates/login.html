@@ -36,75 +36,62 @@
 						</div>
 						<div class="btn btn-lg btn-block btn-primary mt-4" onclick="login()" id="login_id"> Log In </div>
 						<!-- <a href="#" class="float-right mt-2">Forgot Password? </a> -->
-					</form>
-					{% with messages = get_flashed_messages() %}
-					{% if messages %}
-						{% for message in messages %}
-							{% if "You need to login!" in message %}
-								<script>alert("You need to login to access this page")</script>
-							{% endif %}
-						{% endfor %}
-					{% endif %}
-					{% endwith %}
-
+					</form> {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %} {% if "You need to login!" in message %} <script>
+					alert("You need to login to access this page")
+					</script> {% endif %} {% endfor %} {% endif %} {% endwith %}
 				</div>
 				<a href="/create_account" class="text-center d-block mt-2">Create an account? </a>
 			</div>
 		</div>
 	</div>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
-	</body>
+</body>
 <script>
-	$(document).keypress(
-	function(event){
-		if (event.which == '13') {
+$(document).keypress(function(event) {
+	if(event.which == '13') {
 		event.preventDefault();
+	}
+});
+
+function login() {
+	username = document.getElementById('username').value;
+	password = document.getElementById('password').value;
+	if(username.length < 1) {
+		alert("Username cannot be empty")
+		return;
+	}
+	if(password.length < 1) {
+		alert("Password cannot be empty")
+		return;
+	}
+	req = $.ajax({
+		url: '/login_request',
+		type: 'POST',
+		data: {
+			username: username,
+			password: password
 		}
 	});
-
-	function login(){
-		username = document.getElementById('username').value;
-		password = document.getElementById('password').value;
-		if(username.length < 1){
-			alert("Username cannot be empty")
-			return;
+	// When request done, see if all the server side checks are valid, if not, error label is displayed
+	req.done(function(data) {
+		console.log("data.RESULT: " + data.RESULT);
+		console.log("data.MSG: " + data.MSG);
+		if(data.RESULT == "SUCCESS") {
+			location.href = data.MSG
+		} else {
+			alert(data.MSG)
 		}
-
-		if(password.length < 1){
-			alert("Password cannot be empty")
-			return;
-		}
-
-		req = $.ajax({
-				url: '/login_request',
-				type: 'POST',
-				data: {
-					username: username,
-					password: password
-				}
-			});
-		// When request done, see if all the server side checks are valid, if not, error label is displayed
-		req.done(function(data) {
-			console.log("data.RESULT: " + data.RESULT);
-			console.log("data.MSG: " + data.MSG);
-			if(data.RESULT == "SUCCESS"){
-				location.href = data.MSG
-			}
-			else{
-				alert(data.MSG)
-			}
-		});
+	});
+}
+document.getElementById('mybody').addEventListener("keyup", function(event) {
+	// Number 13 is the "Enter" key on the keyboard
+	if(event.keyCode === 13) {
+		// Cancel the default action, if needed
+		event.preventDefault();
+		// Trigger the button element with a click
+		document.getElementById("login_id").click();
 	}
-
-	document.getElementById('mybody').addEventListener("keyup", function(event) {
-		// Number 13 is the "Enter" key on the keyboard
-		if (event.keyCode === 13) {
-			// Cancel the default action, if needed
-			event.preventDefault();
-			// Trigger the button element with a click
-			document.getElementById("login_id").click();
-		}
-	});	
-
+});
 </script>
+
 </html>

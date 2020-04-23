@@ -6,11 +6,11 @@
 	<link rel="apple-touch-icon" type="image/png" href="https://www.unlv.edu/sites/default/files/assets/style-guide/images/logos/apple-touch-icon-180x180-precomposed.png" />
 	<meta name="apple-mobile-web-app-title" content="CodePen">
 	<link rel="shortcut icon" type="image/x-icon" href="https://www.unlv.edu/sites/default/files/assets/style-guide/images/logos/apple-touch-icon-180x180-precomposed.png" />
-    <link rel="mask-icon" type="" href="https://www.unlv.edu/sites/default/files/assets/style-guide/images/logos/apple-touch-icon-180x180-precomposed.png" color="#111" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link rel="mask-icon" type="" href="https://www.unlv.edu/sites/default/files/assets/style-guide/images/logos/apple-touch-icon-180x180-precomposed.png" color="#111" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<title>UNLV CS Mentor App - Delete Account</title>
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css'>
 	<script>
 	window.console = window.console || function(t) {};
@@ -19,36 +19,31 @@
 	if(document.location.search.match(/type=embed/gi)) {
 		window.parent.postMessage("resize", "*");
 	}
-    </script>
-    <style>
-        .dropdown-content {
-		    top: 100% !important;
-	    }
+	</script>
+	<style>
+	.dropdown-content {
+		top: 100% !important;
+	}
 
-        #drop_down_nav_id:hover{
-		color:white !important;
+	#drop_down_nav_id:hover {
+		color: white !important;
 		text-decoration: none;
 	}
 
-	nav ul a:hover{
+	nav ul a:hover {
 		text-decoration: none !important;
 	}
-
-
-
-    </style>
+	</style>
 </head>
+
 <body translate="no" id="mybody">
-
-
 	<ul id="dropdown1" class="dropdown-content">
 		<li class="divider"></li>
 		<li><a href="/change_password">Change Password</a></li>
-		<li><a style="color:#e74c3c" href="delete_account" >Delete This Account</a></li>
+		<li><a style="color:#e74c3c" href="delete_account">Delete This Account</a></li>
 		<li class="divider"></li>
-		<li><a  style="color:grey" href="/logout">Log Out</a></li>
+		<li><a style="color:grey" href="/logout">Log Out</a></li>
 	</ul>
-	
 	<nav>
 		<div class="nav-wrapper" style="background-color: #2b97d6;">
 			<a onclick='window.location.href = "/"' style="margin-left: 20px;margin-right: 40px;position:relative; cursor:pointer;" class="brand-logo left">HOME</a>
@@ -58,15 +53,12 @@
 				<li><a onclick='window.location.href = "/mentoring_joined"'>Table</a></li>
 				<li><a onclick='window.location.href = "/manage_mentors"'>Manage Mentors</a></li>
 				<li><a onclick='window.location.href = "/manage_students"'>Manage Students</a></li>
-                <li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
-                <li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
+				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
+				<li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" id="drop_down_nav_id" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>
 	</nav>
-
-
-
 	<div class="container mt-2">
 		<div class="row justify-content-center align-items-center text-center p-2" style="margin-top: 30%;">
 			<div class="m-1 col-sm-8 col-md-6 col-lg-4 shadow-sm p-3 mb-5 bg-white border rounded">
@@ -75,83 +67,72 @@
 					<p class="text-center text-uppercase mt-3">Delete Account</p>
 					<form class="form text-center" method="POST">
 						<div class="form-group input-group-md" style="text-align: left; margin-top:40px;">
-                            <p>Deleting account <span id="delete_account_username" style="font-weight: bold;">username</span>.</p>
-                            <p>Enter password to confirm this action.</p>
+							<p>Deleting account <span id="delete_account_username" style="font-weight: bold;">username</span>.</p>
+							<p>Enter password to confirm this action.</p>
 						</div>
 						<div class="form-group input-group-md">
 							<input type="password" class="form-control" id="password" name="password" placeholder="Password To Confirm">
-                        </div>
-                    
-						<div class="btn btn-lg btn-block btn-primary mt-4"  style="background-color:#ff295a; border:none; padding-bottom: 35px;" onclick="delete_account_request()" id="delete_account_request_id">Delete Account</div>
+						</div>
+						<div class="btn btn-lg btn-block btn-primary mt-4" style="background-color:#ff295a; border:none; padding-bottom: 35px;" onclick="delete_account_request()" id="delete_account_request_id">Delete Account</div>
 					</form>
-
 				</div>
-
 			</div>
 		</div>
 	</div>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-	</body>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
 <script>
-
-    $(".dropdown-trigger").dropdown({
-        belowOrigin: true
-    });
-
-	$(document).keypress(
-	function(event){
-		if (event.which == '13') {
+$(".dropdown-trigger").dropdown({
+	belowOrigin: true
+});
+$(document).keypress(function(event) {
+	if(event.which == '13') {
 		event.preventDefault();
+	}
+});
+current_user_name = decodeHtml("{{current_user_name}}");
+document.getElementById('delete_account_username').textContent = current_user_name;
+
+function decodeHtml(str) {
+	return str.replace(/&#(\d+);/g, function(match, dec) {
+		return String.fromCharCode(dec);
+	});
+}
+
+function delete_account_request() {
+	password = document.getElementById('password').value;
+	if(password.length < 1) {
+		alert("Password cannot be empty.")
+		return;
+	}
+	req = $.ajax({
+		url: '/delete_account_request',
+		type: 'POST',
+		data: {
+			password: password
 		}
 	});
-
-    current_user_name = decodeHtml("{{current_user_name}}");
-    document.getElementById('delete_account_username').textContent = current_user_name;
-
-    function decodeHtml(str) {
-      return str.replace(/&#(\d+);/g, function(match, dec) {
-        return String.fromCharCode(dec);
-      });
-    }
-
-	function delete_account_request(){
-		password = document.getElementById('password').value;
-		if(password.length < 1){
-			alert("Password cannot be empty.")
-			return;
+	req.done(function(data) {
+		console.log("data.RESULT: " + data.RESULT);
+		console.log("data.MSG: " + data.MSG);
+		if(data.RESULT == "SUCCESS") {
+			alert("Account Deleted")
+			location.href = data.MSG
+		} else {
+			alert(data.MSG)
 		}
-
-		req = $.ajax({
-				url: '/delete_account_request',
-				type: 'POST',
-				data: {
-					password: password
-				}
-			});
-
-		req.done(function(data) {
-			console.log("data.RESULT: " + data.RESULT);
-			console.log("data.MSG: " + data.MSG);
-			if(data.RESULT == "SUCCESS"){
-				alert("Account Deleted")
-				location.href = data.MSG
-			}
-			else{
-				alert(data.MSG)
-			}
-		});
+	});
+}
+document.getElementById('mybody').addEventListener("keyup", function(event) {
+	// Number 13 is the "Enter" key on the keyboard
+	if(event.keyCode === 13) {
+		// Cancel the default action, if needed
+		event.preventDefault();
+		// Trigger the button element with a click
+		document.getElementById("delete_account_request_id").click();
 	}
-
-	document.getElementById('mybody').addEventListener("keyup", function(event) {
-		// Number 13 is the "Enter" key on the keyboard
-		if (event.keyCode === 13) {
-			// Cancel the default action, if needed
-			event.preventDefault();
-			// Trigger the button element with a click
-			document.getElementById("delete_account_request_id").click();
-		}
-	});	
-
+});
 </script>
+
 </html>

@@ -55,6 +55,13 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
 	</body>
 <script>
+	$(document).keypress(
+	function(event){
+		if (event.which == '13') {
+		event.preventDefault();
+		}
+	});
+
 	function login(){
 		username = document.getElementById('username').value;
 		password = document.getElementById('password').value;

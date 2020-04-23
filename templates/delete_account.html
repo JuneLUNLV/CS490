@@ -73,7 +73,7 @@
 				<div class="pt-5 pb-5">
 					<img class="rounded mx-auto d-block" src="https://www.unlv.edu/sites/default/files/assets/style-guide/images/logos/apple-touch-icon-180x180-precomposed.png" alt="" width=70px height=70px>
 					<p class="text-center text-uppercase mt-3">Delete Account</p>
-					<form class="form text-center" action="/login_request" method="POST">
+					<form class="form text-center" method="POST">
 						<div class="form-group input-group-md" style="text-align: left; margin-top:40px;">
                             <p>Deleting account <span id="delete_account_username" style="font-weight: bold;">username</span>.</p>
                             <p>Enter password to confirm this action.</p>
@@ -98,6 +98,13 @@
     $(".dropdown-trigger").dropdown({
         belowOrigin: true
     });
+
+	$(document).keypress(
+	function(event){
+		if (event.which == '13') {
+		event.preventDefault();
+		}
+	});
 
     current_user_name = decodeHtml("{{current_user_name}}");
     document.getElementById('delete_account_username').textContent = current_user_name;
@@ -127,6 +134,7 @@
 			console.log("data.RESULT: " + data.RESULT);
 			console.log("data.MSG: " + data.MSG);
 			if(data.RESULT == "SUCCESS"){
+				alert("Account Deleted")
 				location.href = data.MSG
 			}
 			else{
@@ -144,5 +152,6 @@
 			document.getElementById("delete_account_request_id").click();
 		}
 	});	
+
 </script>
 </html>

@@ -27,7 +27,7 @@
 				<div class="pt-5 pb-5">
 					<img class="rounded mx-auto d-block" src="https://www.unlv.edu/sites/default/files/assets/style-guide/images/logos/apple-touch-icon-180x180-precomposed.png" alt="" width=70px height=70px>
 					<p class="text-center text-uppercase mt-3">Create Account</p>
-					<form class="form text-center" action="/login_request" method="POST">
+					<form class="form text-center"  method="POST">
 						<div class="form-group input-group-md">
 							<input type="text" class="form-control" id="username" name="username" placeholder="Create Username">
 						</div>
@@ -52,7 +52,13 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
 	</body>
 <script>
-
+	
+	$(document).keypress(
+	function(event){
+		if (event.which == '13') {
+		event.preventDefault();
+		}
+	});
 
 	function ValidateEmail(mail) 
 	{

@@ -6,7 +6,7 @@ username = "admin"
 password = "password"
 
 
-if len(sys.argv) < 1:
+if len(sys.argv) > 1:
     username = sys.argv[1]
     password = sys.argv[2]
 

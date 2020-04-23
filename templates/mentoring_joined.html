@@ -552,6 +552,12 @@
 		}
 	}
 
+	.my_badge{
+		margin-left: 7px !important;
+		background-color: #7d3aff !important;
+		border-radius: 10px !important;
+	}
+
 
 	</style>
 </head>
@@ -584,6 +590,13 @@
 				<li><a onclick='window.location.href = "/manage_students"'>Manage Students</a></li>
 				<li><a onclick='window.location.href = "/backup_database"'>Backup Database</a></li>
 				<li><a onclick='window.location.href = "/restore_database"'>Restore Database</a></li>
+				<li>
+					<a onclick='window.location.href = "/approve_accounts"'>Account Approval
+						{% if new_approve_accounts > 0 %}
+							<span class="new badge my_badge">{{new_approve_accounts}}</span>
+						{% endif %}
+					</a>
+				</li>
 				<li><a style="position: absolute;right: 0px; margin-right: 20px;" class="dropdown-trigger" href="#!" data-target="dropdown1">{{ current_user_name[0]|upper}}{{current_user_name[1:] }}<i class="material-icons right">arrow_drop_down</i></a></li>
 			</ul>
 		</div>

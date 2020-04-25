@@ -81,6 +81,12 @@ def signup(username,password):
     db.session.add(new_user)
     db.session.commit()
 
+def getCurrentUserName():     
+    if(current_user.is_authenticated == True):
+        return(current_user.username)
+    else:
+        return ""
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))    
@@ -141,9 +147,7 @@ def logout():
 @app.route('/change_password')
 @login_required
 def change_password():
-    current_user_name  = ""
-    if(current_user.is_authenticated == True):
-        current_user_name = current_user.username
+    current_user_name  = getCurrentUserName()
     return render_template("change_password.html",current_user_name=current_user_name,new_approve_accounts=new_approve_accounts)
 
 @app.route('/change_password_request', methods=['POST','GET'])
@@ -162,9 +166,7 @@ def change_password_request():
 @app.route('/delete_account')
 @login_required
 def delete_account():
-    current_user_name  = ""
-    if(current_user.is_authenticated == True):
-        current_user_name = current_user.username
+    current_user_name  = getCurrentUserName()
     return render_template("delete_account.html",current_user_name=current_user_name,new_approve_accounts=new_approve_accounts)
 
 @app.route('/delete_account_request', methods=['POST','GET'])
@@ -199,6 +201,7 @@ def showall():
     most_recent_mentoring_updates_table=[db_helper.readTableIntoDataFrame(connection,'most_recent_mentoring_updates').to_html(classes='data',index=False)],                     
     numberForEachTable=db_helper.getAllNumbers(cursor),
     professorDictionary=db_helper.getProfessorAndStudentNumberInDicionary(cursor),
+    overall_changes_table = [db_helper.readTableIntoDataFrame(connection,'overall_changes').to_html(classes='data',index=False)], 
     new_approve_accounts=new_approve_accounts)
 
 # The main route for this APP
@@ -237,9 +240,7 @@ def mainMenu():
         })) + ","
     studentString = '[' + studentString[:-1] + ']'    
     
-    current_user_name  = ""
-    if(current_user.is_authenticated == True):
-        current_user_name = current_user.username
+    current_user_name  = getCurrentUserName()
 
     return render_template("main_menu.html",
                            studentJson=studentString, 
@@ -287,6 +288,8 @@ def update_from_professor_datalist():
 # UPDATE the mentoring table by the assign button
 @app.route('/assign_mentor_existed_student',methods=['POST','GET'])
 def assign_mentor_existed_student():
+    current_user_name  = getCurrentUserName()
+        
     studentId = globalMentoring.student_id
     professorId = globalMentoring.professor_id
     studentName = globalMentoring.studentName
@@ -301,8 +304,8 @@ def assign_mentor_existed_student():
     studentRebelMail = db_helper.getStudentObjectById(cursor,studentId).email
     
     print("student " + studentName + " is assinged to mentor " + mentorName + " assigned date: " + assignDate + " end date " + endDate + ".")
-    db_helper.assignExistedStudentToProfessorById(connection,studentId,professorId,assignDate,endDate)
-    db_helper.insertDataToMost_recent_mentoring_updatesTable(connection,relationship_id) 
+    db_helper.assignExistedStudentToProfessorById(connection,studentId,professorId,assignDate,endDate,current_user_name)
+#    db_helper.insertDataToMost_recent_mentoring_updatesTable(connection,relationship_id) 
 #     if email_option_checked == "true":
 #         try:
 #             msg = Message(subject="Mentor request",
@@ -356,6 +359,8 @@ def assign_mentor_existed_student_check():
     
 @app.route('/assign_mentor_new_stduent',methods=['POST','GET'])
 def assign_mentor_new_stduent():
+    current_user_name  = getCurrentUserName()
+        
     professorId = globalMentoring.professor_id
     studentName = globalMentoring.studentName
     mentorName = globalMentoring.professorName
@@ -371,7 +376,7 @@ def assign_mentor_new_stduent():
     mentorEmail = db_helper.getProfessorObjectById(cursor,professorId).email
     
     print("New student " + studentName + " is assinged to mentor " + mentorName + " assigned date: " + assignDate + " end date " + endDate + ".")
-    studentId = db_helper.insertNewStudent(cursor,studentLastName,studentFirstName,studentRebelMail)
+    studentId = db_helper.insertNewStudent(connection,studentLastName,studentFirstName,studentRebelMail,current_user_name)
     print("Student id from insertNewStudent: " + str(studentId))
     db_helper.assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,endDate)
     if email_option_checked == "true":
@@ -448,9 +453,7 @@ def mentoring_joined():
     except:
         studentName = ""
         
-    current_user_name  = ""
-    if(current_user.is_authenticated == True):
-        current_user_name = current_user.username
+    current_user_name  = getCurrentUserName()
         
     return render_template("mentoring_joined.html",
         mentoring_joined_tables=[db_helper.readDatabaseIntoDataframe(connection,True).to_html(classes='data',index=False)],
@@ -470,9 +473,7 @@ def apply_settings():
 @app.route('/backup_database',methods=['POST','GET'])
 @login_required
 def backup_database():
-    current_user_name  = ""
-    if(current_user.is_authenticated == True):
-        current_user_name = current_user.username       
+    current_user_name  = getCurrentUserName()      
         
     return render_template("backup_database.html",current_user_name=current_user_name,new_approve_accounts=new_approve_accounts) 
 
@@ -576,30 +577,36 @@ def manage_students():
 
 @app.route('/update_mentor',methods=['POST','GET'])
 def update_mentor():
+    current_user_name  = getCurrentUserName()
+        
     mentor_id = request.form['mentor_id']
     new_mentor_name = request.form['new_mentor_name']
     new_mentor_email = request.form['new_mentor_email']
     new_mentor_name = new_mentor_name.lstrip().rstrip().lower()
     new_mentor_email = new_mentor_email.lstrip().rstrip().lower()
     
-    result = db_helper.updateMentor(connection,mentor_id,new_mentor_name,new_mentor_email)
+    result = db_helper.updateMentor(connection,mentor_id,new_mentor_name,new_mentor_email,current_user_name)
     return jsonify({'RESULT':result[0],'MSG':result[1]})
     
 @app.route('/delete_mentor',methods=['POST','GET'])
 def delete_mentor():
+    current_user_name  = getCurrentUserName()
+        
     mentor_id = request.form['mentor_id']
     student_count = db_helper.getNumberOfStudentForMentorID(cursor,mentor_id)
     if student_count is not "null":
         if student_count > 0:
             return jsonify({'RESULT':"FAIL",'MSG':'please make sure this mentor has no students before deleting this mentor.'})
         else:
-            result = db_helper.deleteProfessorById(connection,mentor_id)
+            result = db_helper.deleteProfessorById(connection,mentor_id,current_user_name)
             return jsonify({'RESULT':result[0],'MSG':result[1]})
     else:
         return jsonify({'RESULT':"FAIL",'MSG':'Unable to find mentor.'})
     
 @app.route('/update_student',methods=['POST','GET'])
 def update_student():
+    current_user_name  = getCurrentUserName()
+        
     student_id = request.form['student_id']
     new_student_last_name = request.form['new_student_last_name']
     new_student_first_name = request.form['new_student_first_name']
@@ -608,30 +615,32 @@ def update_student():
     new_student_first_name = new_student_first_name.lstrip().rstrip().lower()
     new_student_email = new_student_email.lstrip().rstrip().lower()
     
-    result = db_helper.updateStudent(connection,student_id,new_student_last_name,new_student_first_name,new_student_email)
+    result = db_helper.updateStudent(connection,student_id,new_student_last_name,new_student_first_name,new_student_email,current_user_name)
     return jsonify({'RESULT':result[0],'MSG':result[1]})
     
 @app.route('/delete_student',methods=['POST','GET'])
 def delete_student():
+    current_user_name  = getCurrentUserName()
+        
     student_id = request.form['student_id']
-    result = db_helper.deleteStudentById(connection,student_id)
+    result = db_helper.deleteStudentById(connection,student_id,current_user_name)
     return jsonify({'RESULT':result[0],'MSG':result[1]})
 
                 
 @app.route('/add_mentor',methods=['POST','GET'])
 def add_mentor():
+    current_user_name  = getCurrentUserName()
+        
     mentor_name = request.form['mentor_name'].lstrip().rstrip().lower()
     mentor_email = request.form['mentor_email'].lstrip().rstrip().lower()
     print(mentor_name + ": " + mentor_email)
-    result = db_helper.addMentor(connection,mentor_name,mentor_email)
+    result = db_helper.addMentor(connection,mentor_name,mentor_email,current_user_name)
     return jsonify({'RESULT':result[0],'MSG':result[1]})
         
 @app.route('/restore_database',methods=['POST','GET'])
 @login_required
 def restore_database():
-    current_user_name  = ""
-    if(current_user.is_authenticated == True):
-        current_user_name = current_user.username       
+    current_user_name  = getCurrentUserName()       
         
     return render_template("restore_database.html",current_user_name=current_user_name,new_approve_accounts=new_approve_accounts)     
     
@@ -715,7 +724,6 @@ def restore_database_request():
         cursor = connection.cursor()
         return jsonify({'RESULT':'FAIL','MSG':'The file is not type .db nor .csv. Please make sure the right file is selected.'})
     
-    return returnMsg
     
 @app.before_request
 def before_request():
@@ -759,9 +767,7 @@ def create_account_request():
 
 @app.route('/approve_accounts',methods=['POST','GET'])
 def approve_accounts():
-    current_user_name  = ""
-    if(current_user.is_authenticated == True):
-        current_user_name = current_user.username  
+    current_user_name  = getCurrentUserName() 
         
     user_approve_array = User_to_approve.query.all()
     approve_account_2d_array = []
@@ -796,7 +802,7 @@ def disapprove_account_request():
         db.session.commit()
         return jsonify({'RESULT':'SUCCESS','MSG':'Account Disapproved'})
     except Exception as e:
-        return jsonify({'RESULT':'FAIL','MSG':str(e)})    
+        return jsonify({'RESULT':'FAIL','MSG':str(e)})       
 
     
 # Running the app here

@@ -29,10 +29,83 @@
 	tr:hover {
 		background-color: #AFFFE1;
 	}
-	</style>
-</head>
 
-<body>
+	.float-button {
+		position: fixed;
+		transition: all 0.2s ease-in 0s;
+		z-index: 9999;
+		cursor: pointer;
+		background-color: #0455e8;
+		top:300px;
+		right:-75px;
+		visibility: hidden;
+		user-select: none;
+		
+	}
+
+
+	.table_contents_td{
+		color:white;
+		border-color: white;
+	}
+
+	.longer_table_row{
+		position: fixed;
+		transition: all 0.2s ease-in 0s;
+		z-index: 9999;
+		cursor: pointer;
+		background-color: #0455e8;
+		right:-75px;
+		color:#0455e8;
+		user-select: none;
+		visibility:hidden;
+	}
+
+
+	.normal_tr:hover{
+		background-color:chocolate;
+		
+	}
+
+	#ending_blank{
+		margin-bottom: 10%;
+	}
+	</style>
+
+
+
+
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<body onload="bodyLoadFunction()">
+	<div class="longer_table_row" id='longer_table_row_id' onmouseover="extendFunction()" onmouseout="hideFunction()">_</div>
+	<div class="float-button" id="float-div-id" onmouseover="extendFunction()" onmouseout="hideFunction()">
+		<table style="width:100%">
+			<tr class='normal_tr'>
+			  <td class="table_contents_td" onclick="document.getElementById('main_table_h1_id').scrollIntoView();">Joined Table</td>
+			</tr>
+			<tr class='normal_tr'>
+			  <td  class="table_contents_td" onclick="document.getElementById('mentoring_table_h1_id').scrollIntoView();">Mentoring Table</td>
+			</tr>
+			<tr class='normal_tr'>
+				<td  class="table_contents_td" onclick="document.getElementById('student_table_h1_id').scrollIntoView();">Student Table</td>
+			</tr>
+			<tr class='normal_tr'>
+				<td  class="table_contents_td" onclick="document.getElementById('professor_table_h1_id').scrollIntoView();">Professor Table</td>
+			</tr>
+			<tr class='normal_tr'>
+				<td  class="table_contents_td" onclick="document.getElementById('offline_data_table_h1_id').scrollIntoView();">Offline Data Table</td>
+			</tr>
+			<tr class='normal_tr'>
+				<td  class="table_contents_td" onclick="document.getElementById('most_recent_mentroing_updates_table_h1_id').scrollIntoView();">Most Rencent Mentoring Update Table</td>
+			</tr>
+			<tr class='normal_tr'>
+				<td  class="table_contents_td" onclick="document.getElementById('overall_changes_table_h1_id').scrollIntoView();">Overall Changes Table</td>
+			</tr>
+		  </table>
+	</div>
+	
+	
 	<h2>total number of student: {{numberForEachTable[0]}}</h2>
 	<h2>total number of mentor: {{numberForEachTable[1]}}</h2>
 	<h2>total numebr of rows in mentoring table: {{numberForEachTable[2]}}</h2>
@@ -40,18 +113,70 @@
 	<h2>Percentage: {{(numberForEachTable[5] * 100)|round|int}}%</h2>
 	<h2>maximum number of student allowed to assign per mentor: {{numberForEachTable[4]}}</h2>
 	<h2> {%   for key, value in professorDictionary.items() %} {{key}}: {{value}} {%endfor%} </h2>
-	<h1 style="text-align: center;"> joined table</h1>
+	<h1 style="text-align: center;" id="main_table_h1_id"> joined table</h1>
 	<table> {% for table in mentoring_tables %} {{ table|safe }} {% endfor %} </table>
-	<h1 style="text-align: center;"> mentoring table</h1>
+	<h1 style="text-align: center;" id="mentoring_table_h1_id"> mentoring table</h1>
 	<table> {% for table in mentor_table %} {{ table|safe }} {% endfor %} </table>
-	<h1 style="text-align: center;"> student table</h1>
+	<h1 style="text-align: center;" id="student_table_h1_id"> student table</h1>
 	<table> {% for table in student_table %} {{ table|safe }} {% endfor %} </table>
-	<h1 style="text-align: center;"> professor table</h1>
+	<h1 style="text-align: center;" id="professor_table_h1_id"> professor table</h1>
 	<table> {% for table in professor_table %} {{ table|safe }} {% endfor %} </table>
-	<h1 style="text-align: center;"> offline_data table</h1>
+	<h1 style="text-align: center;" id="offline_data_table_h1_id"> offline_data table</h1>
 	<table> {% for table in offline_data_table %} {{ table|safe }} {% endfor %} </table>
-	<h1 style="text-align: center;"> most_recent_mentoring_updates table</h1>
+	<h1 style="text-align: center;" id="most_recent_mentroing_updates_table_h1_id"> most_recent_mentoring_updates table</h1>
 	<table> {% for table in most_recent_mentoring_updates_table %} {{ table|safe }} {% endfor %} </table>
+	<h1 style="text-align: center;" id="overall_changes_table_h1_id"> overall_changes table</h1>
+	<table> {% for table in overall_changes_table %} {{ table|safe }} {% endfor %} </table>
+	<div id="ending_blank"></div>
 </body>
+
+<script>
+	let trWidth = 0;
+	let trHeight = 0;
+	let floatDivTop = 0;
+
+	function bodyLoadFunction(){
+		trWidth = $('.normal_tr').width();
+		trHeight = $('.normal_tr').height();
+		floatDivTop = $(window).height() * 0.5;
+		$('.float-button').css("top",floatDivTop)
+		$('#longer_table_row_id').css("top",floatDivTop-trHeight);
+		$('#longer_table_row_id').width(trWidth+20);
+		$('#longer_table_row_id').height(trHeight);
+		$('#float-div-id').css('right',-trWidth);
+		$('#longer_table_row_id').css('right',-trWidth);
+		setTimeout(function() {
+			$('#float-div-id').css('visibility',"visible");	
+			$('#longer_table_row_id').css('visibility',"visible");
+		}, 200); // waiting one second	
+	}
+	
+	function resizeFunction(){
+		trWidth = $('.normal_tr').width();
+		trHeight = $('.normal_tr').height();
+		floatDivTop = $(window).height() * 0.5;
+		$('.float-button').css("top",floatDivTop)
+		$('#longer_table_row_id').css("top",floatDivTop-trHeight);
+		$('#longer_table_row_id').width(trWidth+20);
+		$('#longer_table_row_id').height(trHeight);
+		$('#float-div-id').css('right',-trWidth);
+		$('#longer_table_row_id').css('right',-trWidth);
+	}
+
+
+	function extendFunction(){
+		$('#float-div-id').css('right','0px')
+		$('#longer_table_row_id').css('right','0px')
+	}
+
+	function hideFunction(){
+		$('#float-div-id').css('right',-trWidth)
+		$('#longer_table_row_id').css('right',-trWidth)		
+	}
+
+	window.addEventListener("resize", resizeFunction);
+
+	
+</script>
 
 </html>

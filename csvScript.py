@@ -27,6 +27,7 @@ def runScript():
   db_helper.createMentoringTable(cursor)
   db_helper.createOfflineDataTable(cursor)
   db_helper.createMost_recent_mentoring_updatesTable(cursor)
+  db_helper.createOverall_changesTable(cursor)
 
   connection.execute("PRAGMA foreign_keys = ON;")
 

@@ -15,11 +15,21 @@ import logging
 #Chua,Andreana id 144 repeated
 
 # df(Pandas):					['Professor', 'Student', 'Rebel_Mail', 'Assigned_Date'] 
-# student(mysqlite_table):		['ID'(PRIMARY KEY,AUTOINCREMENT), 'lastname'(lowercase), 'firstname(lowercase)', 'email'] UNIQUE(lastname,firstname,email)
-# professor(mysqlite_table):	['ID'(PRIMARY KEY, AUTOINCREMENT), 'lastname'(lowercase), 'firstname'(lowercase), 'email'] UNIQUE(lastname,firstname,email)
-# mentoring(mysqlite_table):	['ID'(PRIMARY, AUTOINCREMENT), 'professor_id'(FOREIGN), 'student_id'(FOREIGN), 'dateAssigned'(NULLABLE), 'endDate'(NULLABLE)] UNIQUE(professor_id,student_id)
 
+# faculty_mentor.db
+#---------------------------------------------
+# student(sqlite_table):		['ID'(PRIMARY KEY,AUTOINCREMENT), 'lastname'(lowercase), 'firstname(lowercase)', 'email'] UNIQUE(lastname,firstname,email)
+# professor(sqlite_table):	['ID'(PRIMARY KEY, AUTOINCREMENT), 'lastname'(lowercase), 'firstname'(lowercase), 'email'] UNIQUE(lastname,firstname,email)
+# mentoring(sqlite_table):	['ID'(PRIMARY, AUTOINCREMENT), 'professor_id'(FOREIGN), 'student_id'(FOREIGN), 'dateAssigned'(NULLABLE), 'endDate'(NULLABLE)] UNIQUE(professor_id,student_id)
+# offline_data(sqlite_table): ['ID'(PRIMARY,AUTOINCREMENT), 'data_name','data_value']
+# most_recent_mentoring_updates: ['ID'(PRIMARY,AUTOINCREMENT),'mentoring_id'(foreign key referencing id from mentoring), 'modify_date']
+#---------------------------------------------
 
+# login.db
+#---------------------------------------------
+# User(sqlite_table, with sqlalchemy): ['ID'(PRIMARY KEY), 'username'(unqiue,lowercase), 'password']
+# User_to_approve(sqlite_table, with sqlalchemy): ['ID'(PRIMARY KEY), 'username'(unique,lowercase), 'password', 'email'(lowercase)]
+#---------------------------------------------
 
 # ----------------------------------- Student Database Table Related Code Area ----------------------------------------------------------------
 ###############################################################################################################################################
@@ -132,7 +142,7 @@ def getStudentObjectById(cursor,id):
 	return student
 
 #   Delete a row in student TABLE by student id, return "SUCESSS" or "FAIL"
-def deleteStudentById(connection,id):
+def deleteStudentById(connection,id,username):
 	sql_command = 'DELETE FROM student WHERE ID = ' + str(id)  + ';'
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 
@@ -142,8 +152,10 @@ def deleteStudentById(connection,id):
 		return firstResult
 	else:
 		try:
+			studentObject = getStudentObjectById(connection.cursor(),id)
 			connection.cursor().execute(sql_command)
 			connection.commit()
+			insertOverall_changesTable(connection,username,'student',id,"Student [" + studentObject.lastname.title() + ', ' + studentObject.firstname.title() + "] has been delted.")
 		except Exception as e: 
 			print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 			logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
@@ -175,27 +187,39 @@ def insertToStudentTableFromCSVFile(df,cursor):
 			logging.warning("student [" + studentArr[i].lower() + "] is already in the student table")
 
 
-def insertNewStudent(cursor,studentLastName,studentFirstName,studentEmail):
+def insertNewStudent(connection,studentLastName,studentFirstName,studentEmail,username):
 	sql_command = "INSERT INTO student(lastname, firstname, email) VALUES "
 	sql_command += '("' + studentLastName + '", "' + studentFirstName +'", "' + studentEmail + '");' 
+	cursor = connection.cursor()
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		cursor.execute(sql_command)
+		connection.commit()
+		student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)	
+		insertOverall_changesTable(connection,username,'student',student_id,"New Student [" + studentLastName.title() + ', ' + studentFirstName.title() + "] has been added.")   
 	except sqlite3.IntegrityError:
 		return "EXISTED"
+	except Exception as e:
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		return str(e)
 	
-	student_id = findStudentIDByNameAndMail(cursor,studentLastName,studentFirstName,studentEmail)	  
+
 	return student_id
 
-def updateStudent(connection,student_id,new_student_last_name,new_student_first_name,new_student_email):
+def updateStudent(connection,student_id,new_student_last_name,new_student_first_name,new_student_email,username):
+	oldStudentObject = getStudentObjectById(connection.cursor(),student_id)
 	sql_command = 'UPDATE student SET lastname = "' + str(new_student_last_name) + '", firstname = "' + str(new_student_first_name) + '", email = "' + str(new_student_email) + '" WHERE ID = "' + str(student_id)  + '";'
 	try:
 		connection.cursor().execute(sql_command)
+		connection.commit()
+		msg = "Student [" + oldStudentObject.lastname.title() + ', ' + oldStudentObject.firstname.title() + '] with email [' + oldStudentObject.email + '] has been changed to student name [' + new_student_last_name.title() + ', ' + new_student_first_name.title() + '] with email [' + new_student_email + '].'
+		insertOverall_changesTable(connection,username,'student',student_id,msg)
 	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		return ("FAIL",str(e))
-	connection.commit()
+	
 	return ("SUCCESS","")
 
 
@@ -319,16 +343,14 @@ def getProfessorObjectById(cursor,id):
 	return professor
 	
 #   Delete a row in professor TABLE by professor id, return "SUCCESS" OR "FAIL"
-def deleteProfessorById(connection,id):
+def deleteProfessorById(connection,id,username):
 	sql_command = 'DELETE FROM professor WHERE ID = ' + str(id)  + ';'
-	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
-	#result1 = deleteMentoringByProfessorId(connection,id)
-	#if result1[0] is "FAIL":
-	#	return result1
-	#else:
 	try:
+		professorObject = getProfessorObjectById(connection.cursor(),id)
 		connection.cursor().execute(sql_command)
 		connection.commit()
+		msg = 'Professor [' + professorObject.lastname.title() + '] has been deelted.'
+		insertOverall_changesTable(connection,username,'professor',id,msg)
 	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
@@ -357,31 +379,56 @@ def insertToProfessorTableFromCSVFile(df,cursor):
 			#print("professor [" + professorArr[i].lower() + "] is already in the professor table") 
 			pass
 
-def updateMentor(connection,mentor_id,new_mentor_name,new_mentor_email):
+def updateMentor(connection,mentor_id,new_mentor_name,new_mentor_email,username):
+	oldProfessorObject = getStudentObjectById(connection.cursor(),mentor_id)
 	sql_command = 'UPDATE professor SET lastname = "' + str(new_mentor_name) + '", email = "' + str(new_mentor_email) + '" WHERE ID = "' + str(mentor_id)  + '";'
 	try:
 		connection.cursor().execute(sql_command)
+		connection.commit()
+		msg = "Mentor [" + oldProfessorObject.lastname.title() + ', ' + oldProfessorObject.firstname.title() + '] with email [' + oldProfessorObject.email + '] has been changed to student name [' + new_mentor_name.title() + '] with email [' + new_mentor_email + '].'
+		insertOverall_changesTable(connection,username,'professor',mentor_id,msg)
 	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		return ("FAIL",str(e))
-	connection.commit()
+
 	return ("SUCCESS","")
 
 
-def addMentor(connection,mentor_name,mentor_email):
+def addMentor(connection,mentor_name,mentor_email,username):
 	professorFirstName = ""
 	sql_command = "INSERT INTO professor(lastname, firstname, email) VALUES "
 	sql_command += '("' + mentor_name + '", "' + professorFirstName +'", "' + mentor_email + '");' 
 
 	try:
 		connection.cursor().execute(sql_command)
+		connection.commit()
+		professor_id = findProfessorIdByNameAndMail(connection.cursor(),mentor_name,mentor_email)
+		insertOverall_changesTable(connection,username,'prpfessor',professor_id,"New Professor [" + mentor_name.title() + "] has been added.")
 	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		return ("FAIL",str(e))	
-	connection.commit()
 	return ("SUCCESS","")
+
+def findProfessorIdByNameAndMail(cursor,mentor_name,mentor_email):
+	mentor_name = mentor_name.lower()
+	sql_command = 'SELECT ID FROM professor WHERE firstname = "" AND lastname = "' + mentor_name + '" AND email = "' + mentor_email +'";'
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		cursor.execute(sql_command)
+	except Exception as e: 
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+	rows = cursor.fetchall()
+	
+	if len(rows) == 0:
+		return "null"
+	
+	for row in rows:
+		return(row[0])
+
+
 
 #===============================================================================================================================================
 
@@ -502,26 +549,43 @@ def getProfessorAndStudentNumberInDicionary(cursor):
 
 #   Assign a student to mentor by UPDATE using mentor_id and student_id
 #   All the error checkings are done in the Flask part
-def assignExistedStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
+def assignExistedStudentToProfessorById(connection,studentId,professorId,assignDate,endDate,username):
 	sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '", dateAssigned = "' + str(assignDate) + '", endDate = "' + str(endDate) + '" WHERE student_id = "' + str(studentId)  + '";'
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		connection.cursor().execute(sql_command)
+		connection.commit()
+		mentoring_id = findMentoringIdsInArrayByStudentId(connection.cursor(),studentId)[0][0]
+		insertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id)
+		studentObject = getStudentObjectById(connection.cursor(),studentId)
+		professorObject = getProfessorObjectById(connection.cursor(),professorId)
+		msg = "Student [" + studentObject.lastname.title() + ', ' + studentObject.firstname.title() +"] has been assigned to professor [" + professorObject.lastname.title() +"]."
+		insertOverall_changesTable(connection,username,'mentoring',mentoring_id,msg)
 	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
-	connection.commit()
 	
-def assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,endDate):
+
+	
+	
+def assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,endDate,username):
 	sql_command = "INSERT INTO mentoring(student_id, professor_id, dateAssigned, endDate) VALUES "
 	sql_command += '("' + str(studentId) + '", "' + str(professorId) +'", "' + str(assignDate) + '", "' + str(endDate) +  '");' 
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		connection.cursor().execute(sql_command)
+		connection.commit()
+		mentoring_id = findMentoringIdsInArrayByStudentId(connection.cursor(),studentId)[0][0]
+		insertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id)
+		studentObject = getStudentObjectById(connection.cursor(),studentId)
+		professorObject = getProfessorObjectById(connection.cursor(),professorId)
+		msg = "New Student [" + studentObject.lastname.title() + ', ' + studentObject.firstname.title() +"] has been assigned to professor [" + professorObject.lastname.title() +"]."
+		insertOverall_changesTable(connection,username,'mentoring',mentoring_id,msg)
 	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
-	connection.commit()
+		
+
 
 	sql_command = 'SELECT ID FROM mentoring where student_id = '+ str(studentId) + ' AND professor_id = ' + str(professorId) +  ';'
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
@@ -538,8 +602,7 @@ def assignNewStudentToProfessorById(connection,studentId,professorId,assignDate,
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	insertDataToMost_recent_mentoring_updatesTable(connection,relationship_id)
 	
-
-
+	
 def massAssign(connection,arr,professorName):
 	cursor = connection.cursor()
 	professorName = professorName.lower()
@@ -550,17 +613,24 @@ def massAssign(connection,arr,professorName):
 	for i in arr:
 		assignFromRelationshipId(connection,i,professorId,assignDate,endDate)
 
-def assignFromRelationshipId(connection,mentoringId,professorId,assignDate,endDate):
+def assignFromRelationshipId(connection,mentoringId,professorId,assignDate,endDate,username):
 	sql_command = 'UPDATE mentoring SET professor_id = "' + str(professorId) + '", dateAssigned = "' +  str(assignDate) + '" WHERE ID = "' + str(mentoringId)  + '";'
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	print(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
 		connection.cursor().execute(sql_command)
+		connection.commit()  
+		insertDataToMost_recent_mentoring_updatesTable(connection,mentoringId)
+		studentId = getStudentIdByMentoringId(connection.cursor(),mentoringId)
+		studentObject = getStudentObjectById(connection.cursor(),studentId)
+		professorObject = getProfessorObjectById(connection.cursor(),professorId)
+		msg = "Student [" + studentObject.lastname.title() + ', ' + studentObject.firstname.title() +"] has been assigned to professor [" + professorObject.lastname.title() +"]."
+		insertOverall_changesTable(connection,username,'mentoring',professorId,msg)
 	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
-	connection.commit()   
-	insertDataToMost_recent_mentoring_updatesTable(connection,mentoringId)
+
+	
 
 def findProfessorIdByMentoringId(cursor,relationship_id):
 	sql_command = 'SELECT professor_id FROM mentoring where ID = '+ str(relationship_id) + ';'
@@ -667,27 +737,45 @@ def deleteMentoringByStudentId(connection,student_id):
 
 	return ("SUCCESS","")
 
-def deleteMentoringByProfessorId(connection,professor_id):
-	temp_cursor = connection.cursor()
-	mentoring_id_array = findMentoringIdsInArrayByProfessorId(temp_cursor,professor_id)
-	if mentoring_id_array is "null":
-		return ("FAIL","Unable to locate professor.")
-	for i in mentoring_id_array:
-		temp_result = deleteMost_recent_mentoring_updatesByMentoringId(connection,i[0])
-		if temp_result[0] is 'FAIL':
-			return temp_result
+# def deleteMentoringByProfessorId(connection,professor_id):
+# 	temp_cursor = connection.cursor()
+# 	mentoring_id_array = findMentoringIdsInArrayByProfessorId(temp_cursor,professor_id)
+# 	if mentoring_id_array is "null":
+# 		return ("FAIL","Unable to locate professor.")
+# 	for i in mentoring_id_array:
+# 		temp_result = deleteMost_recent_mentoring_updatesByMentoringId(connection,i[0])
+# 		if temp_result[0] is 'FAIL':
+# 			return temp_result
 
-	sql_command = 'DELETE FROM mentoring WHERE professor_id = ' + str(id)  + ';'
+# 	sql_command = 'DELETE FROM mentoring WHERE professor_id = ' + str(id)  + ';'
+# 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+# 	try:
+# 		connection.cursor().execute(sql_command)
+# 		connection.commit()
+#
+# 	except Exception as e: 
+# 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+# 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+# 		return ("FAIL",str(e))
+
+# 	return ("SUCCESS","")
+
+def getStudentIdByMentoringId(cursor,mentoring_id):
+	sql_command = 'SELECT student_id FROM mentoring where ID = "' + str(mentoring_id) + '";'
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	try:
-		connection.cursor().execute(sql_command)
-		connection.commit()
+		cursor.execute(sql_command)
 	except Exception as e: 
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
-		return ("FAIL",str(e))
+	rows = cursor.fetchall()
+	   
+	if len(rows) == 0:
+		return "null"
+	
+	for row in rows:
+		return(row[0])
 
-	return ("SUCCESS","")
 
 
 #===============================================================================================================================================
@@ -752,6 +840,7 @@ def updateDataFromOffline_dataTable(connection,data_name,data_value):
 		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
 	connection.commit()	
+	# overall_changes_table_insert here
 
 #===============================================================================================================================================
 
@@ -778,7 +867,7 @@ def createMost_recent_mentoring_updatesTable(cursor):
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
 	cursor.execute(sql_command)
 
-def checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,modify_date):
+def checkAndInsertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,modify_date):
 	sql_command = "INSERT INTO most_recent_mentoring_updates(mentoring_id, modify_date) VALUES "
 	sql_command += '("' + str(mentoring_id) + '", "' + str(modify_date) + '");' 
 	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
@@ -826,13 +915,12 @@ def getMost_recent_mentoring_updatesTableAsDataframeForFlask(connection):
 def insertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id):
 	currentDT = datetime.datetime.now()
 	currentDTString = currentDT.strftime("%m/%d/%Y %H:%M:%S")
-	if checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,currentDTString) == False:
+	if checkAndInsertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,currentDTString) == False:
 		deleteDataFromMost_recent_mentoring_updatesTable(connection,mentoring_id)
 	else:
 		return
-	if checkDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,currentDTString) == False:
-		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + "checkDataToMost_recent_mentoring_updatesTable return false!")
-		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + "checkDataToMost_recent_mentoring_updatesTable return false!")
+	checkAndInsertDataToMost_recent_mentoring_updatesTable(connection,mentoring_id,currentDTString)
+	
 
 def deleteMost_recent_mentoring_updatesByMentoringId(connection,mentoring_id):
 	sql_command = 'DELETE FROM most_recent_mentoring_updates  WHERE mentoring_id = ' + str(mentoring_id)  + ';'
@@ -846,6 +934,47 @@ def deleteMost_recent_mentoring_updatesByMentoringId(connection,mentoring_id):
 		return ("FAIL",str(e))
 
 	return ("SUCCESS","")
+
+
+
+# ----------------------------------- overall_changes Database Table Related Code Area ----------------------------------------------------------------
+###############################################################################################################################################
+###############################################################################################################################################
+def createOverall_changesTable(cursor):
+	sql_command_drop_tbale = '''
+	DROP TABLE IF EXISTS overall_changes;
+	'''
+	cursor.execute(sql_command_drop_tbale)
+	
+	sql_command = '''
+	CREATE TABLE overall_changes(
+	ID INTEGER PRIMARY KEY AUTOINCREMENT,
+	username VARCHAR(255) NOT NULL,
+	modify_table VARCHAR(255) NOT NULL,
+	modify_id VARCHAR(255),
+	message VARCHAR(512),
+	modify_date VARCHAR(255)
+	);
+	'''
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	cursor.execute(sql_command)
+
+def insertOverall_changesTable(connection,username,modify_table,modify_id,message):
+	currentDT = datetime.datetime.now()
+	currentDTString = currentDT.strftime("%m/%d/%Y %H:%M:%S")
+	sql_command = "INSERT INTO overall_changes(username, modify_table, modify_id, message, modify_date) VALUES "
+	sql_command += '("' + str(username) + '", "' + str(modify_table) + '", "' + str(modify_id) + '", "' + str(message) + '", "' + str(currentDTString) +'");' 
+	#logging.debug(inspect.stack()[0][3] + "(): " + sql_command)
+	try:
+		connection.cursor().execute(sql_command)
+		connection.commit()
+		return ("FAIL","")
+	except Exception as e:
+		print("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		logging.warning("error in "+inspect.stack()[0][3]+"() ! With exception: " + str(e))
+		return ("FAIL",str(e))
+	
+		 
 
 
 

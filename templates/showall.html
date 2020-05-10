@@ -32,7 +32,7 @@
 
 	.float-button {
 		position: fixed;
-		transition: all 0.2s ease-in 0s;
+		transition: all 0.14s ease-in 0s;
 		z-index: 9999;
 		cursor: pointer;
 		background-color: #0455e8;
@@ -51,7 +51,7 @@
 
 	.longer_table_row{
 		position: fixed;
-		transition: all 0.2s ease-in 0s;
+		transition: all 0.14s ease-in 0s;
 		z-index: 9999;
 		cursor: pointer;
 		background-color: #0455e8;
@@ -78,7 +78,7 @@
 </head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <body onload="bodyLoadFunction()">
-	<div class="longer_table_row" id='longer_table_row_id' onmouseover="extendFunction()" onmouseout="hideFunction()">_</div>
+	<div class="longer_table_row" id='longer_table_row_id' onmouseover="extendFunction()" onmouseout="hideFunction()" onclick="	document.body.scrollTop = 0;document.documentElement.scrollTop = 0;">_</div>
 	<div class="float-button" id="float-div-id" onmouseover="extendFunction()" onmouseout="hideFunction()">
 		<table style="width:100%">
 			<tr class='normal_tr'>
